@@ -55,6 +55,7 @@ with Graphene.Vec4;     use Graphene.Vec4;
 with Gsk.Enums;         use Gsk.Enums;
 with Gsk.Path;          use Gsk.Path;
 with Gsk.Stroke;        use Gsk.Stroke;
+with Gsk.Transform;     use Gsk.Transform;
 with Gtk.Style_Context; use Gtk.Style_Context;
 with Interfaces.C;      use Interfaces.C;
 with Pango.Enums;       use Pango.Enums;
@@ -187,6 +188,18 @@ package Gtk.Snapshot is
    --  Removes the top element from the stack of render nodes, and appends it
    --  to the node underneath it.
 
+   procedure Push_Blend
+      (Self       : not null access Gtk_Snapshot_Record;
+       Blend_Mode : Gsk.Enums.Gsk_Blend_Mode);
+   --  Blends together two images with the given blend mode.
+   --  Until the first call to [methodGtk.Snapshot.pop], the bottom image for
+   --  the blend operation will be recorded. After that call, the top image to
+   --  be blended will be recorded until the second call to
+   --  [methodGtk.Snapshot.pop].
+   --  Calling this function requires two subsequent calls to
+   --  [methodGtk.Snapshot.pop].
+   --  @param Blend_Mode blend mode to use
+
    procedure Push_Blur
       (Self   : not null access Gtk_Snapshot_Record;
        Radius : Gdouble);
@@ -214,6 +227,17 @@ package Gtk.Snapshot is
    --  The image is recorded until the next call to [methodGtk.Snapshot.pop].
    --  @param Color_Matrix the color matrix to use
    --  @param Color_Offset the color offset to use
+
+   procedure Push_Composite
+      (Self : not null access Gtk_Snapshot_Record;
+       Op   : Gsk.Enums.Gsk_Porter_Duff);
+   --  Until the first call to [methodGtk.Snapshot.pop], the mask image for
+   --  the mask operation will be recorded.
+   --  After that call, the child image will be recorded until the second call
+   --  to [methodGtk.Snapshot.pop].
+   --  Calling this function requires 2 subsequent calls to Gtk.Snapshot.Pop.
+   --  Since: gtk+ 4.22
+   --  @param Op The Porter/Duff compositing operator to use
 
    procedure Push_Copy (Self : not null access Gtk_Snapshot_Record);
    --  Stores the current rendering state for later pasting via
@@ -247,6 +271,30 @@ package Gtk.Snapshot is
    --  Since: gtk+ 4.14
    --  @param Path The path describing the area to fill
    --  @param Fill_Rule The fill rule to use
+
+   procedure Push_Isolation
+      (Self     : not null access Gtk_Snapshot_Record;
+       Features : Gsk.Enums.Gsk_Isolation);
+   --  Isolates the following drawing operations from previous ones.
+   --  You can express "everything but these flags" in a forward compatible
+   --  way by using bit math: `GSK_ISOLATION_ALL & ~(GSK_ISOLATION_BACKGROUND |
+   --  GSK_ISOLATION_COPY_PASTE)` will isolate everything but background and
+   --  copy/paste.
+   --  For what isolation features exist, see [flagsGsk.Isolation].
+   --  Content is isolated until the next call to [methodGtk.Snapshot.pop].
+   --  Since: gtk+ 4.22
+   --  @param Features features that are isolated
+
+   procedure Push_Mask
+      (Self      : not null access Gtk_Snapshot_Record;
+       Mask_Mode : Gsk.Enums.Gsk_Mask_Mode);
+   --  Until the first call to [methodGtk.Snapshot.pop], the mask image for
+   --  the mask operation will be recorded.
+   --  After that call, the source image will be recorded until the second
+   --  call to [methodGtk.Snapshot.pop].
+   --  Calling this function requires 2 subsequent calls to Gtk.Snapshot.Pop.
+   --  Since: gtk+ 4.10
+   --  @param Mask_Mode mask mode to use
 
    procedure Push_Opacity
       (Self    : not null access Gtk_Snapshot_Record;
@@ -437,6 +485,12 @@ package Gtk.Snapshot is
    --  @param Size The size of the resulting paintable or null to use the
    --  bounds of the snapshot
    --  @return a new `GdkPaintable`
+
+   procedure Transform
+      (Self      : not null access Gtk_Snapshot_Record;
+       Transform : Gsk.Transform.Gsk_Transform);
+   --  Transforms Snapshot's coordinate system with the given Transform.
+   --  @param Transform the transform to apply
 
    procedure Transform_Matrix
       (Self   : not null access Gtk_Snapshot_Record;

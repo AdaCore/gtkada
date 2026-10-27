@@ -8,16 +8,6 @@ ctype = "GVariantClass"
 prefix = "G_VARIANT_"
 
 [[method]]
-id = "g_variant_new_from_bytes"
-bind = false
-# requires GByte
-
-[[method]]
-id = "g_variant_get_data_as_bytes"
-bind = false
-# requires GByte
-
-[[method]]
 id = "g_variant_new_parsed_va"
 bind = false
 # va_list

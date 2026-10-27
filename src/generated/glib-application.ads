@@ -145,7 +145,9 @@ with Glib.Action;             use Glib.Action;
 with Glib.Action_Group;       use Glib.Action_Group;
 with Glib.Action_Map;         use Glib.Action_Map;
 with Glib.Cancellable;        use Glib.Cancellable;
+with Glib.GFile;              use Glib.GFile;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Input_Stream;       use Glib.Input_Stream;
 with Glib.Notification;       use Glib.Notification;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -626,6 +628,18 @@ package Glib.Application is
    --  Since: gtk+ 2.40
    --  @param Id id of a previously sent notification
 
+   function Create_File_For_Arg
+      (Self : not null access Gapplication_Command_Line_Record;
+       Arg  : UTF8_String) return Glib.GFile.Gfile;
+   --  Creates a Glib.GFile.Gfile corresponding to a filename that was given
+   --  as part of the invocation of Cmdline.
+   --  This differs from Glib.GFile.New_For_Commandline_Arg in that it
+   --  resolves relative pathnames using the current working directory of the
+   --  invoking process rather than the local process.
+   --  Since: gtk+ 2.36
+   --  @param Arg an argument from Cmdline
+   --  @return a new Glib.GFile.Gfile
+
    procedure Done (Self : not null access Gapplication_Command_Line_Record);
 
    function Get_Arguments
@@ -716,6 +730,21 @@ package Glib.Application is
    --  For local invocation, it will be null.
    --  Since: gtk+ 2.28
    --  @return the platform data, or null. Has transfer-ownership='full'.
+
+   function Get_Stdin
+      (Self : not null access Gapplication_Command_Line_Record)
+       return Glib.Input_Stream.Ginput_Stream;
+   --  Gets the stdin of the invoking process.
+   --  The Glib.Input_Stream.Ginput_Stream can be used to read data passed to
+   --  the standard input of the invoking process. This doesn't work on all
+   --  platforms. Presently, it is only available on UNIX when using a D-Bus
+   --  daemon capable of passing file descriptors. If stdin is not available
+   --  then null will be returned. In the future, support may be expanded to
+   --  other platforms.
+   --  You must only call this function once per commandline invocation.
+   --  Since: gtk+ 2.34
+   --  @return a Glib.Input_Stream.Ginput_Stream for stdin. Has
+   --  transfer-ownership='full'.
 
    function Getenv
       (Self : not null access Gapplication_Command_Line_Record;

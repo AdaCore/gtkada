@@ -58,6 +58,7 @@
 --  cursors can be supported, the default cursor will be the ultimate fallback.
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Texture;     use Gdk.Texture;
 with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
@@ -231,6 +232,46 @@ package Gdk.Cursor is
    --  @param Fallback null or the `GdkCursor` to fall back to when this one
    --  cannot be supported
 
+   procedure Gdk_New_From_Texture
+      (Self      : out Gdk_Cursor;
+       Texture   : not null access Gdk.Texture.Gdk_Texture_Record'Class;
+       Hotspot_X : Glib.Gint;
+       Hotspot_Y : Glib.Gint;
+       Fallback  : access Gdk_Cursor_Record'Class);
+   --  Creates a new cursor from a `GdkTexture`.
+   --  @param Texture the texture providing the pixel data
+   --  @param Hotspot_X the horizontal offset of the "hotspot" of the cursor
+   --  @param Hotspot_Y the vertical offset of the "hotspot" of the cursor
+   --  @param Fallback the `GdkCursor` to fall back to when this one cannot be
+   --  supported
+
+   procedure Initialize_From_Texture
+      (Self      : not null access Gdk_Cursor_Record'Class;
+       Texture   : not null access Gdk.Texture.Gdk_Texture_Record'Class;
+       Hotspot_X : Glib.Gint;
+       Hotspot_Y : Glib.Gint;
+       Fallback  : access Gdk_Cursor_Record'Class);
+   --  Creates a new cursor from a `GdkTexture`.
+   --  Initialize_From_Texture does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
+   --  @param Texture the texture providing the pixel data
+   --  @param Hotspot_X the horizontal offset of the "hotspot" of the cursor
+   --  @param Hotspot_Y the vertical offset of the "hotspot" of the cursor
+   --  @param Fallback the `GdkCursor` to fall back to when this one cannot be
+   --  supported
+
+   function Gdk_Cursor_New_From_Texture
+      (Texture   : not null access Gdk.Texture.Gdk_Texture_Record'Class;
+       Hotspot_X : Glib.Gint;
+       Hotspot_Y : Glib.Gint;
+       Fallback  : access Gdk_Cursor_Record'Class) return Gdk_Cursor;
+   --  Creates a new cursor from a `GdkTexture`.
+   --  @param Texture the texture providing the pixel data
+   --  @param Hotspot_X the horizontal offset of the "hotspot" of the cursor
+   --  @param Hotspot_Y the vertical offset of the "hotspot" of the cursor
+   --  @param Fallback the `GdkCursor` to fall back to when this one cannot be
+   --  supported
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gdk_cursor_get_type");
 
@@ -272,6 +313,14 @@ package Gdk.Cursor is
    --  Returns the name of the cursor.
    --  If the cursor is not a named cursor, null will be returned.
    --  @return the name of the cursor or null if it is not a named cursor
+
+   function Get_Texture
+      (Self : not null access Gdk_Cursor_Record)
+       return Gdk.Texture.Gdk_Texture;
+   --  Returns the texture for the cursor.
+   --  If the cursor is a named cursor, null will be returned.
+   --  @return the texture for cursor or null if it is a named cursor. Has
+   --  transfer-ownership='none'.
 
    ----------------
    -- Properties --

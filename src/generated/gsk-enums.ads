@@ -141,6 +141,76 @@ package Gsk.Enums is
    Gsk_Path_Foreach_Allow_Cubic : constant Gsk_Path_Foreach_Flags := 2;
    Gsk_Path_Foreach_Allow_Conic : constant Gsk_Path_Foreach_Flags := 4;
 
+   type Gsk_Blend_Mode is (
+      Gsk_Blend_Mode_Default,
+      Gsk_Blend_Mode_Multiply,
+      Gsk_Blend_Mode_Screen,
+      Gsk_Blend_Mode_Overlay,
+      Gsk_Blend_Mode_Darken,
+      Gsk_Blend_Mode_Lighten,
+      Gsk_Blend_Mode_Color_Dodge,
+      Gsk_Blend_Mode_Color_Burn,
+      Gsk_Blend_Mode_Hard_Light,
+      Gsk_Blend_Mode_Soft_Light,
+      Gsk_Blend_Mode_Difference,
+      Gsk_Blend_Mode_Exclusion,
+      Gsk_Blend_Mode_Color,
+      Gsk_Blend_Mode_Hue,
+      Gsk_Blend_Mode_Saturation,
+      Gsk_Blend_Mode_Luminosity);
+   pragma Convention (C, Gsk_Blend_Mode);
+   --  The blend modes available for render nodes.
+   --
+   --  The implementation of each blend mode is deferred to the rendering
+   --  pipeline.
+   --
+   --  See <https://www.w3.org/TR/compositing-1/blending> for more information
+   --  on blending and blend modes.
+
+   type Gsk_Mask_Mode is (
+      Gsk_Mask_Mode_Alpha,
+      Gsk_Mask_Mode_Inverted_Alpha,
+      Gsk_Mask_Mode_Luminance,
+      Gsk_Mask_Mode_Inverted_Luminance);
+   pragma Convention (C, Gsk_Mask_Mode);
+   --  The mask modes available for mask nodes.
+
+   type Gsk_Porter_Duff is (
+      Gsk_Porter_Duff_Source,
+      Gsk_Porter_Duff_Dest,
+      Gsk_Porter_Duff_Source_Over_Dest,
+      Gsk_Porter_Duff_Dest_Over_Source,
+      Gsk_Porter_Duff_Source_In_Dest,
+      Gsk_Porter_Duff_Dest_In_Source,
+      Gsk_Porter_Duff_Source_Out_Dest,
+      Gsk_Porter_Duff_Dest_Out_Source,
+      Gsk_Porter_Duff_Source_Atop_Dest,
+      Gsk_Porter_Duff_Dest_Atop_Source,
+      Gsk_Porter_Duff_Xor,
+      Gsk_Porter_Duff_Clear);
+   pragma Convention (C, Gsk_Porter_Duff);
+   --  GSK_PORTER_DUFF_SOURCE: GSK_PORTER_DUFF_DEST:
+   --  GSK_PORTER_DUFF_SOURCE_OVER_DEST: GSK_PORTER_DUFF_DEST_OVER_SOURCE:
+   --  GSK_PORTER_DUFF_SOURCE_IN_DEST: GSK_PORTER_DUFF_DEST_IN_SOURCE:
+   --  GSK_PORTER_DUFF_SOURCE_OUT_DEST: GSK_PORTER_DUFF_DEST_OUT_SOURCE:
+   --  GSK_PORTER_DUFF_SOURCE_ATOP_DEST: GSK_PORTER_DUFF_DEST_ATOP_SOURCE:
+   --  GSK_PORTER_DUFF_XOR: GSK_PORTER_DUFF_CLEAR: The 12 compositing modes
+   --  defined by the seminal paper by Thomas Porter and Tom Duff.
+   --
+   --  They are used in SVG, PDF and in Cairo with `cairo_operator_t`.
+
+   type Gsk_Isolation is mod 2 ** Integer'Size;
+   pragma Convention (C, Gsk_Isolation);
+   --  These flags describe the types of isolations possible with a
+   --  [classGsk.IsolationNode].
+   --
+   --  More isolation options may be added in the future.
+
+   Gsk_Isolation_None : constant Gsk_Isolation := 0;
+   Gsk_Isolation_Background : constant Gsk_Isolation := 1;
+   Gsk_Isolation_Copy_Paste : constant Gsk_Isolation := 2;
+   Gsk_Isolation_All : constant Gsk_Isolation := -1;
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -172,5 +242,21 @@ package Gsk.Enums is
    package Gsk_Path_Foreach_Flags_Properties is
       new Generic_Internal_Flags_Property (Gsk_Path_Foreach_Flags);
    type Property_Gsk_Path_Foreach_Flags is new Gsk_Path_Foreach_Flags_Properties.Property;
+
+   package Gsk_Blend_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Blend_Mode);
+   type Property_Gsk_Blend_Mode is new Gsk_Blend_Mode_Properties.Property;
+
+   package Gsk_Mask_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Mask_Mode);
+   type Property_Gsk_Mask_Mode is new Gsk_Mask_Mode_Properties.Property;
+
+   package Gsk_Porter_Duff_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Porter_Duff);
+   type Property_Gsk_Porter_Duff is new Gsk_Porter_Duff_Properties.Property;
+
+   package Gsk_Isolation_Properties is
+      new Generic_Internal_Flags_Property (Gsk_Isolation);
+   type Property_Gsk_Isolation is new Gsk_Isolation_Properties.Property;
 
 end Gsk.Enums;

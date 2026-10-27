@@ -5,16 +5,6 @@ into = "GApplication"
 ada = "Glib.Application"
 
 [[method]]
-id = "g_application_command_line_create_file_for_arg"
-bind = false
-# requires GFile
-
-[[method]]
-id = "g_application_command_line_get_stdin"
-bind = false
-# requires GInputStream
-
-[[method]]
 id = "g_application_command_line_get_type"
 ada = "Get_Type_Command_Line"
 

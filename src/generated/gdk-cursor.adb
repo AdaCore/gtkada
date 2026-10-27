@@ -50,6 +50,22 @@ package body Gdk.Cursor is
       return Self;
    end Gdk_Cursor_New_From_Name;
 
+   ---------------------------------
+   -- Gdk_Cursor_New_From_Texture --
+   ---------------------------------
+
+   function Gdk_Cursor_New_From_Texture
+      (Texture   : not null access Gdk.Texture.Gdk_Texture_Record'Class;
+       Hotspot_X : Glib.Gint;
+       Hotspot_Y : Glib.Gint;
+       Fallback  : access Gdk_Cursor_Record'Class) return Gdk_Cursor
+   is
+      Self : constant Gdk_Cursor := new Gdk_Cursor_Record;
+   begin
+      Gdk.Cursor.Initialize_From_Texture (Self, Texture, Hotspot_X, Hotspot_Y, Fallback);
+      return Self;
+   end Gdk_Cursor_New_From_Texture;
+
    -----------------------
    -- Gdk_New_From_Name --
    -----------------------
@@ -63,6 +79,22 @@ package body Gdk.Cursor is
       Self := new Gdk_Cursor_Record;
       Gdk.Cursor.Initialize_From_Name (Self, Name, Fallback);
    end Gdk_New_From_Name;
+
+   --------------------------
+   -- Gdk_New_From_Texture --
+   --------------------------
+
+   procedure Gdk_New_From_Texture
+      (Self      : out Gdk_Cursor;
+       Texture   : not null access Gdk.Texture.Gdk_Texture_Record'Class;
+       Hotspot_X : Glib.Gint;
+       Hotspot_Y : Glib.Gint;
+       Fallback  : access Gdk_Cursor_Record'Class)
+   is
+   begin
+      Self := new Gdk_Cursor_Record;
+      Gdk.Cursor.Initialize_From_Texture (Self, Texture, Hotspot_X, Hotspot_Y, Fallback);
+   end Gdk_New_From_Texture;
 
    --------------------------
    -- Initialize_From_Name --
@@ -86,6 +118,29 @@ package body Gdk.Cursor is
       end if;
       Free (Tmp_Name);
    end Initialize_From_Name;
+
+   -----------------------------
+   -- Initialize_From_Texture --
+   -----------------------------
+
+   procedure Initialize_From_Texture
+      (Self      : not null access Gdk_Cursor_Record'Class;
+       Texture   : not null access Gdk.Texture.Gdk_Texture_Record'Class;
+       Hotspot_X : Glib.Gint;
+       Hotspot_Y : Glib.Gint;
+       Fallback  : access Gdk_Cursor_Record'Class)
+   is
+      function Internal
+         (Texture   : System.Address;
+          Hotspot_X : Glib.Gint;
+          Hotspot_Y : Glib.Gint;
+          Fallback  : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_cursor_new_from_texture");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Get_Object (Texture), Hotspot_X, Hotspot_Y, Get_Object_Or_Null (GObject (Fallback))));
+      end if;
+   end Initialize_From_Texture;
 
    ------------------
    -- Get_Fallback --
@@ -140,5 +195,20 @@ package body Gdk.Cursor is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Name;
+
+   -----------------
+   -- Get_Texture --
+   -----------------
+
+   function Get_Texture
+      (Self : not null access Gdk_Cursor_Record)
+       return Gdk.Texture.Gdk_Texture
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_cursor_get_texture");
+      Stub_Gdk_Texture : Gdk.Texture.Gdk_Texture_Record;
+   begin
+      return Gdk.Texture.Gdk_Texture (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Texture));
+   end Get_Texture;
 
 end Gdk.Cursor;

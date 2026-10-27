@@ -164,6 +164,25 @@ package body Glib.Variant is
       Self.Set_Object (Internal (Value));
    end G_New_Double;
 
+   ----------------------
+   -- G_New_From_Bytes --
+   ----------------------
+
+   procedure G_New_From_Bytes
+      (Self     : out Gvariant;
+       The_Type : Gvariant_Type;
+       Bytes    : Glib.Bytes.Gbytes;
+       Trusted  : Boolean)
+   is
+      function Internal
+         (The_Type : Gvariant_Type;
+          Bytes    : System.Address;
+          Trusted  : Glib.Gboolean) return System.Address;
+      pragma Import (C, Internal, "g_variant_new_from_bytes");
+   begin
+      Self.Set_Object (Internal (The_Type, Get_Object (Bytes), Boolean'Pos (Trusted)));
+   end G_New_From_Bytes;
+
    ------------------
    -- G_New_Handle --
    ------------------
@@ -452,6 +471,26 @@ package body Glib.Variant is
       Self.Set_Object (Internal (Value));
       return Self;
    end Gvariant_New_Double;
+
+   -----------------------------
+   -- Gvariant_New_From_Bytes --
+   -----------------------------
+
+   function Gvariant_New_From_Bytes
+      (The_Type : Gvariant_Type;
+       Bytes    : Glib.Bytes.Gbytes;
+       Trusted  : Boolean) return Gvariant
+   is
+      function Internal
+         (The_Type : Gvariant_Type;
+          Bytes    : System.Address;
+          Trusted  : Glib.Gboolean) return System.Address;
+      pragma Import (C, Internal, "g_variant_new_from_bytes");
+      Self : Gvariant;
+   begin
+      Self.Set_Object (Internal (The_Type, Get_Object (Bytes), Boolean'Pos (Trusted)));
+      return Self;
+   end Gvariant_New_From_Bytes;
 
    -------------------------
    -- Gvariant_New_Handle --
@@ -882,6 +921,17 @@ package body Glib.Variant is
    begin
       return From_Object (Internal (Get_Object (Self), Index));
    end Get_Child_Value;
+
+   -----------------------
+   -- Get_Data_As_Bytes --
+   -----------------------
+
+   function Get_Data_As_Bytes (Self : Gvariant) return Glib.Bytes.Gbytes is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "g_variant_get_data_as_bytes");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end Get_Data_As_Bytes;
 
    ----------------
    -- Get_Double --

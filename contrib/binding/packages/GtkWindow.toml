@@ -5,12 +5,12 @@
 [[method]]
 id = "gtk_window_get_application"
 bind = false
-# Need Gtk_Application
+# Need Gtk_Application (circular)
 
 [[method]]
 id = "gtk_window_set_application"
 bind = false
-# Need Gtk_Application
+# Need Gtk_Application (circular)
 
 [[method]]
 id = "gtk_window_set_focus"

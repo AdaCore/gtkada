@@ -54,10 +54,6 @@ bind = false  # needs Gsk.RenderNode
 id   = "gtk_snapshot_to_node"
 bind = false  # returns Gsk.RenderNode
 
-[[method]]
-id   = "gtk_snapshot_transform"
-bind = false  # needs Gsk.Transform
-
 # --- Scaled texture: needs Gsk.ScalingFilter ------------------------------
 [[method]]
 id   = "gtk_snapshot_append_scaled_texture"
@@ -67,22 +63,6 @@ bind = false  # needs Gsk.ScalingFilter
 [[method]]
 id   = "gtk_snapshot_push_rounded_clip"
 bind = false  # needs Gsk.RoundedRect
-
-[[method]]
-id   = "gtk_snapshot_push_blend"
-bind = false  # needs Gsk.BlendMode
-
-[[method]]
-id   = "gtk_snapshot_push_mask"
-bind = false  # needs Gsk.MaskMode
-
-[[method]]
-id   = "gtk_snapshot_push_composite"
-bind = false  # needs Gsk.PorterDuff
-
-[[method]]
-id   = "gtk_snapshot_push_isolation"
-bind = false  # needs Gsk.Isolation
 
 [[method]]
 id   = "gtk_snapshot_push_component_transfer"

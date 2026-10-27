@@ -1802,8 +1802,8 @@ package Glib.GFile is
    --  function with string from argv as it is passed to main.
    --  g_win32_get_command_line will return a UTF-8 version of the commandline.
    --  Glib.Application.Gapplication also uses UTF-8 but
-   --  g_application_command_line_create_file_for_arg may be more useful for
-   --  you there. It is also always possible to use this function with
+   --  Glib.Application.Create_File_For_Arg may be more useful for you there.
+   --  It is also always possible to use this function with
    --  Glib.Option.Goption_Context arguments of type
    --  Glib.Option.G_Option_Arg_Filename.
    --  @param Arg a command line string
@@ -1820,7 +1820,7 @@ package Glib.GFile is
    --  instead of using the current working directory of the process.
    --  This is useful if the commandline argument was given in a context other
    --  than the invocation of the current process.
-   --  See also g_application_command_line_create_file_for_arg.
+   --  See also Glib.Application.Create_File_For_Arg.
    --  Since: gtk+ 2.36
    --  @param Arg a command line string
    --  @param Cwd the current working directory of the commandline

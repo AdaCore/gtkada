@@ -61,6 +61,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
+with Glib.Date_Time;          use Glib.Date_Time;
 with Glib.G_Icon;             use Glib.G_Icon;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
@@ -137,6 +138,30 @@ package Glib.File_Info is
    --  Duplicates a file info structure.
    --  @return a duplicate Glib.File_Info.Gfile_Info of Other. Has
    --  transfer-ownership='full'.
+
+   function Get_Access_Date_Time
+      (Self : not null access Gfile_Info_Record)
+       return Glib.Date_Time.Gdate_Time;
+   --  Gets the access time of the current Info and returns it as a
+   --  Glib.Date_Time.Gdate_Time.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_TIME_ACCESS. If
+   --  G_FILE_ATTRIBUTE_TIME_ACCESS_USEC is provided, the resulting
+   --  Glib.Date_Time.Gdate_Time will additionally have microsecond precision.
+   --  If nanosecond precision is needed, G_FILE_ATTRIBUTE_TIME_ACCESS_NSEC
+   --  must be queried separately using Glib.File_Info.Get_Attribute_Uint32.
+   --  Since: gtk+ 2.70
+   --  @return access time, or null if unknown. Has transfer-ownership='full'.
+
+   procedure Set_Access_Date_Time
+      (Self  : not null access Gfile_Info_Record;
+       Atime : Glib.Date_Time.Gdate_Time);
+   --  Sets the G_FILE_ATTRIBUTE_TIME_ACCESS and
+   --  G_FILE_ATTRIBUTE_TIME_ACCESS_USEC attributes in the file info to the
+   --  given date/time value.
+   --  G_FILE_ATTRIBUTE_TIME_ACCESS_NSEC will be cleared.
+   --  Since: gtk+ 2.70
+   --  @param Atime a Glib.Date_Time.Gdate_Time.
 
    function Get_Attribute_As_String
       (Self      : not null access Gfile_Info_Record;
@@ -342,6 +367,42 @@ package Glib.File_Info is
    --  @param Content_Type a content type. See
    --  [GContentType][gio-GContentType]
 
+   function Get_Creation_Date_Time
+      (Self : not null access Gfile_Info_Record)
+       return Glib.Date_Time.Gdate_Time;
+   --  Gets the creation time of the current Info and returns it as a
+   --  Glib.Date_Time.Gdate_Time.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_TIME_CREATED. If
+   --  G_FILE_ATTRIBUTE_TIME_CREATED_USEC is provided, the resulting
+   --  Glib.Date_Time.Gdate_Time will additionally have microsecond precision.
+   --  If nanosecond precision is needed, G_FILE_ATTRIBUTE_TIME_CREATED_NSEC
+   --  must be queried separately using Glib.File_Info.Get_Attribute_Uint32.
+   --  Since: gtk+ 2.70
+   --  @return creation time, or null if unknown. Has
+   --  transfer-ownership='full'.
+
+   procedure Set_Creation_Date_Time
+      (Self          : not null access Gfile_Info_Record;
+       Creation_Time : Glib.Date_Time.Gdate_Time);
+   --  Sets the G_FILE_ATTRIBUTE_TIME_CREATED and
+   --  G_FILE_ATTRIBUTE_TIME_CREATED_USEC attributes in the file info to the
+   --  given date/time value.
+   --  G_FILE_ATTRIBUTE_TIME_CREATED_NSEC will be cleared.
+   --  Since: gtk+ 2.70
+   --  @param Creation_Time a Glib.Date_Time.Gdate_Time.
+
+   function Get_Deletion_Date
+      (Self : not null access Gfile_Info_Record)
+       return Glib.Date_Time.Gdate_Time;
+   --  Returns the Glib.Date_Time.Gdate_Time representing the deletion date of
+   --  the file, as available in G_FILE_ATTRIBUTE_TRASH_DELETION_DATE. If the
+   --  G_FILE_ATTRIBUTE_TRASH_DELETION_DATE attribute is unset, null is
+   --  returned.
+   --  Since: gtk+ 2.36
+   --  @return a Glib.Date_Time.Gdate_Time, or null. Has
+   --  transfer-ownership='full'.
+
    function Get_Display_Name
       (Self : not null access Gfile_Info_Record) return UTF8_String;
    --  Gets a display name for a file. This is guaranteed to always be set.
@@ -442,6 +503,31 @@ package Glib.File_Info is
    --  Sets the "is_symlink" attribute in a Glib.File_Info.Gfile_Info
    --  according to Is_Symlink. See G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK.
    --  @param Is_Symlink a Boolean.
+
+   function Get_Modification_Date_Time
+      (Self : not null access Gfile_Info_Record)
+       return Glib.Date_Time.Gdate_Time;
+   --  Gets the modification time of the current Info and returns it as a
+   --  Glib.Date_Time.Gdate_Time.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_TIME_MODIFIED. If
+   --  G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC is provided, the resulting
+   --  Glib.Date_Time.Gdate_Time will additionally have microsecond precision.
+   --  If nanosecond precision is needed, G_FILE_ATTRIBUTE_TIME_MODIFIED_NSEC
+   --  must be queried separately using Glib.File_Info.Get_Attribute_Uint32.
+   --  Since: gtk+ 2.62
+   --  @return modification time, or null if unknown. Has
+   --  transfer-ownership='full'.
+
+   procedure Set_Modification_Date_Time
+      (Self  : not null access Gfile_Info_Record;
+       Mtime : Glib.Date_Time.Gdate_Time);
+   --  Sets the G_FILE_ATTRIBUTE_TIME_MODIFIED and
+   --  G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC attributes in the file info to the
+   --  given date/time value.
+   --  G_FILE_ATTRIBUTE_TIME_MODIFIED_NSEC will be cleared.
+   --  Since: gtk+ 2.62
+   --  @param Mtime a Glib.Date_Time.Gdate_Time.
 
    function Get_Name
       (Self : not null access Gfile_Info_Record) return UTF8_String;
