@@ -57,14 +57,15 @@
 --  <gtkada_demo>create_paths.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;          use Cairo;
-with Glib;           use Glib;
-with Graphene.Point; use Graphene.Point;
-with Graphene.Rect;  use Graphene.Rect;
-with Gsk.Path;       use Gsk.Path;
-with Gsk.Path_Point; use Gsk.Path_Point;
-with Interfaces.C;   use Interfaces.C;
-with Pango.Layout;   use Pango.Layout;
+with Cairo;            use Cairo;
+with Glib;             use Glib;
+with Graphene.Point;   use Graphene.Point;
+with Graphene.Rect;    use Graphene.Rect;
+with Gsk.Path;         use Gsk.Path;
+with Gsk.Path_Point;   use Gsk.Path_Point;
+with Gsk.Rounded_Rect; use Gsk.Rounded_Rect;
+with Interfaces.C;     use Interfaces.C;
+with Pango.Layout;     use Pango.Layout;
 
 package Gsk.Path_Builder is
 
@@ -137,6 +138,14 @@ package Gsk.Path_Builder is
    --  Appends all of Path to the builder, in reverse order.
    --  Since: gtk+ 4.14
    --  @param Path the path to append
+
+   procedure Add_Rounded_Rect
+      (Self : Gsk_Path_Builder;
+       Rect : Gsk.Rounded_Rect.Gsk_Rounded_Rect);
+   --  Adds a rounded rectangle as a new contour.
+   --  The path is going around the rectangle in clockwise direction.
+   --  Since: gtk+ 4.14
+   --  @param Rect the rounded rect
 
    procedure Add_Segment
       (Self    : Gsk_Path_Builder;

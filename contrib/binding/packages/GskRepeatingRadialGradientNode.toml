@@ -1,0 +1,153 @@
+# ============================================================
+#   GskRepeatingRadialGradientNode
+# ============================================================
+
+[[extra.with_spec]]
+pkg = "Graphene.Rect"
+
+[[extra.with_spec]]
+pkg = "Graphene.Point"
+
+[[extra.with_spec]]
+pkg = "Interfaces.C"
+
+[[method]]
+id = "gsk_repeating_radial_gradient_node_new"
+bind = false # manual binding
+
+[[extra.spec]]
+text = '''
+   procedure Gtk_New
+      (Self        : out Gsk_Repeating_Radial_Gradient_Node;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Hradius     : Interfaces.C.C_float;
+       Vradius     : Interfaces.C.C_float;
+       Start       : Interfaces.C.C_float;
+       The_End     : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array);
+   procedure Initialize
+      (Self        : not null access Gsk_Repeating_Radial_Gradient_Node_Record'Class;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Hradius     : Interfaces.C.C_float;
+       Vradius     : Interfaces.C.C_float;
+       Start       : Interfaces.C.C_float;
+       The_End     : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array);
+   --  Creates a `GskRenderNode` that draws a repeating radial gradient.
+   --  The radial gradient starts around Center. The size of the gradient is
+   --  dictated by Hradius in horizontal orientation and by Vradius in vertical
+   --  orientation.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
+   --  @param Bounds the bounds of the node
+   --  @param Center the center of the gradient
+   --  @param Hradius the horizontal radius
+   --  @param Vradius the vertical radius
+   --  @param Start a percentage >= 0 that defines the start of the gradient
+   --  around Center
+   --  @param The_End a percentage >= 0 that defines the end of the gradient
+   --  around Center
+   --  @param Color_Stops a pointer to an array of `GskColorStop` defining the
+   --  gradient. The offsets of all color stops must be increasing. The first
+   --  stop's offset must be >= 0 and the last stop's offset must be <= 1.
+
+   function Gsk_Repeating_Radial_Gradient_Node_New
+      (Bounds        : not null access Graphene.Rect.Graphene_Rect_T;
+       Center        : not null access Graphene.Point.Graphene_Point_T;
+       Hradius       : Interfaces.C.C_float;
+       Vradius       : Interfaces.C.C_float;
+       Start         : Interfaces.C.C_float;
+       The_End       : Interfaces.C.C_float;
+       Color_Stops   : Gsk.Render_Node.Gsk_Color_Stop_Array)
+       return Gsk_Repeating_Radial_Gradient_Node;
+   --  Creates a `GskRenderNode` that draws a repeating radial gradient.
+   --  The radial gradient starts around Center. The size of the gradient is
+   --  dictated by Hradius in horizontal orientation and by Vradius in vertical
+   --  orientation.
+   --  @param Bounds the bounds of the node
+   --  @param Center the center of the gradient
+   --  @param Hradius the horizontal radius
+   --  @param Vradius the vertical radius
+   --  @param Start a percentage >= 0 that defines the start of the gradient
+   --  around Center
+   --  @param The_End a percentage >= 0 that defines the end of the gradient
+   --  around Center
+   --  @param Color_Stops a pointer to an array of `GskColorStop` defining the
+   --  gradient. The offsets of all color stops must be increasing. The first
+   --  stop's offset must be >= 0 and the last stop's offset must be <= 1.
+'''
+
+[extra]
+body = '''
+   --------------------------------------------
+   -- Gsk_Repeating_Radial_Gradient_Node_New --
+   --------------------------------------------
+
+   function Gsk_Repeating_Radial_Gradient_Node_New
+      (Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Hradius     : Interfaces.C.C_float;
+       Vradius     : Interfaces.C.C_float;
+       Start       : Interfaces.C.C_float;
+       The_End     : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array)
+       return Gsk_Repeating_Radial_Gradient_Node
+   is
+      Self : constant Gsk_Repeating_Radial_Gradient_Node := new Gsk_Repeating_Radial_Gradient_Node_Record;
+   begin
+      Gsk.Repeating_Radial_Gradient_Node.Initialize (Self, Bounds, Center, Hradius, Vradius, Start, The_End, Color_Stops);
+      return Self;
+   end Gsk_Repeating_Radial_Gradient_Node_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Self        : out Gsk_Repeating_Radial_Gradient_Node;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Hradius     : Interfaces.C.C_float;
+       Vradius     : Interfaces.C.C_float;
+       Start       : Interfaces.C.C_float;
+       The_End     : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array) is
+   begin
+      Self := new Gsk_Repeating_Radial_Gradient_Node_Record;
+      Gsk.Repeating_Radial_Gradient_Node.Initialize (Self, Bounds, Center, Hradius, Vradius, Start, The_End, Color_Stops);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self        : not null access Gsk_Repeating_Radial_Gradient_Node_Record'Class;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Hradius     : Interfaces.C.C_float;
+       Vradius     : Interfaces.C.C_float;
+       Start       : Interfaces.C.C_float;
+       The_End     : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array)
+   is
+      function Internal
+         (Bounds        : access Graphene.Rect.Graphene_Rect_T;
+          Center        : access Graphene.Point.Graphene_Point_T;
+          Hradius       : Interfaces.C.C_float;
+          Vradius       : Interfaces.C.C_float;
+          Start         : Interfaces.C.C_float;
+          The_End       : Interfaces.C.C_float;
+          Color_Stops   : System.Address;
+          N_Color_Stops : Gsize) return System.Address;
+      pragma Import (C, Internal, "gsk_repeating_radial_gradient_node_new");
+   begin
+      if not Self.Is_Created then
+         Set_Object
+           (Self,
+            Internal (Bounds, Center, Hradius, Vradius, Start, The_End, Color_Stops'Address, Gsize (Color_Stops'Length)));
+      end if;
+   end Initialize;
+'''

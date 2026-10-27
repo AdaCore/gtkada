@@ -1,0 +1,17 @@
+# ============================================================
+#   GskBlurNode
+# ============================================================
+
+[[method]]
+id = "gsk_blur_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Blur_Node"
+
+[[method]]
+id = "gsk_blur_node_get_radius"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Blur_Node"

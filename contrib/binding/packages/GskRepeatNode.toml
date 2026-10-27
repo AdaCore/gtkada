@@ -1,0 +1,25 @@
+# ============================================================
+#   GskRepeatNode
+# ============================================================
+
+[[method]]
+id = "gsk_repeat_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Repeat_Node"
+
+[[method]]
+id = "gsk_repeat_node_get_child_bounds"
+body = '''
+      function Internal
+         (Self : System.Address)
+          return access constant Graphene.Rect.Graphene_Rect_T;
+      pragma Import (C, Internal, "gsk_repeat_node_get_child_bounds");
+   begin
+      return Internal (Get_Object (Self));
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Repeat_Node"

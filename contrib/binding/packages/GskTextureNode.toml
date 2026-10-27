@@ -1,0 +1,13 @@
+# ============================================================
+#   GskTextureNode
+# ============================================================
+
+[[method]]
+id = "gsk_texture_node_get_texture"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Texture_Node"
+
+[[extra.with_body]]
+pkg = "Glib.Object"

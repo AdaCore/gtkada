@@ -1,0 +1,24 @@
+# ============================================================
+#   GskFillNode
+# ============================================================
+
+[[method]]
+id = "gsk_fill_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Fill_Node"
+
+[[method]]
+id = "gsk_fill_node_get_fill_rule"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Fill_Node"
+
+[[method]]
+id = "gsk_fill_node_get_path"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Fill_Node"

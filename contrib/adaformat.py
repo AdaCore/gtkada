@@ -546,7 +546,7 @@ class RecordFieldCustomType(CType):
 
     def record_field_type(self, pkg=None) -> str:
         return self.fieldtype
-    
+
     def add_with(self, pkg: Package, specs: bool = False):
         pass
 
@@ -1204,7 +1204,6 @@ class AdaNaming(object):
         cname=None,
         pkg=None,
         isArray=False,
-        allow_access=True,
         allow_none=False,
         userecord=True,
         useclass=True,
@@ -1224,9 +1223,6 @@ class AdaNaming(object):
         :param use_record: is only used for GObject types.
         :param isArray: should be true for an array of the simple type
            'name'.
-        :param allow_access: should be True if the parameter can be
-           represented as 'access Type', rather than an explicit type, in
-           the case of GObject descendants.
         :param array_fixed_size: if specified, this is the size of the
            array. The binding is different in this case, since we can't use
            a fat pointer.
@@ -1258,6 +1254,9 @@ class AdaNaming(object):
             isArray = True
         elif name in ("array_of_gdouble",):
             t = AdaTypeArray("gdouble")
+            isArray = True
+        elif name in ("array_of_gfloat",):
+            t = AdaTypeArray("gfloat")
             isArray = True
         elif name in ("array_of_gchar",):
             t = AdaTypeArray("gchar")
@@ -2779,8 +2778,14 @@ class Package(object):
         # would only add noise. But explicit `[[extra.with_spec]] pkg =
         # "System"` from a TOML must be honoured — packages that expose
         # System.Address in their spec need it.
-        if pkg == "System" and do_use:
-            return
+        if type(pkg) == str:
+            if pkg == "System" and do_use:
+                return
+
+            if pkg.startswith("access constant "):
+                pkg = pkg.removeprefix("access constant ")
+            elif pkg.startswith("access "):
+                pkg = pkg.removeprefix("access ")
 
         if type(pkg) == str:
             pkg = [pkg]

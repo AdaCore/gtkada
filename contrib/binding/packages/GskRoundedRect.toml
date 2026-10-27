@@ -1,0 +1,85 @@
+# ============================================================
+#   GskRoundedRect
+# ============================================================
+
+[[record]]
+ctype = "GskRoundedRect"
+
+[[extra.with_body]]
+pkg = "Glib"
+
+[[method]]
+id = "gsk_rounded_rect_init"
+return = "access Gsk_Rounded_Rect"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gsk_rounded_rect_init_copy"
+return = "access Gsk_Rounded_Rect"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gsk_rounded_rect_init_from_rect"
+return = "access Gsk_Rounded_Rect"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gsk_rounded_rect_normalize"
+return = "access Gsk_Rounded_Rect"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gsk_rounded_rect_offset"
+return = "access Gsk_Rounded_Rect"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gsk_rounded_rect_shrink"
+return = "access Gsk_Rounded_Rect"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gsk_rounded_rect_contains_point"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gsk_rounded_rect_contains_rect"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gsk_rounded_rect_intersects_rect"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gsk_rounded_rect_is_rectilinear"
+
+[[method.parameter]]
+name = "self"
+direction = "access"

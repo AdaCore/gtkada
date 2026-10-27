@@ -132,6 +132,18 @@ package Gdk.Enums is
    --  report their location via the x/y members of events regardless. Whether
    --  X and Y are present as axes depends on the GDK backend.
 
+   type Gdk_Color_Channel is (
+      Gdk_Color_Channel_Red,
+      Gdk_Color_Channel_Green,
+      Gdk_Color_Channel_Blue,
+      Gdk_Color_Channel_Alpha);
+   pragma Convention (C, Gdk_Color_Channel);
+   --  Enumerates the color channels of RGBA values as used in `GdkColor` and
+   --  OpenGL/Vulkan shaders.
+   --
+   --  Note that this is not the order of pixel values in Cairo and
+   --  `GdkMemoryFormat` can have many different orders.
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -151,6 +163,10 @@ package Gdk.Enums is
    package Gdk_Axis_Use_Properties is
       new Generic_Internal_Discrete_Property (Gdk_Axis_Use);
    type Property_Gdk_Axis_Use is new Gdk_Axis_Use_Properties.Property;
+
+   package Gdk_Color_Channel_Properties is
+      new Generic_Internal_Discrete_Property (Gdk_Color_Channel);
+   type Property_Gdk_Color_Channel is new Gdk_Color_Channel_Properties.Property;
 
    ----------------------
    -- GtkAda additions --

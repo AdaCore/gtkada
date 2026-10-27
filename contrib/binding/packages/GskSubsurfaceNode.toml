@@ -1,0 +1,23 @@
+# ============================================================
+#   GskSubsurfaceNode
+# ============================================================
+
+[[method]]
+id = "gsk_subsurface_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Subsurface_Node"
+
+[[method]]
+id = "gsk_subsurface_node_get_subsurface"
+body = '''
+      function Internal (Node : System.Address) return System.Address;
+      pragma Import (C, Internal, "gsk_subsurface_node_get_subsurface");
+   begin
+      return Internal (Get_Object (Node));
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Subsurface_Node"

@@ -1,0 +1,20 @@
+# ============================================================
+#   GskTextureScaleNode
+# ============================================================
+
+[[extra.with_body]]
+pkg = "Glib.Object"
+
+[[method]]
+id = "gsk_texture_scale_node_get_filter"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Texture_Scale_Node"
+
+[[method]]
+id = "gsk_texture_scale_node_get_texture"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Texture_Scale_Node"

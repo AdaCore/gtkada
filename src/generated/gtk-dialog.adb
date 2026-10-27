@@ -492,6 +492,21 @@ package body Gtk.Dialog is
       return Internal (Get_Object (Self), State) /= 0;
    end Get_Platform_State;
 
+   ------------------
+   -- Get_Renderer --
+   ------------------
+
+   function Get_Renderer
+      (Self : not null access Gtk_Dialog_Record)
+       return Gsk.Renderer.Gsk_Renderer
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_native_get_renderer");
+      Stub_Gsk_Renderer : Gsk.Renderer.Gsk_Renderer_Record;
+   begin
+      return Gsk.Renderer.Gsk_Renderer (Get_User_Data (Internal (Get_Object (Self)), Stub_Gsk_Renderer));
+   end Get_Renderer;
+
    -----------------
    -- Get_Surface --
    -----------------

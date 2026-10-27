@@ -1,0 +1,194 @@
+# ============================================================
+#   GskLinearGradientNode
+# ============================================================
+
+[[extra.with_spec]]
+pkg = "Graphene.Rect"
+
+[[extra.with_body]]
+pkg = "Interfaces.C.Pointers"
+use = false
+
+[[method]]
+id = "gsk_linear_gradient_node_new"
+bind = false # manual binding
+
+[[method.parameter]]
+name = "color_stops"
+type = "Gsk_Color_Stop_Array"
+
+[[method]]
+id = "gsk_linear_gradient_node_get_color_stops"
+return = "Gsk.Render_Node.Gsk_Color_Stop_Array"
+body = '''
+      use Interfaces.C;
+      type Aliased_Array is array
+        (Positive range <>) of aliased Gsk.Render_Node.Gsk_Color_Stop
+        with Convention => C;
+      package P is new Interfaces.C.Pointers
+        (Positive, Gsk.Render_Node.Gsk_Color_Stop,
+         Aliased_Array, (0.0, (others => 0.0)));
+
+      function Internal
+         (Self    : System.Address;
+          N_Stops : access Gsize)
+          return P.Pointer;
+      pragma Import (C, Internal, "gsk_linear_gradient_node_get_color_stops");
+      Acc_N_Stops : aliased Gsize;
+      Tmp_Return  : P.Pointer;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_N_Stops'Access);
+      declare
+         Result : constant Gsk.Render_Node.Gsk_Color_Stop_Array :=
+           Gsk.Render_Node.Gsk_Color_Stop_Array
+             (P.Value (Tmp_Return, ptrdiff_t (Acc_N_Stops)));
+      begin
+         return Result;
+      end;
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Linear_Gradient_Node"
+
+[[method.parameter]]
+name = "n_stops"
+ada = ""
+
+[[method]]
+id = "gsk_linear_gradient_node_get_end"
+body = '''
+      function Internal
+         (Self : System.Address)
+          return access constant Graphene.Point.Graphene_Point_T;
+      pragma Import (C, Internal, "gsk_linear_gradient_node_get_end");
+   begin
+      return Internal (Get_Object (Self));
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Linear_Gradient_Node"
+
+[[method]]
+id = "gsk_linear_gradient_node_get_n_color_stops"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Linear_Gradient_Node"
+
+[[method]]
+id = "gsk_linear_gradient_node_get_start"
+body = '''
+      function Internal
+         (Self : System.Address)
+          return access constant Graphene.Point.Graphene_Point_T;
+      pragma Import (C, Internal, "gsk_linear_gradient_node_get_start");
+   begin
+      return Internal (Get_Object (Self));
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Linear_Gradient_Node"
+
+[[extra.spec]]
+text = '''
+   procedure Gtk_New
+      (Self        : out Gsk_Linear_Gradient_Node;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start       : not null access Graphene.Point.Graphene_Point_T;
+       The_End     : not null access Graphene.Point.Graphene_Point_T;
+       Color_Stops : Gsk_Color_Stop_Array);
+   procedure Initialize
+      (Self        : not null access Gsk_Linear_Gradient_Node_Record'Class;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start       : not null access Graphene.Point.Graphene_Point_T;
+       The_End     : not null access Graphene.Point.Graphene_Point_T;
+       Color_Stops : Gsk_Color_Stop_Array);
+   --  Creates a `GskRenderNode` that will create a linear gradient from the
+   --  given points and color stops, and render that into the area given by
+   --  Bounds.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
+   --  @param Bounds the rectangle to render the linear gradient into
+   --  @param Start the point at which the linear gradient will begin
+   --  @param The_End the point at which the linear gradient will finish
+   --  @param Color_Stops a pointer to an array of `GskColorStop` defining the
+   --  gradient. The offsets of all color stops must be increasing. The first
+   --  stop's offset must be >= 0 and the last stop's offset must be <= 1.
+
+   function Gsk_Linear_Gradient_Node_New
+      (Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start       : not null access Graphene.Point.Graphene_Point_T;
+       The_End     : not null access Graphene.Point.Graphene_Point_T;
+       Color_Stops : Gsk_Color_Stop_Array) return Gsk_Linear_Gradient_Node;
+   --  Creates a `GskRenderNode` that will create a linear gradient from the
+   --  given points and color stops, and render that into the area given by
+   --  Bounds.
+   --  @param Bounds the rectangle to render the linear gradient into
+   --  @param Start the point at which the linear gradient will begin
+   --  @param The_End the point at which the linear gradient will finish
+   --  @param Color_Stops a pointer to an array of `GskColorStop` defining the
+   --  gradient. The offsets of all color stops must be increasing. The first
+   --  stop's offset must be >= 0 and the last stop's offset must be <= 1.
+'''
+
+[extra]
+body = '''
+   ----------------------------------
+   -- Gsk_Linear_Gradient_Node_New --
+   ----------------------------------
+
+   function Gsk_Linear_Gradient_Node_New
+      (Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start       : not null access Graphene.Point.Graphene_Point_T;
+       The_End     : not null access Graphene.Point.Graphene_Point_T;
+       Color_Stops : Gsk_Color_Stop_Array) return Gsk_Linear_Gradient_Node
+   is
+      Self : constant Gsk_Linear_Gradient_Node := new Gsk_Linear_Gradient_Node_Record;
+   begin
+      Gsk.Linear_Gradient_Node.Initialize (Self, Bounds, Start, The_End, Color_Stops);
+      return Self;
+   end Gsk_Linear_Gradient_Node_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Self        : out Gsk_Linear_Gradient_Node;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start       : not null access Graphene.Point.Graphene_Point_T;
+       The_End     : not null access Graphene.Point.Graphene_Point_T;
+       Color_Stops : Gsk_Color_Stop_Array)
+   is
+   begin
+      Self := new Gsk_Linear_Gradient_Node_Record;
+      Gsk.Linear_Gradient_Node.Initialize (Self, Bounds, Start, The_End, Color_Stops);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self        : not null access Gsk_Linear_Gradient_Node_Record'Class;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start       : not null access Graphene.Point.Graphene_Point_T;
+       The_End     : not null access Graphene.Point.Graphene_Point_T;
+       Color_Stops : Gsk_Color_Stop_Array)
+   is
+      function Internal
+         (Bounds        : access Graphene.Rect.Graphene_Rect_T;
+          Start         : access Graphene.Point.Graphene_Point_T;
+          The_End       : access Graphene.Point.Graphene_Point_T;
+          Color_Stops   : System.Address;
+          N_Color_Stops : Gsize) return System.Address;
+      pragma Import (C, Internal, "gsk_linear_gradient_node_new");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Bounds, Start, The_End, Color_Stops'Address, Gsize (Color_Stops'Length)));
+      end if;
+   end Initialize;
+'''

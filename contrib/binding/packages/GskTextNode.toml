@@ -1,0 +1,103 @@
+# ============================================================
+#   GskTextNode
+# ============================================================
+
+[[extra.with_body]]
+pkg = "Glib.Object"
+
+[[extra.with_body]]
+pkg = "Interfaces.C.Pointers"
+use = false
+
+[[method]]
+id = "gsk_text_node_new"
+
+[[method.parameter]]
+name = "glyphs"
+direction = "not null access"
+
+[[method.parameter]]
+name = "color"
+direction = "not null access"
+
+[[method]]
+id = "gsk_text_node_get_color"
+return = "access constant Gdk.RGBA.Gdk_RGBA"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Text_Node"
+
+[[method]]
+id = "gsk_text_node_get_font"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Text_Node"
+
+[[method]]
+id = "gsk_text_node_get_num_glyphs"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Text_Node"
+
+[[method]]
+id = "gsk_text_node_get_offset"
+body = '''
+      function Internal
+         (Self : System.Address)
+          return access constant Graphene.Point.Graphene_Point_T;
+      pragma Import (C, Internal, "gsk_text_node_get_offset");
+   begin
+      return Internal (Get_Object (Self));
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Text_Node"
+
+[[method]]
+id = "gsk_text_node_has_color_glyphs"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Text_Node"
+
+[[method]]
+id = "gsk_text_node_get_glyphs"
+return = "Pango.Glyph_String.Pango_Glyph_Info_Array"
+body = '''
+      use Interfaces.C;
+      type Aliased_Array is array
+        (Positive range <>) of aliased Pango.Glyph_String.Pango_Glyph_Info
+        with Convention => C;
+      package P is new Interfaces.C.Pointers
+        (Positive, Pango.Glyph_String.Pango_Glyph_Info,
+         Aliased_Array, (0, (0,0,0), (Is_Cluster_Start => 0)));
+
+      function Internal
+         (Self     : System.Address;
+          N_Glyphs : access Guint)
+          return P.Pointer;
+      pragma Import (C, Internal, "gsk_text_node_get_glyphs");
+      Acc_N_Glyphs : aliased Guint;
+      Tmp_Return   : P.Pointer;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_N_Glyphs'Access);
+      declare
+         Result : constant Pango.Glyph_String.Pango_Glyph_Info_Array :=
+           Pango.Glyph_String.Pango_Glyph_Info_Array
+             (P.Value (Tmp_Return, ptrdiff_t (Acc_N_Glyphs)));
+      begin
+         return Result;
+      end;
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Text_Node"
+
+[[method.parameter]]
+name = "n_glyphs"
+ada = ""

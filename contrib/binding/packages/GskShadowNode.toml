@@ -1,0 +1,117 @@
+# ============================================================
+#   GskShadowNode
+# ============================================================
+
+[[record]]
+ctype = "GskShadow"
+
+[[extra.type]]
+ctype = "array_of_Gsk_Shadow"
+ada = "Gsk_Shadow_Array"
+text = '''
+
+         type Gsk_Shadow_Array is array (Natural range <>) of Gsk_Shadow
+         with Convention => C;
+'''
+
+[[method]]
+id = "gsk_shadow_node_new"
+bind = false # manual binding
+
+[[method]]
+id = "gsk_shadow_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Shadow_Node"
+
+[[method]]
+id = "gsk_shadow_node_get_n_shadows"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Shadow_Node"
+
+[[method]]
+id = "gsk_shadow_node_get_shadow"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Shadow_Node"
+
+[[extra.spec]]
+text = '''
+   procedure Gtk_New
+      (Self    : out Gsk_Shadow_Node;
+       Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Shadows : Gsk_Shadow_Array);
+   procedure Initialize
+      (Self    : not null access Gsk_Shadow_Node_Record'Class;
+       Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Shadows : Gsk_Shadow_Array);
+   --  Creates a `GskRenderNode` that will draw a Child with the given Shadows
+   --  below it.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
+   --  @param Child The node to draw
+   --  @param Shadows The shadows to apply
+
+   function Gsk_Shadow_Node_New
+      (Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Shadows : Gsk_Shadow_Array) return Gsk_Shadow_Node;
+   --  Creates a `GskRenderNode` that will draw a Child with the given Shadows
+   --  below it.
+   --  @param Child The node to draw
+   --  @param Shadows The shadows to apply
+'''
+
+[extra]
+body = '''
+   -------------------------
+   -- Gsk_Shadow_Node_New --
+   -------------------------
+
+   function Gsk_Shadow_Node_New
+      (Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Shadows : Gsk_Shadow_Array) return Gsk_Shadow_Node
+   is
+      Self : constant Gsk_Shadow_Node := new Gsk_Shadow_Node_Record;
+   begin
+      Gsk.Shadow_Node.Initialize (Self, Child, Shadows);
+      return Self;
+   end Gsk_Shadow_Node_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Self    : out Gsk_Shadow_Node;
+       Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Shadows : Gsk_Shadow_Array)
+   is
+   begin
+      Self := new Gsk_Shadow_Node_Record;
+      Gsk.Shadow_Node.Initialize (Self, Child, Shadows);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self    : not null access Gsk_Shadow_Node_Record'Class;
+       Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Shadows : Gsk_Shadow_Array)
+   is
+      function Internal
+         (Child     : System.Address;
+          Shadows   : System.Address;
+          N_Shadows : Gsize) return System.Address;
+      pragma Import (C, Internal, "gsk_shadow_node_new");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Get_Object (Child), Shadows'Address, Gsize (Shadows'Length)));
+      end if;
+   end Initialize;
+'''

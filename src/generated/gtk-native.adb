@@ -27,6 +27,20 @@ with Gdk.Surface;
 
 package body Gtk.Native is
 
+   ------------------
+   -- Get_Renderer --
+   ------------------
+
+   function Get_Renderer
+      (Self : Gtk_Native) return Gsk.Renderer.Gsk_Renderer
+   is
+      function Internal (Self : Gtk_Native) return System.Address;
+      pragma Import (C, Internal, "gtk_native_get_renderer");
+      Stub_Gsk_Renderer : Gsk.Renderer.Gsk_Renderer_Record;
+   begin
+      return Gsk.Renderer.Gsk_Renderer (Get_User_Data (Internal (Self), Stub_Gsk_Renderer));
+   end Get_Renderer;
+
    -----------------
    -- Get_Surface --
    -----------------

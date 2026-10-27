@@ -35,7 +35,7 @@ package body Gtk.Symbolic_Paintable is
       Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
       Width    : Gdouble;
       Height   : Gdouble;
-      Colors   : array_of_Gdk_RGBA)
+      Colors   : Gdk_RGBA_Array)
    is
       procedure Internal
         (Self     : Gtk_Symbolic_Paintable;
@@ -58,7 +58,7 @@ package body Gtk.Symbolic_Paintable is
       Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
       Width    : Gdouble;
       Height   : Gdouble;
-      Colors   : array_of_Gdk_RGBA;
+      Colors   : Gdk_RGBA_Array;
       Weight   : Gdouble)
    is
       procedure Internal

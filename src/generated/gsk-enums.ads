@@ -167,6 +167,48 @@ package Gsk.Enums is
    --  See <https://www.w3.org/TR/compositing-1/blending> for more information
    --  on blending and blend modes.
 
+   type Gsk_Render_Node_Type is (
+      Gsk_Not_A_Render_Node,
+      Gsk_Container_Node,
+      Gsk_Cairo_Node,
+      Gsk_Color_Node,
+      Gsk_Linear_Gradient_Node,
+      Gsk_Repeating_Linear_Gradient_Node,
+      Gsk_Radial_Gradient_Node,
+      Gsk_Repeating_Radial_Gradient_Node,
+      Gsk_Conic_Gradient_Node,
+      Gsk_Border_Node,
+      Gsk_Texture_Node,
+      Gsk_Inset_Shadow_Node,
+      Gsk_Outset_Shadow_Node,
+      Gsk_Transform_Node,
+      Gsk_Opacity_Node,
+      Gsk_Color_Matrix_Node,
+      Gsk_Repeat_Node,
+      Gsk_Clip_Node,
+      Gsk_Rounded_Clip_Node,
+      Gsk_Shadow_Node,
+      Gsk_Blend_Node,
+      Gsk_Cross_Fade_Node,
+      Gsk_Text_Node,
+      Gsk_Blur_Node,
+      Gsk_Debug_Node,
+      Gsk_Gl_Shader_Node,
+      Gsk_Texture_Scale_Node,
+      Gsk_Mask_Node,
+      Gsk_Fill_Node,
+      Gsk_Stroke_Node,
+      Gsk_Subsurface_Node,
+      Gsk_Component_Transfer_Node,
+      Gsk_Copy_Node,
+      Gsk_Paste_Node,
+      Gsk_Composite_Node,
+      Gsk_Isolation_Node,
+      Gsk_Displacement_Node,
+      Gsk_Arithmetic_Node);
+   pragma Convention (C, Gsk_Render_Node_Type);
+   --  The type of a node determines what the node is rendering.
+
    type Gsk_Mask_Mode is (
       Gsk_Mask_Mode_Alpha,
       Gsk_Mask_Mode_Inverted_Alpha,
@@ -211,6 +253,31 @@ package Gsk.Enums is
    Gsk_Isolation_Copy_Paste : constant Gsk_Isolation := 2;
    Gsk_Isolation_All : constant Gsk_Isolation := -1;
 
+   type Gsk_Scaling_Filter is (
+      Gsk_Scaling_Filter_Linear,
+      Gsk_Scaling_Filter_Nearest,
+      Gsk_Scaling_Filter_Trilinear);
+   pragma Convention (C, Gsk_Scaling_Filter);
+   --  The filters used when scaling texture data.
+   --
+   --  The actual implementation of each filter is deferred to the rendering
+   --  pipeline.
+
+   type Gsk_GLUniform_Type is (
+      Gsk_Gl_Uniform_Type_None,
+      Gsk_Gl_Uniform_Type_Float,
+      Gsk_Gl_Uniform_Type_Int,
+      Gsk_Gl_Uniform_Type_Uint,
+      Gsk_Gl_Uniform_Type_Bool,
+      Gsk_Gl_Uniform_Type_Vec2,
+      Gsk_Gl_Uniform_Type_Vec3,
+      Gsk_Gl_Uniform_Type_Vec4);
+   pragma Convention (C, Gsk_GLUniform_Type);
+   --  Defines the types of the uniforms that `GskGLShaders` declare.
+   --
+   --  It defines both what the type is called in the GLSL shader code, and
+   --  what the corresponding C type is on the Gtk side.
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -247,6 +314,10 @@ package Gsk.Enums is
       new Generic_Internal_Discrete_Property (Gsk_Blend_Mode);
    type Property_Gsk_Blend_Mode is new Gsk_Blend_Mode_Properties.Property;
 
+   package Gsk_Render_Node_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Render_Node_Type);
+   type Property_Gsk_Render_Node_Type is new Gsk_Render_Node_Type_Properties.Property;
+
    package Gsk_Mask_Mode_Properties is
       new Generic_Internal_Discrete_Property (Gsk_Mask_Mode);
    type Property_Gsk_Mask_Mode is new Gsk_Mask_Mode_Properties.Property;
@@ -258,5 +329,13 @@ package Gsk.Enums is
    package Gsk_Isolation_Properties is
       new Generic_Internal_Flags_Property (Gsk_Isolation);
    type Property_Gsk_Isolation is new Gsk_Isolation_Properties.Property;
+
+   package Gsk_Scaling_Filter_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Scaling_Filter);
+   type Property_Gsk_Scaling_Filter is new Gsk_Scaling_Filter_Properties.Property;
+
+   package Gsk_GLUniform_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_GLUniform_Type);
+   type Property_Gsk_GLUniform_Type is new Gsk_GLUniform_Type_Properties.Property;
 
 end Gsk.Enums;

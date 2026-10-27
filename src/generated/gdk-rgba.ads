@@ -56,6 +56,9 @@ package Gdk.RGBA is
    --  0.0) represents transparent black and (1.0, 1.0, 1.0, 1.0) is opaque
    --  white. Other values will be clamped to this range when drawing.
 
+   type Gdk_RGBA_Array is array (Natural range <>) of Gdk_RGBA;
+   pragma Convention (C, Gdk_RGBA_Array);
+
    ------------------
    -- Constructors --
    ------------------
@@ -138,8 +141,6 @@ package Gdk.RGBA is
    --  Return the underlying object and free the pointer.
    --  This is meant to be used internally by GtkAda,
    --  and should not in general be called by user code.
-
-   type array_of_Gdk_RGBA is array (Natural range <>) of Gdk_RGBA;
 
    Null_RGBA  : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
    Black_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);

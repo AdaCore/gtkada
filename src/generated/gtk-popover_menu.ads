@@ -136,6 +136,7 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Menu_Model;         use Glib.Menu_Model;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
+with Gsk.Renderer;            use Gsk.Renderer;
 with Gtk.Accessible;          use Gtk.Accessible;
 with Gtk.Atcontext;           use Gtk.Atcontext;
 with Gtk.Buildable;           use Gtk.Buildable;
@@ -364,6 +365,10 @@ package Gtk.Popover_Menu is
    procedure Update_Platform_State
       (Self  : not null access Gtk_Popover_Menu_Record;
        State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+
+   function Get_Renderer
+      (Self : not null access Gtk_Popover_Menu_Record)
+       return Gsk.Renderer.Gsk_Renderer;
 
    function Get_Surface
       (Self : not null access Gtk_Popover_Menu_Record)

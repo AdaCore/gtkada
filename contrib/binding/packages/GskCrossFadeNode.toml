@@ -1,0 +1,24 @@
+# ============================================================
+#   GskCrossFadeNode
+# ============================================================
+
+[[method]]
+id = "gsk_cross_fade_node_get_end_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Cross_Fade_Node"
+
+[[method]]
+id = "gsk_cross_fade_node_get_progress"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Cross_Fade_Node"
+
+[[method]]
+id = "gsk_cross_fade_node_get_start_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Cross_Fade_Node"

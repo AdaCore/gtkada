@@ -332,7 +332,7 @@ class GIR(object):
 
         return self.interfaces[self.resolve_interface_name(name, namespace_name)]
 
-    def resolve_class_name(self, name, namespace_name=None):
+    def resolve_class_name(self, name, namespace_name=None, raise_error=True):
         """Resolve ``name`` to the C type of a known class-like entity.
 
         ``name`` can be a C type, a qualified GIR name, or a simple GIR name
@@ -358,6 +358,9 @@ class GIR(object):
             if normalized in self.classes:
                 return normalized
 
+        if not raise_error:
+            return None
+
         if "." in name:
             raise KeyError(
                 "Unknown class '%s', check `binding` in `data.py`" % name
@@ -365,10 +368,13 @@ class GIR(object):
 
         raise KeyError("Unable to resolve class '%s' to a known type" % name)
 
-    def klass(self, name, namespace_name=None):
+    def klass(self, name, namespace_name=None, raise_error=True):
         """Return the class-like object matching ``name``."""
-
-        return self.classes[self.resolve_class_name(name, namespace_name)]
+        n = self.resolve_class_name(name, namespace_name, raise_error);
+        if n is None:
+            return None
+        else:
+            return self.classes[n]
 
     def show_unbound(self):
         """Display the list of entities known in the GIR files, but that have
@@ -495,7 +501,6 @@ def _get_clean_doc(node):
 
 def _get_type(
     nodeOrType,
-    allow_access=True,
     allow_none=False,
     transfer_ownership=False,
     userecord=True,
@@ -507,8 +512,6 @@ def _get_type(
        * an instance of CType, which is returned as is.
        * An XML node from which the information is gathered.
 
-    `allow_access' should be False if "access Type" parameters should
-    not be allowed, and an explicit type is needed instead.
     `allow_none': see doc for CType.
     `pkg' is used to add with statements, if specified
     """
@@ -521,7 +524,6 @@ def _get_type(
             cname=nodeOrType,
             userecord=userecord,
             transfer_ownership=transfer_ownership,
-            allow_access=allow_access,
             allow_none=allow_none,
             pkg=pkg,
         )
@@ -547,7 +549,6 @@ def _get_type(
                     transfer_ownership=transfer_ownership,
                     allow_none=allow_none,
                     userecord=userecord,
-                    allow_access=allow_access,
                 )
 
         t = nodeOrType.find(ntype)
@@ -566,7 +567,6 @@ def _get_type(
                 cname=ctype_name,
                 userecord=userecord,
                 transfer_ownership=transfer_ownership,
-                allow_access=allow_access,
                 allow_none=allow_none,
                 pkg=pkg,
                 const=const,
@@ -1219,7 +1219,6 @@ class SubprogramProfile(object):
                 "Invalid value for direction: '%s'" % direction
             )
 
-            allow_access = not default
             allow_none = gtkparam.allow_none(girnode=p) or default == "null"
             nodeOrType = gtkparam.get_type(pkg=pkg) or p
 
@@ -1227,7 +1226,6 @@ class SubprogramProfile(object):
                 nodeOrType=nodeOrType,
                 allow_none=allow_none,
                 userecord=default != "null",
-                allow_access=allow_access,
                 pkg=pkg,
             )
 
@@ -1352,7 +1350,6 @@ class SubprogramProfile(object):
         if returns is None:
             result = _get_type(
                 ret,
-                allow_access=False,
                 pkg=pkg,
                 transfer_ownership=ownership,
             )
@@ -1439,8 +1436,9 @@ class GIRClass(object):
         self.is_fundamental = False
         self.has_ref = False
         self.has_unref = False
-        # process only Gtk* fundamental classes only
-        if self.ctype is not None and self.ctype.startswith("Gtk"):
+        # process only Gtk* Gsk* fundamental classes only
+        if self.ctype is not None and (
+            self.ctype.startswith("Gtk") or self.ctype.startswith("Gsk")):
             self.is_parent_fundamental = self.node.get(glib_fundamental) == "1"
             if self.is_parent_fundamental:
                 if self.node.get("parent", None) is None:
@@ -3963,6 +3961,7 @@ end "+";"""
         if self._generated:
             return
 
+        extra_type_processed = []
         extra = self.gtkpkg.extra()
         if extra:
             self.node.extend(extra)
@@ -4075,6 +4074,18 @@ end "+";"""
         for ctype, enum, adaname, fields, unions, private in self.gtkpkg.records():
 
             self.record_binding(section, ctype, adaname, enum, fields, unions, private)
+            if extra:
+                for p in extra:
+                    if p.tag == "type":
+                        n = p.get("link", "")
+                        if n == ctype or n == adaname:
+                            naming.add_type_exception(
+                                cname=p.get("ctype"),
+                                type=Proxy(p.get("ada"), p.get("properties", None)),
+                                override=p.get("override", "false") == "true",
+                            )
+                            section.add(p.text)
+                            extra_type_processed.append(p.get("ctype"))
 
         for ada, ctype, single, sect_name in self.gtkpkg.lists():
             sect = self.pkg.section(sect_name)
@@ -4094,7 +4105,7 @@ end "+";"""
                         specs=False,
                         do_use=p.get("use", "true").lower() == "true",
                     )
-                elif p.tag == "type":
+                elif p.tag == "type" and p.get("ctype") not in extra_type_processed:
                     naming.add_type_exception(
                         cname=p.get("ctype"),
                         type=Proxy(p.get("ada"), p.get("properties", None)),
@@ -4575,9 +4586,16 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
 
         """
         name = None
-        while True:
-            c = self.gir.klass ("Gtk" + self.node.get("parent"))
-            if c.is_fundamental:
+        p = self.node.get("parent", None)
+        while p is not None:
+            c = self.gir.klass("Gtk" + p, raise_error=False)
+
+            if c is None:
+                c = self.gir.klass("Gsk" + p, raise_error=False)
+
+            if c is None:
+                break
+            elif c.is_fundamental:
                 name = c._subst["typename"]
                 break
         return name

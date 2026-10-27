@@ -39,32 +39,44 @@
 --  nodes if the child node is entirely contained within the clip rectangle.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;             use Cairo;
-with Gdk.Paintable;     use Gdk.Paintable;
-with Gdk.RGBA;          use Gdk.RGBA;
-with Gdk.Snapshot;      use Gdk.Snapshot;
-with Gdk.Texture;       use Gdk.Texture;
-with Glib;              use Glib;
-with Graphene.Matrix;   use Graphene.Matrix;
-with Graphene.Point;    use Graphene.Point;
-with Graphene.Point3d;  use Graphene.Point3d;
-with Graphene.Rect;     use Graphene.Rect;
-with Graphene.Size;     use Graphene.Size;
-with Graphene.Vec3;     use Graphene.Vec3;
-with Graphene.Vec4;     use Graphene.Vec4;
-with Gsk.Enums;         use Gsk.Enums;
-with Gsk.Path;          use Gsk.Path;
-with Gsk.Stroke;        use Gsk.Stroke;
-with Gsk.Transform;     use Gsk.Transform;
-with Gtk.Style_Context; use Gtk.Style_Context;
-with Interfaces.C;      use Interfaces.C;
-with Pango.Enums;       use Pango.Enums;
-with Pango.Layout;      use Pango.Layout;
+with Cairo;                  use Cairo;
+with Gdk.Paintable;          use Gdk.Paintable;
+with Gdk.RGBA;               use Gdk.RGBA;
+with Gdk.Snapshot;           use Gdk.Snapshot;
+with Gdk.Texture;            use Gdk.Texture;
+with Glib;                   use Glib;
+with Glib.Bytes;             use Glib.Bytes;
+with Graphene.Matrix;        use Graphene.Matrix;
+with Graphene.Point;         use Graphene.Point;
+with Graphene.Point3d;       use Graphene.Point3d;
+with Graphene.Rect;          use Graphene.Rect;
+with Graphene.Size;          use Graphene.Size;
+with Graphene.Vec3;          use Graphene.Vec3;
+with Graphene.Vec4;          use Graphene.Vec4;
+with Gsk.Component_Transfer; use Gsk.Component_Transfer;
+with Gsk.Enums;              use Gsk.Enums;
+with Gsk.Glshader;           use Gsk.Glshader;
+with Gsk.Path;               use Gsk.Path;
+with Gsk.Render_Node;        use Gsk.Render_Node;
+with Gsk.Rounded_Rect;       use Gsk.Rounded_Rect;
+with Gsk.Shadow_Node;        use Gsk.Shadow_Node;
+with Gsk.Stroke;             use Gsk.Stroke;
+with Gsk.Transform;          use Gsk.Transform;
+with Gtk.Style_Context;      use Gtk.Style_Context;
+with Interfaces.C;           use Interfaces.C;
+with Pango.Enums;            use Pango.Enums;
+with Pango.Layout;           use Pango.Layout;
 
 package Gtk.Snapshot is
 
    type Gtk_Snapshot_Record is new Gdk_Snapshot_Record with null record;
    type Gtk_Snapshot is access all Gtk_Snapshot_Record'Class;
+
+   type Gfloat_Array4 is array (1 .. 4) of Gfloat;
+   pragma Convention (C, Gfloat_Array4);
+
+   type Gdk_Rgba_Array4 is array (1 .. 4) of Gdk.RGBA.Gdk_RGBA;
+   pragma Convention (C, Gdk_Rgba_Array4);
 
    ------------------
    -- Constructors --
@@ -86,6 +98,19 @@ package Gtk.Snapshot is
    -- Methods --
    -------------
 
+   procedure Append_Border
+      (Self         : not null access Gtk_Snapshot_Record;
+       Outline      : Gsk.Rounded_Rect.Gsk_Rounded_Rect;
+       Border_Width : Gfloat_Array4;
+       Border_Color : Gdk_Rgba_Array4);
+   --  Appends a stroked border rectangle inside the given Outline.
+   --  The four sides of the border can have different widths and colors.
+   --  @param Outline the outline of the border
+   --  @param Border_Width the stroke width of the border on the top, right,
+   --  bottom and left side respectively.
+   --  @param Border_Color the color used on the top, right, bottom and left
+   --  side.
+
    function Append_Cairo
       (Self   : not null access Gtk_Snapshot_Record;
        Bounds : not null access Graphene.Rect.Graphene_Rect_T)
@@ -106,6 +131,19 @@ package Gtk.Snapshot is
    --  @param Color the color to draw
    --  @param Bounds the bounds for the new node
 
+   procedure Append_Conic_Gradient
+      (Self     : not null access Gtk_Snapshot_Record;
+       Bounds   : not null access Graphene.Rect.Graphene_Rect_T;
+       Center   : not null access Graphene.Point.Graphene_Point_T;
+       Rotation : Interfaces.C.C_float;
+       Stops    : Gsk.Render_Node.Gsk_Color_Stop_Array);
+   --  Appends a conic gradient node with the given stops to Snapshot.
+   --  @param Bounds the rectangle to render the gradient into
+   --  @param Center the center point of the conic gradient
+   --  @param Rotation the clockwise rotation in degrees of the starting
+   --  angle. 0 means the starting angle is the top.
+   --  @param Stops the color stops defining the gradient
+
    procedure Append_Fill
       (Self      : not null access Gtk_Snapshot_Record;
        Path      : Gsk.Path.Gsk_Path;
@@ -118,6 +156,22 @@ package Gtk.Snapshot is
    --  @param Path The path describing the area to fill
    --  @param Fill_Rule The fill rule to use
    --  @param Color the color to fill the path with
+
+   procedure Append_Inset_Shadow
+      (Self        : not null access Gtk_Snapshot_Record;
+       Outline     : Gsk.Rounded_Rect.Gsk_Rounded_Rect;
+       Color       : Gdk.RGBA.Gdk_RGBA;
+       Dx          : Interfaces.C.C_float;
+       Dy          : Interfaces.C.C_float;
+       Spread      : Interfaces.C.C_float;
+       Blur_Radius : Interfaces.C.C_float);
+   --  Appends an inset shadow into the box given by Outline.
+   --  @param Outline outline of the region surrounded by shadow
+   --  @param Color color of the shadow
+   --  @param Dx horizontal offset of shadow
+   --  @param Dy vertical offset of shadow
+   --  @param Spread how far the shadow spreads towards the inside
+   --  @param Blur_Radius how much blur to apply to the shadow
 
    procedure Append_Layout
       (Self   : not null access Gtk_Snapshot_Record;
@@ -132,6 +186,43 @@ package Gtk.Snapshot is
    --  @param Layout the `PangoLayout` to render
    --  @param Color the foreground color to render the layout in
 
+   procedure Append_Linear_Gradient
+      (Self        : not null access Gtk_Snapshot_Record;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start_Point : not null access Graphene.Point.Graphene_Point_T;
+       End_Point   : not null access Graphene.Point.Graphene_Point_T;
+       Stops       : Gsk.Render_Node.Gsk_Color_Stop_Array);
+   --  Appends a linear gradient node with the given stops to Snapshot.
+   --  @param Bounds the rectangle to render the linear gradient into
+   --  @param Start_Point the point at which the linear gradient will begin
+   --  @param End_Point the point at which the linear gradient will finish
+   --  @param Stops the color stops defining the gradient
+
+   procedure Append_Node
+      (Self : not null access Gtk_Snapshot_Record;
+       Node : Gsk.Render_Node.Gsk_Render_Node);
+   --  Appends Node to the current render node of Snapshot, without changing
+   --  the current node.
+   --  If Snapshot does not have a current node yet, Node will become the
+   --  initial node.
+   --  @param Node a `GskRenderNode`
+
+   procedure Append_Outset_Shadow
+      (Self        : not null access Gtk_Snapshot_Record;
+       Outline     : Gsk.Rounded_Rect.Gsk_Rounded_Rect;
+       Color       : Gdk.RGBA.Gdk_RGBA;
+       Dx          : Interfaces.C.C_float;
+       Dy          : Interfaces.C.C_float;
+       Spread      : Interfaces.C.C_float;
+       Blur_Radius : Interfaces.C.C_float);
+   --  Appends an outset shadow node around the box given by Outline.
+   --  @param Outline outline of the region surrounded by shadow
+   --  @param Color color of the shadow
+   --  @param Dx horizontal offset of shadow
+   --  @param Dy vertical offset of shadow
+   --  @param Spread how far the shadow spreads towards the outside
+   --  @param Blur_Radius how much blur to apply to the shadow
+
    procedure Append_Paste
       (Self   : not null access Gtk_Snapshot_Record;
        Bounds : not null access Graphene.Rect.Graphene_Rect_T;
@@ -142,6 +233,56 @@ package Gtk.Snapshot is
    --  @param Bounds the bounds for the new node
    --  @param Nth the index of the copy, with 0 being the latest copy, 1 being
    --  the copy before that, and so on.
+
+   procedure Append_Radial_Gradient
+      (Self    : not null access Gtk_Snapshot_Record;
+       Bounds  : not null access Graphene.Rect.Graphene_Rect_T;
+       Center  : not null access Graphene.Point.Graphene_Point_T;
+       Hradius : Interfaces.C.C_float;
+       Vradius : Interfaces.C.C_float;
+       Start   : Interfaces.C.C_float;
+       The_End : Interfaces.C.C_float;
+       Stops   : Gsk.Render_Node.Gsk_Color_Stop_Array);
+   --  Appends a radial gradient node with the given stops to Snapshot.
+   --  @param Bounds the rectangle to render the readial gradient into
+   --  @param Center the center point for the radial gradient
+   --  @param Hradius the horizontal radius
+   --  @param Vradius the vertical radius
+   --  @param Start the start position (on the horizontal axis)
+   --  @param The_End the end position (on the horizontal axis)
+   --  @param Stops the color stops defining the gradient
+
+   procedure Append_Repeating_Linear_Gradient
+      (Self        : not null access Gtk_Snapshot_Record;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start_Point : not null access Graphene.Point.Graphene_Point_T;
+       End_Point   : not null access Graphene.Point.Graphene_Point_T;
+       Stops       : Gsk.Render_Node.Gsk_Color_Stop_Array);
+   --  Appends a repeating linear gradient node with the given stops to
+   --  Snapshot.
+   --  @param Bounds the rectangle to render the linear gradient into
+   --  @param Start_Point the point at which the linear gradient will begin
+   --  @param End_Point the point at which the linear gradient will finish
+   --  @param Stops the color stops defining the gradient
+
+   procedure Append_Repeating_Radial_Gradient
+      (Self    : not null access Gtk_Snapshot_Record;
+       Bounds  : not null access Graphene.Rect.Graphene_Rect_T;
+       Center  : not null access Graphene.Point.Graphene_Point_T;
+       Hradius : Interfaces.C.C_float;
+       Vradius : Interfaces.C.C_float;
+       Start   : Interfaces.C.C_float;
+       The_End : Interfaces.C.C_float;
+       Stops   : Gsk.Render_Node.Gsk_Color_Stop_Array);
+   --  Appends a repeating radial gradient node with the given stops to
+   --  Snapshot.
+   --  @param Bounds the rectangle to render the readial gradient into
+   --  @param Center the center point for the radial gradient
+   --  @param Hradius the horizontal radius
+   --  @param Vradius the vertical radius
+   --  @param Start the start position (on the horizontal axis)
+   --  @param The_End the end position (on the horizontal axis)
+   --  @param Stops the color stops defining the gradient
 
    procedure Append_Stroke
       (Self   : not null access Gtk_Snapshot_Record;
@@ -228,6 +369,22 @@ package Gtk.Snapshot is
    --  @param Color_Matrix the color matrix to use
    --  @param Color_Offset the color offset to use
 
+   procedure Push_Component_Transfer
+      (Self  : not null access Gtk_Snapshot_Record;
+       Red   : Gsk.Component_Transfer.Gsk_Component_Transfer;
+       Green : Gsk.Component_Transfer.Gsk_Component_Transfer;
+       Blue  : Gsk.Component_Transfer.Gsk_Component_Transfer;
+       Alpha : Gsk.Component_Transfer.Gsk_Component_Transfer);
+   --  Modifies the colors of an image by applying a transfer function for
+   --  each component.
+   --  The transfer functions operate on unpremultiplied colors.
+   --  The image is recorded until the next call to [methodGtk.Snapshot.pop].
+   --  Since: gtk+ 4.20
+   --  @param Red the transfer for the red component
+   --  @param Green the transfer for the green component
+   --  @param Blue the transfer for the blue component
+   --  @param Alpha the transfer for the alpha component
+
    procedure Push_Composite
       (Self : not null access Gtk_Snapshot_Record;
        Op   : Gsk.Enums.Gsk_Porter_Duff);
@@ -272,6 +429,45 @@ package Gtk.Snapshot is
    --  @param Path The path describing the area to fill
    --  @param Fill_Rule The fill rule to use
 
+   procedure Push_Gl_Shader
+      (Self      : not null access Gtk_Snapshot_Record;
+       Shader    : not null access Gsk.Glshader.Gsk_Glshader_Record'Class;
+       Bounds    : not null access Graphene.Rect.Graphene_Rect_T;
+       Take_Args : Glib.Bytes.Gbytes);
+   pragma Obsolescent (Push_Gl_Shader);
+   --  Push a [classGsk.GLShaderNode].
+   --  The node uses the given [classGsk.GLShader] and uniform values
+   --  Additionally this takes a list of N_Children other nodes which will be
+   --  passed to the [classGsk.GLShaderNode].
+   --  The Take_Args argument is a block of data to use for uniform arguments,
+   --  as per types and offsets defined by the Shader. Normally this is
+   --  generated by [methodGsk.GLShader.format_args] or
+   --  [structGsk.ShaderArgsBuilder].
+   --  The snapshotter takes ownership of Take_Args, so the caller should not
+   --  free it after this.
+   --  If the renderer doesn't support GL shaders, or if there is any problem
+   --  when compiling the shader, then the node will draw pink. You should use
+   --  [methodGsk.GLShader.compile] to ensure the Shader will work for the
+   --  renderer before using it.
+   --  If the shader requires textures (see
+   --  [methodGsk.GLShader.get_n_textures]), then it is expected that you call
+   --  [methodGtk.Snapshot.gl_shader_pop_texture] the number of times that are
+   --  required. Each of these calls will generate a node that is added as a
+   --  child to the `GskGLShaderNode`, which in turn will render these
+   --  offscreen and pass as a texture to the shader.
+   --  Once all textures (if any) are pop:ed, you must call the regular
+   --  [methodGtk.Snapshot.pop].
+   --  If you want to use pre-existing textures as input to the shader rather
+   --  than rendering new ones, use [methodGtk.Snapshot.append_texture] to push
+   --  a texture node. These will be used directly rather than being
+   --  re-rendered.
+   --  For details on how to write shaders, see [classGsk.GLShader].
+   --  Deprecated since 4.16, 1
+   --  @param Shader The code to run
+   --  @param Bounds the rectangle to render into
+   --  @param Take_Args Data block with arguments for the shader. Has
+   --  transfer-ownership='full'.
+
    procedure Push_Isolation
       (Self     : not null access Gtk_Snapshot_Record;
        Features : Gsk.Enums.Gsk_Isolation);
@@ -312,6 +508,20 @@ package Gtk.Snapshot is
    --  @param Bounds the bounds within which to repeat
    --  @param Child_Bounds the bounds of the child or null to use the full
    --  size of the collected child node
+
+   procedure Push_Rounded_Clip
+      (Self   : not null access Gtk_Snapshot_Record;
+       Bounds : Gsk.Rounded_Rect.Gsk_Rounded_Rect);
+   --  Clips an image to a rounded rectangle.
+   --  The image is recorded until the next call to [methodGtk.Snapshot.pop].
+   --  @param Bounds the rounded rectangle to clip to
+
+   procedure Push_Shadow
+      (Self   : not null access Gtk_Snapshot_Record;
+       Shadow : Gsk.Shadow_Node.Gsk_Shadow_Array);
+   --  Applies a shadow to an image.
+   --  The image is recorded until the next call to [methodGtk.Snapshot.pop].
+   --  @param Shadow the first shadow specification
 
    procedure Push_Stroke
       (Self   : not null access Gtk_Snapshot_Record;
@@ -472,6 +682,18 @@ package Gtk.Snapshot is
    --  @param Factor_X scaling factor on the X axis
    --  @param Factor_Y scaling factor on the Y axis
    --  @param Factor_Z scaling factor on the Z axis
+
+   function To_Node
+      (Self : not null access Gtk_Snapshot_Record)
+       return Gsk.Render_Node.Gsk_Render_Node;
+   --  Returns the render node that was constructed by Snapshot.
+   --  Note that this function may return null if nothing has been added to
+   --  the snapshot or if its content does not produce pixels to be rendered.
+   --  After calling this function, it is no longer possible to add more nodes
+   --  to Snapshot. The only function that should be called after this is
+   --  [methodGobject.Object.unref].
+   --  @return the constructed `GskRenderNode` or null if there are no nodes
+   --  to render. Has transfer-ownership='full'.
 
    function To_Paintable
       (Self : not null access Gtk_Snapshot_Record;

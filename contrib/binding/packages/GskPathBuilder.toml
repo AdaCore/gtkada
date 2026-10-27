@@ -6,10 +6,6 @@
 gtkada_demo = "create_paths.adb"
 
 [[method]]
-id = "gsk_path_builder_add_rounded_rect"
-bind = false # Gsk.RoundedRect is a separate area
-
-[[method]]
 id = "gsk_path_builder_free_to_path"
 bind = false # consuming entry point; use To_Path followed by Unref
 
@@ -18,10 +14,11 @@ pkg = "Glib.Object"
 
 [[method]]
 id = "gsk_path_builder_add_cairo_path"
-bind = false
+bind = false # manual binding
+
 [[method]]
 id = "gsk_path_builder_get_current_point"
-bind = false
+bind = false # manual binding
 
 [[extra.with_spec]]
 pkg = "Cairo"

@@ -156,6 +156,22 @@ package body Gsk.Path_Builder is
       Internal (Get_Object (Self), Get_Object (Path));
    end Add_Reverse_Path;
 
+   ----------------------
+   -- Add_Rounded_Rect --
+   ----------------------
+
+   procedure Add_Rounded_Rect
+      (Self : Gsk_Path_Builder;
+       Rect : Gsk.Rounded_Rect.Gsk_Rounded_Rect)
+   is
+      procedure Internal
+         (Self : System.Address;
+          Rect : Gsk.Rounded_Rect.Gsk_Rounded_Rect);
+      pragma Import (C, Internal, "gsk_path_builder_add_rounded_rect");
+   begin
+      Internal (Get_Object (Self), Rect);
+   end Add_Rounded_Rect;
+
    -----------------
    -- Add_Segment --
    -----------------

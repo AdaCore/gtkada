@@ -4,6 +4,15 @@
 
 ada = "Graphene.Size"
 
+[[extra.type]]
+ctype = "array_of_graphene_size_t"
+ada = "Graphene_Size_T_Array"
+text = '''
+
+         type Graphene_Size_T_Array is array (Natural range <>) of Graphene_Size_T;
+         pragma Convention (C, Graphene_Size_T_Array);
+'''
+
 [[method]]
 id = "graphene_size_alloc"
 bind = false

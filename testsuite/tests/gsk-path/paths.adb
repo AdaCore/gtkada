@@ -170,28 +170,24 @@ procedure Paths is
 
    Operation_Count : Natural := 0;
    function Visit
-     (Op       : Gsk_Path_Operation;
-      Points   : access constant Graphene_Point_T;
-      N_Points : Gsize; Weight : C_float; Data : System.Address)
-      return Gboolean with
-     Convention => C;
+     (Op     : Gsk_Path_Operation;
+      Points : Graphene_Point_Array;
+      Weight : C_float)
+      return Boolean;
    function Visit
-     (Op       : Gsk_Path_Operation;
-      Points   : access constant Graphene_Point_T;
-      N_Points : Gsize; Weight : C_float; Data : System.Address)
-      return Gboolean
+     (Op     : Gsk_Path_Operation;
+      Points : Graphene_Point_Array;
+      Weight : C_float)
+      return Boolean
    is
-      pragma Unreferenced (Weight, Data);
-      type Point_Buffer is array (0 .. 3) of Graphene_Point_T;
-      Buffer : Point_Buffer with
-        Import, Address => Points.all'Address;
+      pragma Unreferenced (Weight);
    begin
       Operation_Count := Operation_Count + 1;
       if Op = Gsk_Path_Cubic then
-         Assert_True (N_Points = 4);
-         Near (Buffer (3).X, 100.0);
+         Assert_True (Points'Length = 4);
+         Near (Points (Points'Last).X, 100.0);
       end if;
-      return 1;
+      return True;
    end Visit;
 
    procedure Test_Build_Render with

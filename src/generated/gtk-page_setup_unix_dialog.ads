@@ -43,6 +43,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk;                   use Gdk;
 with Glib;                  use Glib;
 with Glib.Types;            use Glib.Types;
+with Gsk.Renderer;          use Gsk.Renderer;
 with Gtk.Accessible;        use Gtk.Accessible;
 with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Buildable;         use Gtk.Buildable;
@@ -191,6 +192,10 @@ package Gtk.Page_Setup_Unix_Dialog is
    procedure Update_Platform_State
       (Self  : not null access Gtk_Page_Setup_Unix_Dialog_Record;
        State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+
+   function Get_Renderer
+      (Self : not null access Gtk_Page_Setup_Unix_Dialog_Record)
+       return Gsk.Renderer.Gsk_Renderer;
 
    function Get_Surface
       (Self : not null access Gtk_Page_Setup_Unix_Dialog_Record)

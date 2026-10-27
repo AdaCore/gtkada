@@ -1,0 +1,199 @@
+# ============================================================
+#   GskConicGradientNode
+# ============================================================
+
+[[extra.with_spec]]
+pkg = "Graphene.Rect"
+
+[[extra.with_spec]]
+pkg = "Graphene.Point"
+
+[[extra.with_spec]]
+pkg = "Gsk.Render_Node"
+
+[[extra.with_body]]
+pkg = "Interfaces.C.Pointers"
+use = false
+
+[[method]]
+id = "gsk_conic_gradient_node_get_angle"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Conic_Gradient_Node"
+
+[[method]]
+id = "gsk_conic_gradient_node_get_center"
+body = '''
+      function Internal
+         (Self : System.Address)
+          return access constant Graphene.Point.Graphene_Point_T;
+      pragma Import (C, Internal, "gsk_conic_gradient_node_get_center");
+   begin
+      return Internal (Get_Object (Self));
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Conic_Gradient_Node"
+
+[[method]]
+id = "gsk_conic_gradient_node_get_color_stops"
+return = "Gsk.Render_Node.Gsk_Color_Stop_Array"
+body = '''
+      use Interfaces.C;
+      type Aliased_Array is array
+        (Positive range <>) of aliased Gsk.Render_Node.Gsk_Color_Stop
+        with Convention => C;
+      package P is new Interfaces.C.Pointers
+        (Positive, Gsk.Render_Node.Gsk_Color_Stop,
+         Aliased_Array, (0.0, (others => 0.0)));
+
+      function Internal
+         (Self    : System.Address;
+          N_Stops : access Gsize)
+          return P.Pointer;
+      pragma Import (C, Internal, "gsk_conic_gradient_node_get_color_stops");
+      Acc_N_Stops : aliased Gsize;
+      Tmp_Return  : P.Pointer;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_N_Stops'Access);
+      declare
+         Result : constant Gsk.Render_Node.Gsk_Color_Stop_Array :=
+           Gsk.Render_Node.Gsk_Color_Stop_Array
+             (P.Value (Tmp_Return, ptrdiff_t (Acc_N_Stops)));
+      begin
+         return Result;
+      end;
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Conic_Gradient_Node"
+
+[[method.parameter]]
+name = "n_stops"
+ada = ""
+
+[[method]]
+id = "gsk_conic_gradient_node_get_n_color_stops"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Conic_Gradient_Node"
+
+[[method]]
+id = "gsk_conic_gradient_node_get_rotation"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Conic_Gradient_Node"
+
+[[method]]
+id = "gsk_conic_gradient_node_new"
+bind = false # manual binding
+
+[[extra.spec]]
+text = '''
+   procedure Gtk_New
+      (Self        : out Gsk_Conic_Gradient_Node;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Rotation    : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array);
+   procedure Initialize
+      (Self        : not null access Gsk_Conic_Gradient_Node_Record'Class;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Rotation    : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array);
+   --  Creates a `GskRenderNode` that draws a conic gradient.
+   --  The conic gradient starts around Center in the direction of Rotation. A
+   --  rotation of 0 means that the gradient points up. Color stops are then
+   --  added clockwise.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
+   --  @param Bounds the bounds of the node
+   --  @param Center the center of the gradient
+   --  @param Rotation the rotation of the gradient in degrees
+   --  @param Color_Stops a pointer to an array of `GskColorStop` defining the
+   --  gradient. The offsets of all color stops must be increasing. The first
+   --  stop's offset must be >= 0 and the last stop's offset must be <= 1.
+
+   function Gsk_Conic_Gradient_Node_New
+      (Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Rotation    : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array)
+       return Gsk_Conic_Gradient_Node;
+   --  Creates a `GskRenderNode` that draws a conic gradient.
+   --  The conic gradient starts around Center in the direction of Rotation. A
+   --  rotation of 0 means that the gradient points up. Color stops are then
+   --  added clockwise.
+   --  @param Bounds the bounds of the node
+   --  @param Center the center of the gradient
+   --  @param Rotation the rotation of the gradient in degrees
+   --  @param Color_Stops a pointer to an array of `GskColorStop` defining the
+   --  gradient. The offsets of all color stops must be increasing. The first
+   --  stop's offset must be >= 0 and the last stop's offset must be <= 1.
+'''
+
+[extra]
+body = '''
+   ---------------------------------
+   -- Gsk_Conic_Gradient_Node_New --
+   ---------------------------------
+
+   function Gsk_Conic_Gradient_Node_New
+      (Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Rotation    : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array)
+       return Gsk_Conic_Gradient_Node
+   is
+      Self : constant Gsk_Conic_Gradient_Node := new Gsk_Conic_Gradient_Node_Record;
+   begin
+      Gsk.Conic_Gradient_Node.Initialize (Self, Bounds, Center, Rotation, Color_Stops);
+      return Self;
+   end Gsk_Conic_Gradient_Node_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Self        : out Gsk_Conic_Gradient_Node;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Rotation    : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array)
+   is
+   begin
+      Self := new Gsk_Conic_Gradient_Node_Record;
+      Gsk.Conic_Gradient_Node.Initialize (Self, Bounds, Center, Rotation, Color_Stops);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self        : not null access Gsk_Conic_Gradient_Node_Record'Class;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Center      : not null access Graphene.Point.Graphene_Point_T;
+       Rotation    : Interfaces.C.C_float;
+       Color_Stops : Gsk.Render_Node.Gsk_Color_Stop_Array)
+   is
+      function Internal
+         (Bounds        : access Graphene.Rect.Graphene_Rect_T;
+          Center        : access Graphene.Point.Graphene_Point_T;
+          Rotation      : Interfaces.C.C_float;
+          Color_Stops   : System.Address;
+          N_Color_Stops : Gsize) return System.Address;
+      pragma Import (C, Internal, "gsk_conic_gradient_node_new");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Bounds, Center, Rotation, Color_Stops'Address, Gsize (Color_Stops'Length)));
+      end if;
+   end Initialize;
+'''

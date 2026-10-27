@@ -1,0 +1,7 @@
+# ============================================================
+#   GskGLShader
+# ============================================================
+
+[[method]]
+id = "gsk_gl_shader_format_args_va"
+bind = false # Obsolescent and needs va_list

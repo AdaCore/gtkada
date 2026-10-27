@@ -1,0 +1,24 @@
+# ============================================================
+#   GskStrokeNode
+# ============================================================
+
+[[method]]
+id = "gsk_stroke_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Stroke_Node"
+
+[[method]]
+id = "gsk_stroke_node_get_path"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Stroke_Node"
+
+[[method]]
+id = "gsk_stroke_node_get_stroke"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Stroke_Node"

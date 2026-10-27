@@ -244,18 +244,37 @@ package Gsk.Path is
    ----------------------
 
    type Gsk_Path_Foreach_Func is access function
-     (Op : Gsk.Enums.Gsk_Path_Operation;
-      Points : access constant Graphene.Point.Graphene_Point_T;
-      N_Points : Gsize; Weight : Interfaces.C.C_float;
-      User_Data : System.Address) return Gboolean;
-   pragma Convention (C, Gsk_Path_Foreach_Func);
+     (Op     : Gsk.Enums.Gsk_Path_Operation;
+      Points : Graphene.Point.Graphene_Point_Array;
+      Weight : Interfaces.C.C_float) return Boolean;
    --  Points is a borrowed C array with N_Points elements, valid during
    --  the callback only. Return False (0) to stop iteration.
 
    function Foreach
-     (Self : Gsk_Path; Flags : Gsk.Enums.Gsk_Path_Foreach_Flags;
-      Func : Gsk_Path_Foreach_Func;
-      User_Data : System.Address := System.Null_Address) return Boolean;
+     (Self  : Gsk_Path;
+      Flags : Gsk.Enums.Gsk_Path_Foreach_Flags;
+      Func  : Gsk_Path_Foreach_Func) return Boolean;
+
+   generic
+   type User_Data_Type (<>) is private;
+   with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Gsk_Path_Foreach_User_Data is
+
+      type Gsk_Path_Foreach_Func_User_Data is access function
+        (Op        : Gsk.Enums.Gsk_Path_Operation;
+         Points    : Graphene.Point.Graphene_Point_Array;
+         Weight    : Interfaces.C.C_float;
+         User_Data : User_Data_Type) return Boolean;
+      --  Points is a borrowed C array with N_Points elements, valid during
+      --  the callback only. Return False (0) to stop iteration.
+
+      function Foreach
+        (Self      : Gsk_Path;
+         Flags     : Gsk.Enums.Gsk_Path_Foreach_Flags;
+         Func      : not null Gsk_Path_Foreach_Func_User_Data;
+         User_Data : User_Data_Type) return Boolean;
+
+   end Gsk_Path_Foreach_User_Data;
 
    ---------------
    -- Functions --

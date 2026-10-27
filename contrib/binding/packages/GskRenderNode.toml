@@ -1,0 +1,67 @@
+# ============================================================
+#   GskRenderNode
+# ============================================================
+
+[[extra.with_body]]
+pkg = "Interfaces.C.Pointers"
+use = false
+
+[[record]]
+ctype = "GskParseLocation"
+
+[[record]]
+ctype = "GskColorStop"
+
+[[extra.type]]
+ctype = "array_of_GskColorStop"
+ada = "Gsk_Color_Stop_Array"
+text = '''
+
+         type Gsk_Color_Stop_Array is array (Natural range <>) of Gsk_Color_Stop
+         with Convention => C;
+'''
+
+[[extra.type]]
+ctype = "array_of_GskRenderNode"
+ada = "Gsk_Render_Node_Array"
+text = '''
+
+         type Gsk_Render_Node_Array is array (Natural range <>) of Gsk_Render_Node
+         with Convention => C;
+'''
+
+[[method]]
+id = "gsk_render_node_get_children"
+return = "Gsk_Render_Node_Array"
+body = '''
+      use Interfaces.C;
+      type Aliased_Address_Array is
+        array (Positive range <>) of aliased System.Address
+        with Convention => C;
+      package P is new Interfaces.C.Pointers
+        (Positive, System.Address, Aliased_Address_Array, System.Null_Address);
+
+      function Internal
+         (Self           : System.Address;
+          Acc_N_Children : access Gsize) return P.Pointer;
+      pragma Import (C, Internal, "gsk_render_node_get_children");
+      Acc_N_Children : aliased Gsize;
+      Tmp_Return     : P.Pointer;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_N_Children'Access);
+      declare
+         Result : Gsk_Render_Node_Array (1 .. Natural (Acc_N_Children));
+         Arr    : constant Aliased_Address_Array :=
+           P.Value (Tmp_Return, Result'Length);
+         I      : Positive := 1;
+      begin
+         for Addr of Arr loop
+            Result (I) := From_Object_None_Ownership (Addr);
+            I := I + 1;
+         end loop;
+         return Result;
+      end;
+'''
+[[method.parameter]]
+name = "n_children"
+ada = ""

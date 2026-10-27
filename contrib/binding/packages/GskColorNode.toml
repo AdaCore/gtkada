@@ -1,0 +1,18 @@
+# ============================================================
+#   GskColorNode
+# ============================================================
+
+[[method]]
+id = "gsk_color_node_new"
+
+[[method.parameter]]
+name = "rgba"
+direction = "not null access"
+
+[[method]]
+id = "gsk_color_node_get_color"
+return = "access constant Gdk.RGBA.Gdk_RGBA"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Color_Node"

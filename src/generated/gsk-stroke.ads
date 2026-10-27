@@ -157,8 +157,8 @@ package Gsk.Stroke is
    -- GtkAda additions --
    ----------------------
 
-   type Dash_Array is array (Natural range <>) of Interfaces.C.C_float;
-   pragma Convention (C, Dash_Array);
+   type Dash_Array is array (Natural range <>) of Interfaces.C.C_float
+   with Convention => C;
 
    procedure Set_Dash (Self : Gsk_Stroke; Dash : Dash_Array);
 

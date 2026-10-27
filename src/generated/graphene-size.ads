@@ -36,6 +36,9 @@ package Graphene.Size is
    pragma Convention (C, Graphene_Size_T);
    --  A size.
 
+   type Graphene_Size_T_Array is array (Natural range <>) of Graphene_Size_T;
+   pragma Convention (C, Graphene_Size_T_Array);
+
    ------------------
    -- Constructors --
    ------------------
