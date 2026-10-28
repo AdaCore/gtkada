@@ -1,0 +1,46 @@
+GtkAda4 basic application
+========================
+
+This project contains the code samples from the GtkAda User's Guide. It
+includes a simple application that opens a window with a Quit button, and
+an automated test of the samples for use in release sanity checks.
+
+Copy this directory to a writable location before building. GNAT and
+GPRbuild must be available in PATH. On Unix, set up the environment using
+the gtkada-env.sh script supplied with GtkAda, replacing <prefix> with
+the GtkAda installation prefix:
+
+    eval "$("<prefix>/bin/gtkada-env.sh" --print-only)"
+
+Run this command in the shell used for the build and run commands below,
+including the automated sanity check. This checks the supplied script as
+well as the installed library, without setting the project and library
+search paths by hand.
+
+On Windows, ensure <prefix>/lib/gnat is in GPR_PROJECT_PATH and
+<prefix>/bin is in PATH.
+
+To build and run the interactive application:
+
+    gprbuild -p -P basic_application.gpr
+    ./bin/ug_hello
+
+Click Quit or close the window to exit. The main procedure is in
+ug_hello.adb; the window and its callbacks are in ug_application.adb.
+The basic_application.gpr project builds this application by default.
+
+To build and run the automated sanity check against the installed library:
+
+    gprbuild -p -P test.gpr
+    ./bin/user_guide
+
+The check exercises signal handlers, a custom button type, reference
+counts, application activation and command-line handling. It opens and
+closes windows automatically and returns zero when all checks pass.
+Both programs require a graphical display. On a Linux machine without
+a display, the sanity check can be run with Xvfb:
+
+    GTK_A11Y=none GSETTINGS_BACKEND=memory GSK_RENDERER=cairo \
+        xvfb-run -a ./bin/user_guide
+
+On Windows, the executables have an .exe suffix.
