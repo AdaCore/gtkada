@@ -1,0 +1,39 @@
+# ============================================================
+#   PangoItem
+# ============================================================
+
+[[record]]
+ctype = "PangoAnalysis"
+
+[[record.field]]
+name = "extra_attrs"
+ctype = "gpointer"
+
+[[method]]
+id = "pango_item_new"
+bind = false # manual binding
+
+[[extra.spec]]
+text = '''
+   ------------------
+   -- Constructors --
+   ------------------
+
+   function Pango_Item_New return access Pango_Item;
+   --  Creates a new Pango.Item.Pango_Item structure initialized to default
+   --  values.
+'''
+
+[extra]
+body = '''
+   --------------------
+   -- Pango_Item_New --
+   --------------------
+
+   function Pango_Item_New return access Pango_Item is
+      function Internal return access  Pango_Item;
+      pragma Import (C, Internal, "pango_item_new");
+   begin
+      return Internal;
+   end Pango_Item_New;
+'''
