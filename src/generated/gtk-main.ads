@@ -117,6 +117,14 @@ package Gtk.Main is
    --  applications. If you do need to handle SIGPIPE for some reason, reset
    --  the handler after Gtk.Main.Init, but notice that other libraries (e.g.
    --  libdbus or gvfs) might do similar things.
+   --  Creating a Gtk.Application.Gtk_Application does not initialize GTK; its
+   --  startup handler does so when Application.Run is called. Create
+   --  application windows and their widgets in the application's activate
+   --  handler, after startup, rather than in the main procedure before Run.
+   --  Creating a Gtk_Application_Window before GTK is initialized can cause a
+   --  segmentation fault in GTK. Without GtkApplication, call Gtk.Main.Init
+   --  explicitly before creating a plain Gtk.Window.Gtk_Window or other
+   --  widgets.
 
    function Init_Check return Boolean;
    --  Initializes GTK.

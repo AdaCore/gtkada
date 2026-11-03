@@ -36,6 +36,9 @@ begin
      (App,
       "com.adacore.gtkada.gtkada_demo",
       Glib.Application.G_Application_Flags_None);
+   --  Creating App does not initialize GTK. Run initializes it during startup,
+   --  before calling On_Activate, which creates the window and its widgets.
+   --  Creating the window here, before Run, can crash inside GTK.
    App.On_Activate (Main_Windows.On_Activate'Access);
    Result := App.Run;
 end GtkAda_Demo;

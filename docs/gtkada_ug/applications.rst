@@ -5,15 +5,18 @@ Starting an application with GtkAda
 ***********************************
 
 A GTK 4 program is built around an *application object*, of type
-`Gtk.Application.Gtk_Application`. The application object initializes GTK,
-loads resources such as Gtk.Builder UI definitions, then runs the main loop.
+`Gtk.Application.Gtk_Application`. Calling `Run` initializes GTK during
+application startup, loads resources such as Gtk.Builder UI definitions,
+then runs the main loop. Creating the application object alone does not
+initialize GTK.
 It keeps track of the application's windows, and ends the
 program when the last of them is closed (or another method is used to tell it
 to hold, see below). It can also make sure that only one instance of the
 application runs at a time, if this behavior is desired.
 
-You do not need to call `Gtk.Main.Init` or run a main loop yourself, as the
-application object does both.
+You do not need to call `Gtk.Main.Init` or run a main loop yourself when
+creating your windows and widgets in the application's "activate" handler:
+`Run` takes care of initialization before invoking that handler.
 
 The complete source code for this application is also installed in
 :file:`share/examples/gtkada4/basic_application/`, under the GtkAda installation
@@ -48,6 +51,19 @@ command line from `Ada.Command_Line`.
 
 Creating the main window
 ========================
+
+.. warning::
+
+   Creating a `Gtk_Application` object does not initialize GTK. Create the
+   `Gtk_Application_Window` and its widgets in the "activate" handler,
+   after GTK's startup initialization, rather than in the main procedure
+   before calling `Run`. Constructing a window before GTK is initialized
+   can cause a segmentation fault inside GTK, including in GTK 4.24.1;
+   this also occurs in C and is not specific to the Ada binding.
+
+   If you are not using `GtkApplication`, call `Gtk.Main.Init` explicitly
+   before creating a plain `Gtk.Window.Gtk_Window` or any other widgets,
+   and arrange to run the main loop yourself.
 
 The application shows the user interface in the "activate" signal handler.
 This handler receives the application as a `Glib.Application.Gapplication`,

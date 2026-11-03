@@ -274,11 +274,14 @@ itself, by calling some Ada functions. Therefore the generic packages
 have to be instantiated at library level, not inside a subprogram, so
 that the functions are still defined when GTK needs to free the memory.
 
-**WARNING** Before any other call to the GtkAda library is performed,
-`Gtk.Main.Init` must be invoked first. Most of the time, this
-procedure is invoked from the main procedure of the application, in
-which case no use of GtkAda can be done during the application
-elaboration.
+**WARNING** GTK must be initialized before creating windows or widgets.
+With `Gtk.Application.Gtk_Application`, `Run` initializes GTK during startup;
+create application windows and their widgets in the "activate" handler.
+Creating the application object alone does not initialize GTK, and creating
+a window in the main procedure before `Run` can crash inside GTK.
+See :ref:`Starting_an_application_with_GtkAda` for a complete example.
+Without `GtkApplication`, call `Gtk.Main.Init` explicitly before creating
+a plain window or other widgets. Do not create widgets during Ada elaboration.
 
 Widgets Hierarchy
 =================
