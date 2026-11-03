@@ -356,7 +356,7 @@ binding = (
     "Gtk.CellRendererAccel",
     "----GtkCellRendererClass",  # Useless in Ada
     "Gtk.CellRendererCombo",
-    "--Gtk.CellRendererPixbuf",
+    "--Gtk.CellRendererPixbuf", # Obsolescent
     "Gtk.CellRendererProgress",
     "Gtk.CellRendererSpin",
     "Gtk.CellRendererSpinner",
@@ -499,7 +499,7 @@ binding = (
     "Gtk.SearchBar",
     "Gtk.SearchEntry",
     "Gtk.Separator",
-    "--Gtk.ShortcutsWindow",
+    "--Gtk.ShortcutsWindow", # Obsolescent
     "Gtk.SizeGroup",
     "Gtk.Scrollbar",
     "Gtk.ScrolledWindow",

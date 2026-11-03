@@ -147,10 +147,10 @@
 --  minimum and natural size.
 --
 --  If a widget ends up baseline aligned it will be allocated all the space in
---  the parent as if it was Gtk.Widget.Align_Fill, but the selected baseline
---  can be found via [methodGtk.Widget.get_baseline]. If the baseline has a
---  value other than -1 you need to align the widget such that the baseline
---  appears at the position.
+--  the parent as if it was Gtk.Enums.Align_Fill, but the selected baseline can
+--  be found via [methodGtk.Widget.get_baseline]. If the baseline has a value
+--  other than -1 you need to align the widget such that the baseline appears
+--  at the position.
 --
 --  ### GtkWidget as GtkBuildable
 --
@@ -311,68 +311,39 @@
 --  (GTK_WIDGET_CLASS (klass), hello_button_clicked); } ```
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;                   use Cairo;
-with GNAT.Strings;            use GNAT.Strings;
-with Gdk;                     use Gdk;
-with Gdk.Clipboard;           use Gdk.Clipboard;
-with Gdk.Cursor;              use Gdk.Cursor;
-with Gdk.Frame_Clock;         use Gdk.Frame_Clock;
-with Gdk.RGBA;                use Gdk.RGBA;
-with Gdk.Rectangle;           use Gdk.Rectangle;
-with Glib;                    use Glib;
-with Glib.Action_Group;       use Glib.Action_Group;
-with Glib.GSlist;             use Glib.GSlist;
-with Glib.Generic_Properties; use Glib.Generic_Properties;
-with Glib.Glist;              use Glib.Glist;
-with Glib.List_Model;         use Glib.List_Model;
-with Glib.Object;             use Glib.Object;
-with Glib.Properties;         use Glib.Properties;
-with Glib.Variant;            use Glib.Variant;
-with Graphene.Matrix;         use Graphene.Matrix;
-with Graphene.Point;          use Graphene.Point;
-with Graphene.Rect;           use Graphene.Rect;
-with Gsk.Transform;           use Gsk.Transform;
-with Gtk.Enums;               use Gtk.Enums;
+with Cairo;                use Cairo;
+with GNAT.Strings;         use GNAT.Strings;
+with Gdk;                  use Gdk;
+with Gdk.Clipboard;        use Gdk.Clipboard;
+with Gdk.Cursor;           use Gdk.Cursor;
+with Gdk.Frame_Clock;      use Gdk.Frame_Clock;
+with Gdk.RGBA;             use Gdk.RGBA;
+with Gdk.Rectangle;        use Gdk.Rectangle;
+with Glib;                 use Glib;
+with Glib.Action_Group;    use Glib.Action_Group;
+with Glib.GSlist;          use Glib.GSlist;
+with Glib.Glist;           use Glib.Glist;
+with Glib.List_Model;      use Glib.List_Model;
+with Glib.Object;          use Glib.Object;
+with Glib.Properties;      use Glib.Properties;
+with Glib.Variant;         use Glib.Variant;
+with Graphene.Matrix;      use Graphene.Matrix;
+with Graphene.Point;       use Graphene.Point;
+with Graphene.Rect;        use Graphene.Rect;
+with Gsk.Transform;        use Gsk.Transform;
+with Gtk.Enums;            use Gtk.Enums;
 limited with Gtk.Event_Controller;
 limited with Gtk.Layout_Manager;
-with Gtk.Native;              use Gtk.Native;
-with Gtk.Settings;            use Gtk.Settings;
-with Pango.Context;           use Pango.Context;
-with Pango.Font_Map;          use Pango.Font_Map;
-with Pango.Layout;            use Pango.Layout;
+with Gtk.Native;           use Gtk.Native;
+with Gtk.Settings;         use Gtk.Settings;
+with Pango.Context;        use Pango.Context;
+with Pango.Font_Map;       use Pango.Font_Map;
+with Pango.Layout;         use Pango.Layout;
 
 package Gtk.Widget is
 
    type Gtk_Widget_Record is new GObject_Record with null record;
    type Gtk_Widget is access all Gtk_Widget_Record'Class;
-
-   type Gtk_Align is mod 2 ** Integer'Size;
-   pragma Convention (C, Gtk_Align);
-   --  Controls how a widget deals with extra space in a single dimension.
-   --
-   --  Alignment only matters if the widget receives a "too large" allocation,
-   --  for example if you packed the widget with the
-   --  [propertyGtk.Widget:hexpand] property inside a [classBox], then the
-   --  widget might get extra space. If you have for example a 16x16 icon
-   --  inside a 32x32 space, the icon could be scaled and stretched, it could
-   --  be centered, or it could be positioned to one side of the space.
-   --
-   --  Note that in horizontal context `GTK_ALIGN_START` and `GTK_ALIGN_END`
-   --  are interpreted relative to text direction.
-   --
-   --  Baseline support is optional for containers and widgets, and is only
-   --  available for vertical alignment. `GTK_ALIGN_BASELINE_CENTER` and
-   --  `GTK_ALIGN_BASELINE_FILL` are treated similar to `GTK_ALIGN_CENTER` and
-   --  `GTK_ALIGN_FILL`, except that it positions the widget to line up the
-   --  baselines, where that is supported.
-
-   Align_Fill : constant Gtk_Align := 0;
-   Align_Start : constant Gtk_Align := 1;
-   Align_End : constant Gtk_Align := 2;
-   Align_Center : constant Gtk_Align := 3;
-   Align_Baseline_Fill : constant Gtk_Align := 4;
-   Align_Baseline : constant Gtk_Align := 4;
-   Align_Baseline_Center : constant Gtk_Align := 5;
 
    type Gtk_Requisition is record
       Width : Glib.Gint;
@@ -405,14 +376,6 @@ package Gtk.Widget is
    --  @param Frame_Clock the frame clock for the widget
    --  @return `G_SOURCE_CONTINUE` if the tick callback should continue to be
    --  called, `G_SOURCE_REMOVE` if it should be removed
-
-   ----------------------------
-   -- Enumeration Properties --
-   ----------------------------
-
-   package Gtk_Align_Properties is
-      new Generic_Internal_Flags_Property (Gtk_Align);
-   type Property_Gtk_Align is new Gtk_Align_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -1091,7 +1054,8 @@ package Gtk.Widget is
    --  @return the frame clock. Has transfer-ownership='none'.
 
    function Get_Halign
-      (Widget : not null access Gtk_Widget_Record) return Gtk_Align;
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_Align;
    --  Gets the horizontal alignment of the widget.
    --  For backwards compatibility reasons this method will never return one
    --  of the baseline alignments, but instead it will convert it to
@@ -1101,7 +1065,7 @@ package Gtk.Widget is
 
    procedure Set_Halign
       (Widget : not null access Gtk_Widget_Record;
-       Align  : Gtk_Align);
+       Align  : Gtk.Enums.Gtk_Align);
    --  Sets the horizontal alignment of the widget.
    --  @param Align the horizontal alignment
 
@@ -1639,13 +1603,14 @@ package Gtk.Widget is
    --  @param Text the contents of the tooltip for Widget
 
    function Get_Valign
-      (Widget : not null access Gtk_Widget_Record) return Gtk_Align;
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_Align;
    --  Gets the vertical alignment of the widget.
    --  @return the vertical alignment of Widget
 
    procedure Set_Valign
       (Widget : not null access Gtk_Widget_Record;
-       Align  : Gtk_Align);
+       Align  : Gtk.Enums.Gtk_Align);
    --  Sets the vertical alignment of the widget.
    --  @param Align the vertical alignment
 
@@ -2326,8 +2291,7 @@ package Gtk.Widget is
    Focusable_Property : constant Glib.Properties.Property_Boolean;
    --  Whether this widget itself will accept the input focus.
 
-   Halign_Property : constant Gtk.Widget.Property_Gtk_Align;
-   --  Type: Gtk_Align
+   Halign_Property : constant Gtk.Enums.Property_Gtk_Align;
    --  How to distribute horizontal space if widget gets extra space.
 
    Has_Default_Property : constant Glib.Properties.Property_Boolean;
@@ -2464,8 +2428,7 @@ package Gtk.Widget is
    --  Note that if both [propertyGtk.Widget:tooltip-text] and
    --  [propertyGtk.Widget:tooltip-markup] are set, the last one wins.
 
-   Valign_Property : constant Gtk.Widget.Property_Gtk_Align;
-   --  Type: Gtk_Align
+   Valign_Property : constant Gtk.Enums.Property_Gtk_Align;
    --  How to distribute vertical space if widget gets extra space.
 
    Vexpand_Property : constant Glib.Properties.Property_Boolean;
@@ -2777,8 +2740,8 @@ private
      Glib.Properties.Build ("vexpand-set");
    Vexpand_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("vexpand");
-   Valign_Property : constant Gtk.Widget.Property_Gtk_Align :=
-     Gtk.Widget.Build ("valign");
+   Valign_Property : constant Gtk.Enums.Property_Gtk_Align :=
+     Gtk.Enums.Build ("valign");
    Tooltip_Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("tooltip-text");
    Tooltip_Markup_Property : constant Glib.Properties.Property_String :=
@@ -2823,8 +2786,8 @@ private
      Glib.Properties.Build ("has-focus");
    Has_Default_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-default");
-   Halign_Property : constant Gtk.Widget.Property_Gtk_Align :=
-     Gtk.Widget.Build ("halign");
+   Halign_Property : constant Gtk.Enums.Property_Gtk_Align :=
+     Gtk.Enums.Build ("halign");
    Focusable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("focusable");
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=

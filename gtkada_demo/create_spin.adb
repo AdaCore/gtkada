@@ -223,13 +223,13 @@ package body Create_Spin is
       Gtk_New_With_Label (Check, "Snap to 0.5-ticks");
       Check.On_Toggled (Toggle_Snap'Access);
       VBox.Append (Check);
-      Check.Set_Halign (Gtk.Widget.Align_Start);
+      Check.Set_Halign (Gtk.Enums.Align_Start);
       Check.Set_Active (True);
 
       Gtk_New_With_Label (Check, "Snap Numeric only input mode");
       Check.On_Toggled (Toggle_Numeric'Access);
       VBox.Append (Check);
-      Check.Set_Halign (Gtk.Widget.Align_Start);
+      Check.Set_Halign (Gtk.Enums.Align_Start);
       Check.Set_Active (True);
 
       Gtk_New (Label, "");
@@ -257,7 +257,7 @@ package body Create_Spin is
       Gtk_New (Frame2, "Display");
       Hbox.Append (Frame2);
       Frame2.Set_Child (Label);
-      Frame2.Set_Halign (Gtk.Widget.Align_Fill);
+      Frame2.Set_Halign (Gtk.Enums.Align_Fill);
       Label.Set_Text ("0");
    end Run;
 

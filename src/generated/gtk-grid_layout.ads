@@ -210,7 +210,7 @@ package Gtk.Grid_Layout is
 
    Baseline_Row_Property : constant Glib.Properties.Property_Int;
    --  The row to align to the baseline, when `GtkWidget:valign` is set to
-   --  Gtk.Widget.Align_Baseline.
+   --  Gtk.Enums.Align_Baseline.
 
    Column_Homogeneous_Property : constant Glib.Properties.Property_Boolean;
    --  Whether all the columns in the grid have the same width.

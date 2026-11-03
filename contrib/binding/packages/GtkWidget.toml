@@ -20,11 +20,6 @@ limited = true
 [[extra.with_body]]
 pkg = "Gtk.Event_Controller"
 
-[[enum]]
-ctype = "GtkAlign"
-asbitfield = true # Since Align_Baseline_Fill == Align_Baseline
-# TRANSITION: review this
-
 [[method]]
 id = "gtk_widget_get_allocation"
 
@@ -61,7 +56,6 @@ bind = false # Needs Gtk.Snapshot
 [[parameter]]
 name = "self"
 ada = "Widget"
-
 
 [[record]]
 ctype = "GtkRequisition"

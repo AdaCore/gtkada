@@ -185,6 +185,10 @@ asbitfield = true
 [[enum]]
 ctype = "GtkFontRendering"
 
+[[enum]]
+ctype = "GtkAlign"
+asbitfield = true
+
 [extra]
 body = '''
 

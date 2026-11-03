@@ -685,6 +685,34 @@ package Gtk.Enums is
    --  Values for the [propertyGtk.Settings:gtk-font-rendering] setting that
    --  influence how GTK renders fonts.
 
+   type Gtk_Align is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Align);
+   --  Controls how a widget deals with extra space in a single dimension.
+   --
+   --  Alignment only matters if the widget receives a "too large" allocation,
+   --  for example if you packed the widget with the
+   --  [propertyGtk.Widget:hexpand] property inside a [classBox], then the
+   --  widget might get extra space. If you have for example a 16x16 icon
+   --  inside a 32x32 space, the icon could be scaled and stretched, it could
+   --  be centered, or it could be positioned to one side of the space.
+   --
+   --  Note that in horizontal context `GTK_ALIGN_START` and `GTK_ALIGN_END`
+   --  are interpreted relative to text direction.
+   --
+   --  Baseline support is optional for containers and widgets, and is only
+   --  available for vertical alignment. `GTK_ALIGN_BASELINE_CENTER` and
+   --  `GTK_ALIGN_BASELINE_FILL` are treated similar to `GTK_ALIGN_CENTER` and
+   --  `GTK_ALIGN_FILL`, except that it positions the widget to line up the
+   --  baselines, where that is supported.
+
+   Align_Fill : constant Gtk_Align := 0;
+   Align_Start : constant Gtk_Align := 1;
+   Align_End : constant Gtk_Align := 2;
+   Align_Center : constant Gtk_Align := 3;
+   Align_Baseline_Fill : constant Gtk_Align := 4;
+   Align_Baseline : constant Gtk_Align := 4;
+   Align_Baseline_Center : constant Gtk_Align := 5;
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -920,6 +948,10 @@ package Gtk.Enums is
    package Gtk_Font_Rendering_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Font_Rendering);
    type Property_Gtk_Font_Rendering is new Gtk_Font_Rendering_Properties.Property;
+
+   package Gtk_Align_Properties is
+      new Generic_Internal_Flags_Property (Gtk_Align);
+   type Property_Gtk_Align is new Gtk_Align_Properties.Property;
 
    ----------------------
    -- GtkAda additions --
