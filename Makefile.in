@@ -48,6 +48,7 @@ datadir=@datadir@
 datarootdir=@datarootdir@
 exampledir=${datadir}/examples/gtkada/gtkada_demo
 basic_application_dir=${datadir}/examples/gtkada/basic_application
+hello_window_dir=${datadir}/examples/gtkada/hello-window
 
 all:
 
@@ -114,6 +115,9 @@ install-examples:
 	cp testsuite/tests/user-guide/*.ad? testsuite/tests/user-guide/test.gpr \
 		testsuite/tests/user-guide/basic_application.gpr \
 		testsuite/tests/user-guide/README "${DESTDIR}${basic_application_dir}/"
+	mkdir -p "${DESTDIR}${hello_window_dir}"
+	cp examples/hello-window/*.adb examples/hello-window/hello_window.gpr \
+		examples/hello-window/README.md "${DESTDIR}${hello_window_dir}/"
 
 install: install-clean install-examples
 	@echo "====== Installing tools ====="

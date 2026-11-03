@@ -11,6 +11,9 @@ application.
 It also gives a brief overview of the extensive widget hierarchy available in
 GtkAda.
 
+For a complete minimal program with build and run commands, start with
+:ref:`Hello_window`. A plain-window variant demonstrates :ref:`Manual_event_loop`.
+
 How to build and install GtkAda
 ===============================
 

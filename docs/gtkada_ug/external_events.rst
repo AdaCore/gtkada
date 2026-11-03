@@ -28,7 +28,9 @@ There are several ways to handle this situation:
 
 * Another approach is to not start the GTK main loop, but to check
   periodically whether there are some events to be handled.  See the subprogram
-  `Glib.Main.Main_Context_Iteration`.
+  `Glib.Main.Main_Context_Iteration`, with ``May_Block => False`` to avoid
+  waiting inside the host loop. See :ref:`Manual_event_loop` for a complete
+  plain-window example, including initialization and termination on close.
 
   This second approach is not necessarily recommended, since you would
   basically duplicate code that's already in GTK to manage the main loop, and

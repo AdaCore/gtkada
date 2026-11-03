@@ -18,11 +18,39 @@ You do not need to call `Gtk.Main.Init` or run a main loop yourself when
 creating your windows and widgets in the application's "activate" handler:
 `Run` takes care of initialization before invoking that handler.
 
-The complete source code for this application is also installed in
-:file:`share/examples/gtkada4/basic_application/`, under the GtkAda installation
+The complete source code for the larger example below is also installed in
+:file:`share/examples/gtkada/basic_application/`, under the GtkAda installation
 prefix. Build the application with :file:`basic_application.gpr`; the separate
 :file:`test.gpr` project builds the automated checks. The :file:`README` includes
 instructions for building and running both programs.
+
+.. _Hello_window:
+
+A minimal hello window
+======================
+
+This complete, single-file example opens an empty window. Closing it ends
+the application and returns from `Glib.Application.Run`:
+
+.. literalinclude:: ../../examples/hello-window/hello_window.adb
+   :language: ada
+
+From the repository root, build and run it with:
+
+.. code-block:: sh
+
+   gprbuild -p -P examples/hello-window/hello_window.gpr -aP . -XLIBRARY_TYPE=static
+   ./examples/hello-window/bin/hello_window
+
+The project and sources are also installed in
+:file:`share/examples/gtkada/hello-window/`. Copy that directory to a writable
+location, set up the installed GtkAda environment, then run
+``gprbuild -p -P hello_window.gpr`` and ``./bin/hello_window``.
+The example's :file:`README.md` gives environment setup instructions.
+
+The nested callback uses GNAT's ``'Unrestricted_Access`` and remains in scope
+until `Run` returns. The larger example below puts callbacks in a library-level
+package so that it can use ``'Access``.
 
 The main procedure
 ==================
@@ -97,6 +125,34 @@ A few points to note:
 For a larger example, see the GtkAda demo: the code in :file:`gtkada_demo/gtkada_demo.adb`
 creates the application, the contents are built in the subprogram `On_Activate` in
 :file:`gtkada_demo/main_windows.adb`.
+
+.. _Manual_event_loop:
+
+Running without GtkApplication
+==============================
+
+GTK 4 removed `Gtk.Main.Main` and `Gtk.Main.Main_Quit`, and GtkAda does not
+currently bind `GMainLoop`. For a plain window, explicitly initialize GTK
+and process events with `Glib.Main.Main_Context_Iteration`:
+
+.. literalinclude:: ../../examples/hello-window/hello_window_manual.adb
+   :language: ada
+
+The :file:`hello_window.gpr` project above builds this variant too; run
+``./examples/hello-window/bin/hello_window_manual`` from the repository root,
+or ``./bin/hello_window_manual`` from a copy of the installed example.
+
+With the default ``Context => null``, iteration dispatches GTK's events on
+the default main context. ``May_Block => True`` waits for work when no events
+are ready, avoiding busy polling. The return value tells whether events were
+dispatched, so use a separate flag to decide when to stop. Here the
+"close-request" handler clears that flag and returns `False` to let GTK
+destroy the window. Do not access the window after it has been destroyed.
+
+Prefer `GtkApplication` for an application that should own its windows and
+manage its lifetime. When integrating GTK into an existing event loop, use
+``May_Block => False`` to dispatch ready events without waiting, and let the
+host loop arrange when to call it again. See :ref:`Processing_external_events`.
 
 Ending the application
 ======================
