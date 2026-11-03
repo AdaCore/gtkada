@@ -322,7 +322,6 @@ binding = (
     "Pango.Matrix",
     "Pango.TabArray",
     "Gtk.AboutDialog",
-    "--GtkAccelGroup",
     "--GtkAccessible",  # Bound through manual_binding
     "Gtk.AccessibleHyperlink",
     "--GtkAccessibleText",  # Bound through manual_binding
@@ -635,6 +634,7 @@ manual_binding = (
     "Gtk.Accessible",
     "Gtk.AccessibleText",
     "GtkMain",
+    "GtkAccelGroup",
 )
 
 # Handling of functions with user data. The names below are the likely names

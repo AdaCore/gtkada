@@ -1,0 +1,19 @@
+bindtype = false
+
+[[function]]
+id = "gtk_accelerator_get_accessible_label"
+
+[[function]]
+id = "gtk_accelerator_get_default_mod_mask"
+
+[[function]]
+id = "gtk_accelerator_get_label"
+
+[[function]]
+id = "gtk_accelerator_name"
+
+[[function]]
+id = "gtk_accelerator_parse"
+
+[[function]]
+id = "gtk_accelerator_valid"
