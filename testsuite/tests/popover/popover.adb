@@ -9,6 +9,7 @@ with Glib;            use Glib;
 with Glib.Main;       use Glib.Main;
 with Glib.Test;       use Glib.Test;
 with Gtk.Label;       use Gtk.Label;
+with Gtk.Enums;
 with Gtk.Main;
 with Gtk.Menu_Button; use Gtk.Menu_Button;
 with Gtk.Popover;     use Gtk.Popover;
@@ -47,7 +48,7 @@ procedure Popover is
    function Tickle return Boolean is
       Label : constant Gtk_Widget := The_Popover.Get_First_Child;
    begin
-      Label.Set_Valign (Align_Start);
+      Label.Set_Valign (Gtk.Enums.Align_Start);
       return False;
    end Tickle;
 

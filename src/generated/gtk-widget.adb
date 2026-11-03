@@ -912,9 +912,10 @@ package body Gtk.Widget is
    ----------------
 
    function Get_Halign
-      (Widget : not null access Gtk_Widget_Record) return Gtk_Align
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_Align
    is
-      function Internal (Widget : System.Address) return Gtk_Align;
+      function Internal (Widget : System.Address) return Gtk.Enums.Gtk_Align;
       pragma Import (C, Internal, "gtk_widget_get_halign");
    begin
       return Internal (Get_Object (Widget));
@@ -1417,9 +1418,10 @@ package body Gtk.Widget is
    ----------------
 
    function Get_Valign
-      (Widget : not null access Gtk_Widget_Record) return Gtk_Align
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_Align
    is
-      function Internal (Widget : System.Address) return Gtk_Align;
+      function Internal (Widget : System.Address) return Gtk.Enums.Gtk_Align;
       pragma Import (C, Internal, "gtk_widget_get_valign");
    begin
       return Internal (Get_Object (Widget));
@@ -2151,9 +2153,11 @@ package body Gtk.Widget is
 
    procedure Set_Halign
       (Widget : not null access Gtk_Widget_Record;
-       Align  : Gtk_Align)
+       Align  : Gtk.Enums.Gtk_Align)
    is
-      procedure Internal (Widget : System.Address; Align : Gtk_Align);
+      procedure Internal
+         (Widget : System.Address;
+          Align  : Gtk.Enums.Gtk_Align);
       pragma Import (C, Internal, "gtk_widget_set_halign");
    begin
       Internal (Get_Object (Widget), Align);
@@ -2471,9 +2475,11 @@ package body Gtk.Widget is
 
    procedure Set_Valign
       (Widget : not null access Gtk_Widget_Record;
-       Align  : Gtk_Align)
+       Align  : Gtk.Enums.Gtk_Align)
    is
-      procedure Internal (Widget : System.Address; Align : Gtk_Align);
+      procedure Internal
+         (Widget : System.Address;
+          Align  : Gtk.Enums.Gtk_Align);
       pragma Import (C, Internal, "gtk_widget_set_valign");
    begin
       Internal (Get_Object (Widget), Align);

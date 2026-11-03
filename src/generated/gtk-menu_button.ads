@@ -42,7 +42,7 @@
 --  For menus, the [propertyGtk.Widget:halign] and [propertyGtk.Widget:valign]
 --  properties of the menu are also taken into account. For example, when the
 --  direction is Gtk.Enums.Arrow_Down and the horizontal alignment is
---  Gtk.Widget.Align_Start, the menu will be positioned below the button, with
+--  Gtk.Enums.Align_Start, the menu will be positioned below the button, with
 --  the starting edge (depending on the text direction) of the menu aligned
 --  with the starting edge of the button. If there is not enough space below
 --  the button, the menu is popped up above the button instead. If the
