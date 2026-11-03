@@ -347,7 +347,7 @@ binding = (
     "Gtk.BuilderCScope",
     "Gtk.BuilderListItemFactory",
     "Gtk.Button",
-    "--Gtk.Calendar",
+    "Gtk.Calendar",
     "Gtk.CellArea",
     "Gtk.CellAreaBox",
     "----GtkCellAreaClass",
