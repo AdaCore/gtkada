@@ -40,6 +40,13 @@ package body Pango.Attributes is
       return Pango.Attributes.Pango_Attribute (Glib.C_Proxy'(Glib.To_Proxy (R)));
    end Convert;
 
+   procedure Destroy (Self : Pango_Attr_Iterator) is
+      procedure Internal (Obj : System.Address);
+      pragma Import (C, Internal, "pango_attr_iterator_destroy");
+   begin
+      Internal(To_Address (Self));
+   end Destroy;
+
    function From_Object_Free
      (B : access Pango_Attr_List'Class) return Pango_Attr_List
    is
@@ -175,6 +182,21 @@ package body Pango.Attributes is
       end if;
    end Filter;
 
+   ------------------
+   -- Get_Iterator --
+   ------------------
+
+   function Get_Iterator (Self : Pango_Attr_List) return Pango_Attr_Iterator is
+      function Internal
+         (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "pango_attr_list_get_iterator");
+      Result : Pango_Attr_Iterator;
+   begin
+      Result := Pango_Attr_Iterator'
+        (To_Proxy (Internal (Get_Object (Self))));
+      return Result;
+   end Get_Iterator;
+
    ------------
    -- Insert --
    ------------
@@ -258,6 +280,19 @@ package body Pango.Attributes is
    begin
       Internal (Get_Object (Self), Pos, Remove, Add);
    end Update;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Pango_Attr_Iterator) return Pango_Attr_Iterator
+   is
+      Result : constant Pango_Attr_Iterator := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
    ----------------------
    -- From_Object_Free --

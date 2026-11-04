@@ -35,6 +35,15 @@ with Pango.Enums; use Pango.Enums;
 
 package Pango.Attributes is
 
+   type Pango_Attr_Iterator is new Glib.C_Proxy;
+   --  The Pango.Attr_Iterator.Pango_Attr_Iterator structure is used to
+   --  represent an iterator through a Pango.Attributes.Pango_Attr_List. A new
+   --  iterator is created with Pango.Attributes.Get_Iterator. Once the
+   --  iterator is created, it can be advanced through the style changes in the
+   --  text using pango_attr_iterator_next. At each style change, the range of
+   --  the current style segment and the attributes currently in effect can be
+   --  queried.
+
    type Pango_Attribute is new Glib.C_Proxy;
    --  The Pango.Attributes.Pango_Attribute structure represents the common
    --  portions of all attributes. Particular types of attributes include this
@@ -136,6 +145,12 @@ package Pango.Attributes is
    --  @return the new Pango.Attributes.Pango_Attr_List or null if no
    --  attributes of the given types were found. Has transfer-ownership='full'.
 
+   function Get_Iterator (Self : Pango_Attr_List) return Pango_Attr_Iterator;
+   --  Create a iterator initialized to the beginning of the list. List must
+   --  not be modified until this iterator is freed.
+   --  @return the newly allocated Pango.Attr_Iterator.Pango_Attr_Iterator,
+   --  which should be freed with pango_attr_iterator_destroy.
+
    procedure Insert (Self : Pango_Attr_List; Attr : Pango_Attribute);
    --  Insert the given attribute into the Pango.Attributes.Pango_Attr_List.
    --  It will be inserted after all other attributes with a matching
@@ -203,11 +218,22 @@ package Pango.Attributes is
    ----------------------
 
    function From_Object_Free
+     (B : not null access Pango_Attr_Iterator) return Pango_Attr_Iterator;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
+
+   function From_Object_Free
      (B : not null access Pango_Attribute) return Pango_Attribute;
    pragma Inline (From_Object_Free);
    --  Return the underlying object and free the pointer.
    --  This is meant to be used internally by GtkAda,
    --  and should not in general be called by user code.
+
+   procedure Destroy (Self : Pango_Attr_Iterator);
+   --  Destroy a Pango.Attributes.Pango_Attr_Iterator and free all associated
+   --  memory.
 
    ---------------
    -- Functions --

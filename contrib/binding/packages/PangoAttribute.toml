@@ -3,6 +3,9 @@
 # ============================================================
 ada = "Pango.Attributes"
 
+[[record]]
+ctype = "PangoAttrIterator"
+
 [[slist]]
 ada = "Pango_Attribute_SList"
 ctype = "PangoAttribute"
@@ -48,3 +51,21 @@ id = "pango_attr_rise_new"
 
 [[function]]
 id = "pango_attr_gravity_new"
+
+[[extra.spec]]
+text = '''
+   procedure Destroy (Self : Pango_Attr_Iterator);
+   --  Destroy a Pango.Attributes.Pango_Attr_Iterator and free all associated
+   --  memory.
+'''
+
+[extra]
+body = '''
+   procedure Destroy (Self : Pango_Attr_Iterator) is
+      procedure Internal (Obj : System.Address);
+      pragma Import (C, Internal, "pango_attr_iterator_destroy");
+   begin
+      Internal(To_Address (Self));
+   end Destroy;
+'''
+

@@ -5,8 +5,16 @@ into = "PangoAttribute"
 
 [[method]]
 id = "pango_attr_list_get_iterator"
-bind = false
-# Not needed ?
+body = '''
+      function Internal
+         (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "pango_attr_list_get_iterator");
+      Result : Pango_Attr_Iterator;
+   begin
+      Result := Pango_Attr_Iterator'
+        (To_Proxy (Internal (Get_Object (Self))));
+      return Result;
+'''
 
 [[method]]
 id = "pango_attr_list_get_type"

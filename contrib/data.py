@@ -136,7 +136,7 @@ binding = (
     "--GdkWindow",
     "Gdk.PopupLayout",
     "Gdk.ToplevelLayout",
-    "--GAction",  # bound as an interface, see interfaces tuple
+    "--GAction", # bound as an interface, see interfaces tuple
     "--GActionGroup",  # bound as an interface, see interfaces tuple
     "--GActionMap",  # bound as an interface, see interfaces tuple
     "Gio.Application",
@@ -312,7 +312,7 @@ binding = (
     "--Pango.GlyphItem",
     "--Pango.GlyphItemIter",
     "--Pango.GlyphString",
-    "--Pango.Item",
+    "Pango.Item",
     "--Pango.Renderer",
     "--Pango.ScriptIter",
     "Pango.Language",
