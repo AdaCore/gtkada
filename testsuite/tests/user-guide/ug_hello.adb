@@ -19,6 +19,9 @@ procedure UG_Hello is
    Status : Gint;
 begin
    Gtk_New (App, "com.example.hello", G_Application_Flags_None);
+   --  Run initializes GTK before emitting "activate". Create the window in
+   --  On_Activate: creating App alone does not initialize GTK, and creating
+   --  a window here before Run can crash inside GTK.
    App.On_Activate (UG_Application.On_Activate'Access);
 
    --  Run the application until its last window is closed

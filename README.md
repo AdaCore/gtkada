@@ -13,6 +13,13 @@ Installation
 
 See the file `INSTALL`.
 
+Hello window
+------------
+
+Start with [examples/hello-window](examples/hello-window/README.md) for a
+complete minimal GTK 4 application, build and run commands, and a plain-window
+variant using `Glib.Main.Main_Context_Iteration` to process events.
+
 General Information
 -------------------
 
