@@ -1,0 +1,143 @@
+# ============================================================
+#   PangoGlyphString
+# ============================================================
+
+### To-Do ###
+[[method]]
+id = "pango_glyph_string_index_to_x"
+bind = false # depends on PangoAnalysis
+
+[[method]]
+id = "pango_glyph_string_x_to_index"
+bind = false # depends on PangoAnalysis
+###
+
+[[record]]
+ctype = "PangoGlyphVisAttr"
+
+[[record]]
+ctype = "PangoGlyphGeometry"
+
+[[record.field]]
+name = "width"
+type = "Glib.Gint32"
+
+[[record.field]]
+name = "x_offset"
+type = "Glib.Gint32"
+
+[[record.field]]
+name = "y_offset"
+type = "Glib.Gint32"
+
+[[record]]
+ctype = "PangoGlyphInfo"
+
+[[extra.type]]
+ctype = "array_of_PangoGlyphInfo"
+ada = "Pango_Glyph_Info_Array"
+link = "PangoGlyphInfo"
+text = '''
+
+      type Pango_Glyph_Info_Array is
+        array (Natural range <>) of Pango_Glyph_Info;
+      pragma Convention (C, Pango_Glyph_Info_Array);
+'''
+
+[[record]]
+ctype = "PangoGlyphString"
+
+[[record.field]]
+name = "log_clusters"
+type = "access Glib.Gint"
+default = "null"
+
+[[record.field]]
+name = "glyphs"
+type = "System.Address"
+default = "System.Null_Address"
+
+[[extra.with_body]]
+pkg = "Glib.Object"
+
+[[extra.with_body]]
+pkg = "System.Address_To_Access_Conversions"
+use = false
+
+[[method]]
+id = "pango_glyph_string_new"
+bind = false # manual binding
+
+[[method]]
+id = "pango_glyph_string_copy"
+return = "access Pango_Glyph_String"
+
+[[method.parameter]]
+name = "Self"
+direction = "access"
+
+[[method]]
+id = "pango_glyph_string_extents"
+
+[[method.parameter]]
+name = "Self"
+direction = "access"
+
+[[method]]
+id = "pango_glyph_string_extents_range"
+
+[[method.parameter]]
+name = "Self"
+direction = "access"
+
+[[method]]
+id = "pango_glyph_string_free"
+
+[[method.parameter]]
+name = "Self"
+direction = "access"
+
+[[method]]
+id = "pango_glyph_string_get_logical_widths"
+
+[[method.parameter]]
+name = "Self"
+direction = "access"
+
+[[method]]
+id = "pango_glyph_string_get_width"
+
+[[method.parameter]]
+name = "Self"
+direction = "access"
+
+[[method]]
+id = "pango_glyph_string_set_size"
+
+[[method.parameter]]
+name = "Self"
+direction = "access"
+
+[[extra.spec]]
+text = '''
+   function Pango_Glyph_String_New return access Pango_Glyph_String;
+   --  Create a new Pango.Glyph_String.Pango_Glyph_String.
+'''
+
+[extra]
+body = '''
+   package Conv is new System.Address_To_Access_Conversions
+     (Pango_Glyph_String);
+
+   ----------------------------
+   -- Pango_Glyph_String_New --
+   ----------------------------
+
+   function Pango_Glyph_String_New return access Pango_Glyph_String is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "pango_glyph_string_new");
+   begin
+      return Conv.To_Pointer (Internal);
+   end Pango_Glyph_String_New;
+
+'''

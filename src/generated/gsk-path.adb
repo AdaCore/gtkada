@@ -23,9 +23,12 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
+with Glib.Object;              use Glib.Object;
+with Interfaces.C.Pointers;
 pragma Warnings(Off);  --  might be unused
-with Gtkada.Bindings; use Gtkada.Bindings;
-with Gtkada.Types;    use Gtkada.Types;
+with Gtkada.Bindings;          use Gtkada.Bindings;
+with Gtkada.Types;             use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gsk.Path is
@@ -46,18 +49,140 @@ package body Gsk.Path is
       return S;
    end From_Object;
 
+   function To_Gsk_Path_Foreach_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gsk_Path_Foreach_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gsk_Path_Foreach_Func, System.Address);
+
+   type Aliased_Point_Array is array
+     (Positive range <>) of aliased Graphene.Point.Graphene_Point_T
+   with Convention => C;
+   package P is new Interfaces.C.Pointers
+     (Positive, Graphene.Point.Graphene_Point_T,
+      Aliased_Point_Array, (others => 0.0));
+
+   function Internal_Gsk_Path_Foreach_Func
+     (Op        : Gsk.Enums.Gsk_Path_Operation;
+      Points    : P.Pointer;
+      N_Points  : Gsize;
+      Weight    : Interfaces.C.C_float;
+      User_Data : System.Address) return Gboolean
+   with Convention => C;
+
+   ------------------------------------
+   -- Internal_Gsk_Path_Foreach_Func --
+   ------------------------------------
+
+   function Internal_Gsk_Path_Foreach_Func
+     (Op        : Gsk.Enums.Gsk_Path_Operation;
+      Points    : P.Pointer;
+      N_Points  : Gsize;
+      Weight    : Interfaces.C.C_float;
+      User_Data : System.Address) return Gboolean
+   is
+      Ps : constant Graphene.Point.Graphene_Point_Array :=
+      Graphene.Point.Graphene_Point_Array
+        (P.Value (Points, ptrdiff_t (N_Points)));
+   begin
+      return (if To_Gsk_Path_Foreach_Func (User_Data) (Op, Ps, Weight) then 1 else 0);
+   end Internal_Gsk_Path_Foreach_Func;
+
+   -------------
+   -- Foreach --
+   -------------
+
    function Foreach
-     (Self : Gsk_Path; Flags : Gsk.Enums.Gsk_Path_Foreach_Flags;
-      Func : Gsk_Path_Foreach_Func;
-      User_Data : System.Address := System.Null_Address) return Boolean is
+     (Self  : Gsk_Path;
+      Flags : Gsk.Enums.Gsk_Path_Foreach_Flags;
+      Func  : Gsk_Path_Foreach_Func) return Boolean
+   is
       function Internal
-        (Self : System.Address; Flags : Gsk.Enums.Gsk_Path_Foreach_Flags;
-         Func : Gsk_Path_Foreach_Func; User_Data : System.Address)
+        (Self      : System.Address;
+         Flags     : Gsk.Enums.Gsk_Path_Foreach_Flags;
+         Func      : System.Address;
+         User_Data : System.Address)
       return Gboolean;
       pragma Import (C, Internal, "gsk_path_foreach");
    begin
-      return Internal (Get_Object (Self), Flags, Func, User_Data) /= 0;
+      return Internal
+        (Get_Object (Self),
+         Flags,
+         Internal_Gsk_Path_Foreach_Func'Address,
+         To_Address (Func)) /= 0;
    end Foreach;
+
+   --------------------------------
+   -- Gsk_Path_Foreach_User_Data --
+   --------------------------------
+
+   package body Gsk_Path_Foreach_User_Data is
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+
+      function To_Foreach_Func_UD is new Ada.Unchecked_Conversion
+        (System.Address, Gsk_Path_Foreach_Func_User_Data);
+
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gsk_Path_Foreach_Func_User_Data, System.Address);
+
+      function Internal_Foreach_Func
+        (Op        : Gsk.Enums.Gsk_Path_Operation;
+         Points    : P.Pointer;
+         N_Points  : Gsize;
+         Weight    : Interfaces.C.C_float;
+         User_Data : System.Address) return Gboolean
+      with Convention => C;
+
+      ---------------------------
+      -- Internal_Foreach_Func --
+      ---------------------------
+
+      function Internal_Foreach_Func
+        (Op        : Gsk.Enums.Gsk_Path_Operation;
+         Points    : P.Pointer;
+         N_Points  : Gsize;
+         Weight    : Interfaces.C.C_float;
+         User_Data : System.Address) return Gboolean
+      is
+         D  : constant Users.Internal_Data_Access :=
+         Users.Convert (User_Data);
+         Ps : constant Graphene.Point.Graphene_Point_Array :=
+         Graphene.Point.Graphene_Point_Array
+           (P.Value (Points, ptrdiff_t (N_Points)));
+      begin
+         return
+           (if To_Foreach_Func_UD (D.Func)
+              (Op, Ps, Weight, D.Data.all) then 1 else 0);
+      end Internal_Foreach_Func;
+
+      -------------
+      -- Foreach --
+      -------------
+
+      function Foreach
+        (Self      : Gsk_Path;
+         Flags     : Gsk.Enums.Gsk_Path_Foreach_Flags;
+         Func      : not null Gsk_Path_Foreach_Func_User_Data;
+         User_Data : User_Data_Type) return Boolean
+      is
+         function Internal
+           (Self      : System.Address;
+            Flags     : Gsk.Enums.Gsk_Path_Foreach_Flags;
+            Func      : System.Address;
+            User_Data : System.Address)
+         return Gboolean;
+         pragma Import (C, Internal, "gsk_path_foreach");
+
+         D      : System.Address;
+         Result : Boolean;
+      begin
+         D := Users.Build (To_Address (Func), User_Data);
+         Result := Internal (Get_Object (Self), Flags, Internal_Foreach_Func'Address, D) /= 0;
+         Users.Free_Data (D);
+         return Result;
+      end Foreach;
+   end Gsk_Path_Foreach_User_Data;
 
    -----------
    -- Equal --

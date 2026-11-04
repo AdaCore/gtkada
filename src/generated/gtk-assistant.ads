@@ -69,6 +69,7 @@ with Glib.List_Model;       use Glib.List_Model;
 with Glib.Object;           use Glib.Object;
 with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
+with Gsk.Renderer;          use Gsk.Renderer;
 with Gtk.Accessible;        use Gtk.Accessible;
 with Gtk.Assistant_Page;    use Gtk.Assistant_Page;
 with Gtk.Atcontext;         use Gtk.Atcontext;
@@ -456,6 +457,10 @@ package Gtk.Assistant is
    procedure Update_Platform_State
       (Self  : not null access Gtk_Assistant_Record;
        State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+
+   function Get_Renderer
+      (Self : not null access Gtk_Assistant_Record)
+       return Gsk.Renderer.Gsk_Renderer;
 
    function Get_Surface
       (Self : not null access Gtk_Assistant_Record) return Gdk.Gdk_Surface;

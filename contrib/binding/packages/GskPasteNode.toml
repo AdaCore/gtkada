@@ -1,0 +1,10 @@
+# ============================================================
+#   GskPasteNode
+# ============================================================
+
+[[method]]
+id = "gsk_paste_node_get_depth"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Paste_Node"

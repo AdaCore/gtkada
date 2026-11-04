@@ -242,6 +242,9 @@ class GtkAdaPackage(object):
                             AdaType(field["type"]) if field.get("type") else
                             naming.type(name="", cname=field["ctype"])
                         )
+                        default = field.get("default", None)
+                        if default is not None:
+                            override_fields[field["name"]].default_record_field_value = default
 
                 unions = []
                 for union in rec.get("union", []):
@@ -435,6 +438,7 @@ class GtkAdaPackage(object):
             elem = ET.Element("type")
             elem.set("ctype", type_entry.get("ctype", ""))
             elem.set("override", str(type_entry.get("override", False)).lower())
+            elem.set("link", str(type_entry.get("link", "")))
             ada = type_entry.get("ada")
             if ada:
                 elem.set("ada", ada)

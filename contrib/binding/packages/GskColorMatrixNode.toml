@@ -1,0 +1,40 @@
+# ============================================================
+#   GskColorMatrixNode
+# ============================================================
+
+[[method]]
+id = "gsk_color_matrix_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Color_Matrix_Node"
+
+[[method]]
+id = "gsk_color_matrix_node_get_color_matrix"
+body = '''
+      function Internal
+         (Self : System.Address)
+          return access constant Graphene.Matrix.Graphene_Matrix_T;
+      pragma Import (C, Internal, "gsk_color_matrix_node_get_color_matrix");
+   begin
+      return Internal (Get_Object (Self));
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Color_Matrix_Node"
+
+[[method]]
+id = "gsk_color_matrix_node_get_color_offset"
+body = '''
+      function Internal
+         (Self : System.Address)
+          return access constant Graphene.Vec4.Graphene_Vec4_T;
+      pragma Import (C, Internal, "gsk_color_matrix_node_get_color_offset");
+   begin
+      return Internal (Get_Object (Self));
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Color_Matrix_Node"

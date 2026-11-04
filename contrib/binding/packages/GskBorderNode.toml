@@ -1,0 +1,87 @@
+# ============================================================
+#   GskBorderNode
+# ============================================================
+
+[[extra.with_spec]]
+pkg = "Gdk.RGBA"
+
+[[extra.type]]
+text = '''
+
+   type Gfloat_Array4 is array (1 .. 4) of Gfloat
+   with Convention => C;
+
+   type Gdk_Rgba_Array4 is array (1 .. 4) of Gdk.RGBA.Gdk_RGBA
+   with Convention => C;
+       '''
+
+[[method]]
+id = "gsk_border_node_new"
+
+[[method.parameter]]
+name = "border_width"
+type = "Gfloat_Array4"
+
+[[method.parameter]]
+name = "border_color"
+type = "Gdk_Rgba_Array4"
+
+[[method]]
+id = "gsk_border_node_get_colors"
+return = "Gdk_Rgba_Array4"
+body = '''
+      use Interfaces.C;
+      type Aliased_Gdk_Rgba_Array is
+        array (Positive range <>) of aliased Gdk.RGBA.Gdk_RGBA
+        with Convention => C;
+      package P is new Interfaces.C.Pointers
+        (Positive, Gdk.RGBA.Gdk_RGBA, Aliased_Gdk_Rgba_Array, (others => 0.0));
+
+      function Internal (Self : System.Address) return P.Pointer;
+      pragma Import (C, Internal, "gsk_border_node_get_colors");
+      Acc_Result : P.Pointer := null;
+      Result     : Gdk_Rgba_Array4;
+   begin
+      Acc_Result := Internal (Get_Object (Self));
+      Result := Gdk_Rgba_Array4 (P.Value (Acc_Result, 4));
+      return Result;
+'''
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Border_Node"
+
+[[method]]
+id = "gsk_border_node_get_outline"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Border_Node"
+
+[[method]]
+id = "gsk_border_node_get_widths"
+return = "Gfloat_Array4"
+body = '''
+      use Interfaces.C;
+      type Aliased_Gfloat_Array is
+        array (Positive range <>) of aliased Gfloat
+        with Convention => C;
+      package P is new Interfaces.C.Pointers
+        (Positive, Gfloat, Aliased_Gfloat_Array, 0.0);
+
+      function Internal (Self : System.Address) return P.Pointer;
+      pragma Import (C, Internal, "gsk_border_node_get_widths");
+      Acc_Result : P.Pointer := null;
+      Result     : Gfloat_Array4;
+   begin
+      Acc_Result := Internal (Get_Object (Self));
+      Result := Gfloat_Array4 (P.Value (Acc_Result, 4));
+      return Result;
+'''
+[[method.parameter]]
+name = "node"
+type = "Gsk_Border_Node"
+
+[[extra.with_body]]
+pkg = "Interfaces.C.Pointers"
+use = false

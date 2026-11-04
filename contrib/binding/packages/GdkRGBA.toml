@@ -83,11 +83,17 @@ pkg = "Glib.Generic_Properties"
 [[extra.with_body]]
 pkg = "Gtkada.Bindings"
 
-[[extra.spec]]
+[[extra.type]]
+ctype = "array_of_Gdk_RGBA"
+ada = "Gdk_RGBA_Array"
 text = '''
 
-   type array_of_Gdk_RGBA is array (Natural range <>) of Gdk_RGBA;
+         type Gdk_RGBA_Array is array (Natural range <>) of Gdk_RGBA;
+         pragma Convention (C, Gdk_RGBA_Array);
+'''
 
+[[extra.spec]]
+text = '''
    Null_RGBA  : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
    Black_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
    White_RGBA : constant Gdk_RGBA := (1.0, 1.0, 1.0, 1.0);

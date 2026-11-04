@@ -1,0 +1,17 @@
+# ============================================================
+#   GskComponentTransferNode
+# ============================================================
+
+[[method]]
+id = "gsk_component_transfer_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Component_Transfer_Node"
+
+[[method]]
+id = "gsk_component_transfer_node_get_transfer"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Component_Transfer_Node"

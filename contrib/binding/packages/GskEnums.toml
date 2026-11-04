@@ -27,6 +27,9 @@ ctype = "GskPathForeachFlags"
 ctype = "GskBlendMode"
 
 [[enum]]
+ctype = "GskRenderNodeType"
+
+[[enum]]
 ctype = "GskMaskMode"
 
 [[enum]]
@@ -35,3 +38,9 @@ ctype = "GskPorterDuff"
 [[enum]]
 ctype = "GskIsolation"
 asbitfield = true
+
+[[enum]]
+ctype = "GskScalingFilter"
+
+[[enum]]
+ctype = "GskGLUniformType"

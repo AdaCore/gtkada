@@ -1,0 +1,10 @@
+# ============================================================
+#   GskCopyNode
+# ============================================================
+
+[[method]]
+id = "gsk_copy_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Copy_Node"

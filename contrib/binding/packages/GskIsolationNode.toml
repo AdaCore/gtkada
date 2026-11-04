@@ -1,0 +1,17 @@
+# ============================================================
+#   GskIsolationNode
+# ============================================================
+
+[[method]]
+id = "gsk_isolation_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Isolation_Node"
+
+[[method]]
+id = "gsk_isolation_node_get_isolations"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Isolation_Node"

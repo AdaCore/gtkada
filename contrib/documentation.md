@@ -565,12 +565,13 @@ Bind a `<record>` (or `<union>`) as an Ada record type.
 
 #### `[[record.field]]` — per-field type override
 
-| Key     | Type   | Meaning                                              |
-|---------|--------|------------------------------------------------------|
-| `name`  | string | **Required.** Field name as it appears in the GIR.   |
-| `ctype` | string | Override the C type for the field.                   |
-| `type`  | string | Override the Ada type directly (takes precedence over `ctype`). |
-| `text`  | string | Hand-written field type representation               |
+| Key       | Type   | Meaning                                            |
+|-----------|--------|----------------------------------------------------|
+| `name`    | string | **Required.** Field name as it appears in the GIR. |
+| `ctype`   | string | Override the C type for the field.                 |
+| `type`    | string | Override the Ada type directly (takes precedence over `ctype`).|
+| `text`    | string | Hand-written field type representation             |
+| `default` | string | Hand-written default value                         |
 
 #### `[[record.union]]` — union discriminant mapping
 
@@ -680,6 +681,7 @@ the naming table.
 | `ada`   | string | Ada type name.                                                          |
 | `override` | bool | Replace an existing type mapping; defaults to `false`.                |
 | `text`  | string | Optional Ada type declaration, placed after generated types but before subprograms. |
+| `link`  | string | Optional. Type name after which this one should be placed                        |
 
 ### `[[extra.gir_element]]` — splice raw GIR XML
 

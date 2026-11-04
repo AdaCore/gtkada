@@ -1,0 +1,17 @@
+# ============================================================
+#   GskTransformNode
+# ============================================================
+
+[[method]]
+id = "gsk_transform_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Transform_Node"
+
+[[method]]
+id = "gsk_transform_node_get_transform"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Transform_Node"

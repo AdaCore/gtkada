@@ -61,7 +61,7 @@ package Gtk.Symbolic_Paintable is
       Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
       Width    : Gdouble;
       Height   : Gdouble;
-      Colors   : array_of_Gdk_RGBA);
+      Colors   : Gdk_RGBA_Array);
    --  Snapshots the paintable with the given colors.
    --  If less than 5 colors are provided, GTK will pad the array with default
    --  colors.
@@ -76,7 +76,7 @@ package Gtk.Symbolic_Paintable is
       Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
       Width    : Gdouble;
       Height   : Gdouble;
-      Colors   : array_of_Gdk_RGBA;
+      Colors   : Gdk_RGBA_Array;
       Weight   : Gdouble);
    --  Snapshots the paintable with the given colors and weight.
    --  If less than 5 colors are provided, GTK will pad the array with default

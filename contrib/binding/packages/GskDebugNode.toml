@@ -1,0 +1,99 @@
+# ============================================================
+#   GskDebugNode
+# ============================================================
+
+[[method]]
+id = "gsk_debug_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Debug_Node"
+
+[[method]]
+id = "gsk_debug_node_get_message"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Debug_Node"
+
+[[method]]
+id = "gsk_debug_node_new"
+bind = false # manual binding
+
+[[extra.spec]]
+text = '''
+   procedure Gtk_New
+      (Self    : out Gsk_Debug_Node;
+       Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Message : UTF8_String);
+   procedure Initialize
+      (Self    : not null access Gsk_Debug_Node_Record'Class;
+       Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Message : UTF8_String);
+   --  Creates a `GskRenderNode` that will add debug information about the
+   --  given Child.
+   --  Adding this node has no visual effect.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
+   --  @param Child The child to add debug info for
+   --  @param Message The debug message
+
+   function Gsk_Debug_Node_New
+      (Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Message : UTF8_String) return Gsk_Debug_Node;
+   --  Creates a `GskRenderNode` that will add debug information about the
+   --  given Child.
+   --  Adding this node has no visual effect.
+   --  @param Child The child to add debug info for
+   --  @param Message The debug message
+'''
+
+[extra]
+body = '''
+   ------------------------
+   -- Gsk_Debug_Node_New --
+   ------------------------
+
+   function Gsk_Debug_Node_New
+      (Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Message : UTF8_String) return Gsk_Debug_Node
+   is
+      Self : constant Gsk_Debug_Node := new Gsk_Debug_Node_Record;
+   begin
+      Gsk.Debug_Node.Initialize (Self, Child, Message);
+      return Self;
+   end Gsk_Debug_Node_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Self    : out Gsk_Debug_Node;
+       Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Message : UTF8_String)
+   is
+   begin
+      Self := new Gsk_Debug_Node_Record;
+      Gsk.Debug_Node.Initialize (Self, Child, Message);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self    : not null access Gsk_Debug_Node_Record'Class;
+       Child   : Gsk.Render_Node.Gsk_Render_Node;
+       Message : UTF8_String)
+   is
+      function Internal
+         (Child   : System.Address;
+          Message : Gtkada.Types.Chars_Ptr) return System.Address;
+      pragma Import (C, Internal, "gsk_debug_node_new");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Get_Object (Child), New_String (Message)));
+      end if;
+   end Initialize;
+'''

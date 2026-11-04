@@ -1,0 +1,98 @@
+# ============================================================
+#   GskContainerNode
+# ============================================================
+
+[[extra.with_spec]]
+pkg = "Gsk.Render_Node"
+
+[[method]]
+id = "gsk_container_node_new"
+bind = false # manual binding
+
+[[method]]
+id = "gsk_container_node_get_child"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Container_Node"
+
+[[method]]
+id = "gsk_container_node_get_n_children"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Container_Node"
+
+[[extra.spec]]
+text = '''
+   procedure Gtk_New
+      (Self     : out Gsk_Container_Node;
+       Children : Gsk.Render_Node.Gsk_Render_Node_Array);
+   procedure Initialize
+      (Self     : not null access Gsk_Container_Node_Record'Class;
+       Children : Gsk.Render_Node.Gsk_Render_Node_Array);
+   --  Creates a new `GskRenderNode` instance for holding the given Children.
+   --  The new node will acquire a reference to each of the children.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
+   --  @param Children The children of the node
+
+   function Gsk_Container_Node_New
+      (Children : Gsk_Render_Node_Array) return Gsk_Container_Node;
+   --  Creates a new `GskRenderNode` instance for holding the given Children.
+   --  The new node will acquire a reference to each of the children.
+   --  @param Children The children of the node
+'''
+
+[extra]
+body = '''
+   ----------------------------
+   -- Gsk_Container_Node_New --
+   ----------------------------
+
+   function Gsk_Container_Node_New
+      (Children : Gsk_Render_Node_Array) return Gsk_Container_Node
+   is
+      Self : constant Gsk_Container_Node := new Gsk_Container_Node_Record;
+   begin
+      Gsk.Container_Node.Initialize (Self, Children);
+      return Self;
+   end Gsk_Container_Node_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Self     : out Gsk_Container_Node;
+       Children : Gsk.Render_Node.Gsk_Render_Node_Array) is
+   begin
+      Self := new Gsk_Container_Node_Record;
+      Gsk.Container_Node.Initialize (Self, Children);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self     : not null access Gsk_Container_Node_Record'Class;
+       Children : Gsk.Render_Node.Gsk_Render_Node_Array)
+   is
+      function Internal
+         (Children   : System.Address;
+          N_Children : Guint) return System.Address;
+      pragma Import (C, Internal, "gsk_container_node_new");
+   begin
+      if not Self.Is_Created then
+         declare
+           Ch : Glib.Gpointer_Array (Children'Range);
+         begin
+            for Index in Children'Range loop
+              Ch (Index) := Get_Object (Children (Index));
+            end loop;
+            Set_Object (Self, Internal (Ch'Address, Guint (Children'Length)));
+         end;
+      end if;
+   end Initialize;
+'''

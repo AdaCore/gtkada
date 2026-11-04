@@ -11,74 +11,24 @@
 # the derivation and the `with Gdk.Snapshot` clause are generated.
 parent = "Gdk.Snapshot.Gdk_Snapshot"
 
-# --- Gradient nodes: need Gsk.ColorStop -----------------------------------
-[[method]]
-id   = "gtk_snapshot_append_conic_gradient"
-bind = false  # needs Gsk.ColorStop
-
-[[method]]
-id   = "gtk_snapshot_append_linear_gradient"
-bind = false  # needs Gsk.ColorStop
-
-[[method]]
-id   = "gtk_snapshot_append_radial_gradient"
-bind = false  # needs Gsk.ColorStop
-
-[[method]]
-id   = "gtk_snapshot_append_repeating_linear_gradient"
-bind = false  # needs Gsk.ColorStop
-
-[[method]]
-id   = "gtk_snapshot_append_repeating_radial_gradient"
-bind = false  # needs Gsk.ColorStop
-
-# --- Border / shadow nodes: need Gsk.RoundedRect --------------------------
-[[method]]
-id   = "gtk_snapshot_append_border"
-bind = false  # needs Gsk.RoundedRect
-
-[[method]]
-id   = "gtk_snapshot_append_inset_shadow"
-bind = false  # needs Gsk.RoundedRect
-
-[[method]]
-id   = "gtk_snapshot_append_outset_shadow"
-bind = false  # needs Gsk.RoundedRect
-
-# --- Render-node returns: need Gsk.RenderNode -----------------------------
-[[method]]
-id   = "gtk_snapshot_append_node"
-bind = false  # needs Gsk.RenderNode
-
-[[method]]
-id   = "gtk_snapshot_to_node"
-bind = false  # returns Gsk.RenderNode
-
 # --- Scaled texture: needs Gsk.ScalingFilter ------------------------------
 [[method]]
 id   = "gtk_snapshot_append_scaled_texture"
 bind = false  # needs Gsk.ScalingFilter
 
-# --- Clip / blend / mask / composite pushes: need Gsk enums & types -------
-[[method]]
-id   = "gtk_snapshot_push_rounded_clip"
-bind = false  # needs Gsk.RoundedRect
-
-[[method]]
-id   = "gtk_snapshot_push_component_transfer"
-bind = false  # needs Gsk.ComponentTransfer
-
-[[method]]
-id   = "gtk_snapshot_push_shadow"
-bind = false  # needs Gsk.Shadow
-
-[[method]]
-id   = "gtk_snapshot_push_gl_shader"
-bind = false  # needs Gsk.GLShader
-
 # --- not directly available ----------------------------------------
 # For next methods the documentation says:
 # This method is not directly available to language bindings.
+
+[[extra.type]]
+text = '''
+   
+   type Gfloat_Array4 is array (1 .. 4) of Gfloat;
+   pragma Convention (C, Gfloat_Array4);
+
+   type Gdk_Rgba_Array4 is array (1 .. 4) of Gdk.RGBA.Gdk_RGBA;
+   pragma Convention (C, Gdk_Rgba_Array4);
+'''
 
 [[method]]
 id   = "gtk_snapshot_free_to_node"
@@ -87,3 +37,155 @@ bind = false
 [[method]]
 id   = "gtk_snapshot_free_to_paintable"
 bind = false
+
+[[method]]
+id = "gtk_snapshot_append_border"
+
+[[method.parameter]]
+name = "border_width"
+type = "Gfloat_Array4"
+
+[[method.parameter]]
+name = "border_color"
+type = "Gdk_Rgba_Array4"
+
+[[method]]
+id = "gtk_snapshot_append_conic_gradient"
+body = '''
+      procedure Internal
+         (Self     : System.Address;
+          Bounds   : not null access Graphene.Rect.Graphene_Rect_T;
+          Center   : not null access Graphene.Point.Graphene_Point_T;
+          Rotation : Interfaces.C.C_float;
+          Stops    : System.Address;
+          N_Stops  : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_conic_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Center, Rotation, Stops'Address, Gsize (Stops'Length));
+'''
+
+[[method.parameter]]
+name = "stops"
+type = "Gsk.Render_Node.Gsk_Color_Stop_Array"
+
+[[method.parameter]]
+name = "n_stops"
+ada = ""
+
+[[method]]
+id = "gtk_snapshot_append_linear_gradient"
+body = '''
+      procedure Internal
+         (Self        : System.Address;
+          Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+          Start_Point : not null access Graphene.Point.Graphene_Point_T;
+          End_Point   : not null access Graphene.Point.Graphene_Point_T;
+          Stops       : System.Address;
+          N_Stops     : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_linear_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Start_Point, End_Point, Stops'Address, Gsize (Stops'Length));
+'''
+
+[[method.parameter]]
+name = "stops"
+type = "Gsk.Render_Node.Gsk_Color_Stop_Array"
+
+[[method.parameter]]
+name = "n_stops"
+ada = ""
+
+[[method]]
+id = "gtk_snapshot_append_radial_gradient"
+body = '''
+      procedure Internal
+         (Self    : System.Address;
+          Bounds  : not null access Graphene.Rect.Graphene_Rect_T;
+          Center  : not null access Graphene.Point.Graphene_Point_T;
+          Hradius : Interfaces.C.C_float;
+          Vradius : Interfaces.C.C_float;
+          Start   : Interfaces.C.C_float;
+          The_End : Interfaces.C.C_float;
+          Stops   : System.Address;
+          N_Stops : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_radial_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Center, Hradius, Vradius, Start, The_End, Stops'Address, Gsize (Stops'Length));
+'''
+
+[[method.parameter]]
+name = "stops"
+type = "Gsk.Render_Node.Gsk_Color_Stop_Array"
+
+[[method.parameter]]
+name = "n_stops"
+ada = ""
+
+[[method]]
+id = "gtk_snapshot_append_repeating_linear_gradient"
+body = '''
+      procedure Internal
+         (Self        : System.Address;
+          Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+          Start_Point : not null access Graphene.Point.Graphene_Point_T;
+          End_Point   : not null access Graphene.Point.Graphene_Point_T;
+          Stops       : System.Address;
+          N_Stops     : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_repeating_linear_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Start_Point, End_Point, Stops'Address, Gsize (Stops'Length));
+'''
+
+[[method.parameter]]
+name = "stops"
+type = "Gsk.Render_Node.Gsk_Color_Stop_Array"
+
+[[method.parameter]]
+name = "n_stops"
+ada = ""
+
+[[method]]
+id = "gtk_snapshot_append_repeating_radial_gradient"
+body = '''
+      procedure Internal
+         (Self    : System.Address;
+          Bounds  : not null access Graphene.Rect.Graphene_Rect_T;
+          Center  : not null access Graphene.Point.Graphene_Point_T;
+          Hradius : Interfaces.C.C_float;
+          Vradius : Interfaces.C.C_float;
+          Start   : Interfaces.C.C_float;
+          The_End : Interfaces.C.C_float;
+          Stops   : System.Address;
+          N_Stops : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_repeating_radial_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Center, Hradius, Vradius, Start, The_End, Stops'Address, Gsize (Stops'Length));
+'''
+
+[[method.parameter]]
+name = "stops"
+type = "Gsk.Render_Node.Gsk_Color_Stop_Array"
+
+[[method.parameter]]
+name = "n_stops"
+ada = ""
+
+[[method]]
+id = "gtk_snapshot_push_shadow"
+body = '''
+      procedure Internal
+         (Self      : System.Address;
+          Shadow    : System.Address;
+          N_Shadows : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_push_shadow");
+   begin
+      Internal (Get_Object (Self), Shadow'Address, Gsize (Shadow'Length));
+'''
+
+[[method.parameter]]
+name = "Shadow"
+type = "Gsk.Shadow_Node.Gsk_Shadow_Array"
+
+[[method.parameter]]
+name = "n_shadows"
+ada = ""

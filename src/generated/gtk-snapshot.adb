@@ -68,6 +68,26 @@ package body Gtk.Snapshot is
       end if;
    end Initialize;
 
+   -------------------
+   -- Append_Border --
+   -------------------
+
+   procedure Append_Border
+      (Self         : not null access Gtk_Snapshot_Record;
+       Outline      : Gsk.Rounded_Rect.Gsk_Rounded_Rect;
+       Border_Width : Gfloat_Array4;
+       Border_Color : Gdk_Rgba_Array4)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Outline      : Gsk.Rounded_Rect.Gsk_Rounded_Rect;
+          Border_Width : Gfloat_Array4;
+          Border_Color : Gdk_Rgba_Array4);
+      pragma Import (C, Internal, "gtk_snapshot_append_border");
+   begin
+      Internal (Get_Object (Self), Outline, Border_Width, Border_Color);
+   end Append_Border;
+
    ------------------
    -- Append_Cairo --
    ------------------
@@ -104,6 +124,29 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Color, Bounds);
    end Append_Color;
 
+   ---------------------------
+   -- Append_Conic_Gradient --
+   ---------------------------
+
+   procedure Append_Conic_Gradient
+      (Self     : not null access Gtk_Snapshot_Record;
+       Bounds   : not null access Graphene.Rect.Graphene_Rect_T;
+       Center   : not null access Graphene.Point.Graphene_Point_T;
+       Rotation : Interfaces.C.C_float;
+       Stops    : Gsk.Render_Node.Gsk_Color_Stop_Array)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Bounds   : not null access Graphene.Rect.Graphene_Rect_T;
+          Center   : not null access Graphene.Point.Graphene_Point_T;
+          Rotation : Interfaces.C.C_float;
+          Stops    : System.Address;
+          N_Stops  : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_conic_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Center, Rotation, Stops'Address, Gsize (Stops'Length));
+   end Append_Conic_Gradient;
+
    -----------------
    -- Append_Fill --
    -----------------
@@ -124,6 +167,32 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Get_Object (Path), Fill_Rule, Color);
    end Append_Fill;
 
+   -------------------------
+   -- Append_Inset_Shadow --
+   -------------------------
+
+   procedure Append_Inset_Shadow
+      (Self        : not null access Gtk_Snapshot_Record;
+       Outline     : Gsk.Rounded_Rect.Gsk_Rounded_Rect;
+       Color       : Gdk.RGBA.Gdk_RGBA;
+       Dx          : Interfaces.C.C_float;
+       Dy          : Interfaces.C.C_float;
+       Spread      : Interfaces.C.C_float;
+       Blur_Radius : Interfaces.C.C_float)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Outline     : Gsk.Rounded_Rect.Gsk_Rounded_Rect;
+          Color       : Gdk.RGBA.Gdk_RGBA;
+          Dx          : Interfaces.C.C_float;
+          Dy          : Interfaces.C.C_float;
+          Spread      : Interfaces.C.C_float;
+          Blur_Radius : Interfaces.C.C_float);
+      pragma Import (C, Internal, "gtk_snapshot_append_inset_shadow");
+   begin
+      Internal (Get_Object (Self), Outline, Color, Dx, Dy, Spread, Blur_Radius);
+   end Append_Inset_Shadow;
+
    -------------------
    -- Append_Layout --
    -------------------
@@ -142,6 +211,69 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Get_Object (Layout), Color);
    end Append_Layout;
 
+   ----------------------------
+   -- Append_Linear_Gradient --
+   ----------------------------
+
+   procedure Append_Linear_Gradient
+      (Self        : not null access Gtk_Snapshot_Record;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start_Point : not null access Graphene.Point.Graphene_Point_T;
+       End_Point   : not null access Graphene.Point.Graphene_Point_T;
+       Stops       : Gsk.Render_Node.Gsk_Color_Stop_Array)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+          Start_Point : not null access Graphene.Point.Graphene_Point_T;
+          End_Point   : not null access Graphene.Point.Graphene_Point_T;
+          Stops       : System.Address;
+          N_Stops     : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_linear_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Start_Point, End_Point, Stops'Address, Gsize (Stops'Length));
+   end Append_Linear_Gradient;
+
+   -----------------
+   -- Append_Node --
+   -----------------
+
+   procedure Append_Node
+      (Self : not null access Gtk_Snapshot_Record;
+       Node : Gsk.Render_Node.Gsk_Render_Node)
+   is
+      procedure Internal (Self : System.Address; Node : System.Address);
+      pragma Import (C, Internal, "gtk_snapshot_append_node");
+   begin
+      Internal (Get_Object (Self), Get_Object (Node));
+   end Append_Node;
+
+   --------------------------
+   -- Append_Outset_Shadow --
+   --------------------------
+
+   procedure Append_Outset_Shadow
+      (Self        : not null access Gtk_Snapshot_Record;
+       Outline     : Gsk.Rounded_Rect.Gsk_Rounded_Rect;
+       Color       : Gdk.RGBA.Gdk_RGBA;
+       Dx          : Interfaces.C.C_float;
+       Dy          : Interfaces.C.C_float;
+       Spread      : Interfaces.C.C_float;
+       Blur_Radius : Interfaces.C.C_float)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Outline     : Gsk.Rounded_Rect.Gsk_Rounded_Rect;
+          Color       : Gdk.RGBA.Gdk_RGBA;
+          Dx          : Interfaces.C.C_float;
+          Dy          : Interfaces.C.C_float;
+          Spread      : Interfaces.C.C_float;
+          Blur_Radius : Interfaces.C.C_float);
+      pragma Import (C, Internal, "gtk_snapshot_append_outset_shadow");
+   begin
+      Internal (Get_Object (Self), Outline, Color, Dx, Dy, Spread, Blur_Radius);
+   end Append_Outset_Shadow;
+
    ------------------
    -- Append_Paste --
    ------------------
@@ -159,6 +291,87 @@ package body Gtk.Snapshot is
    begin
       Internal (Get_Object (Self), Bounds, Nth);
    end Append_Paste;
+
+   ----------------------------
+   -- Append_Radial_Gradient --
+   ----------------------------
+
+   procedure Append_Radial_Gradient
+      (Self    : not null access Gtk_Snapshot_Record;
+       Bounds  : not null access Graphene.Rect.Graphene_Rect_T;
+       Center  : not null access Graphene.Point.Graphene_Point_T;
+       Hradius : Interfaces.C.C_float;
+       Vradius : Interfaces.C.C_float;
+       Start   : Interfaces.C.C_float;
+       The_End : Interfaces.C.C_float;
+       Stops   : Gsk.Render_Node.Gsk_Color_Stop_Array)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Bounds  : not null access Graphene.Rect.Graphene_Rect_T;
+          Center  : not null access Graphene.Point.Graphene_Point_T;
+          Hradius : Interfaces.C.C_float;
+          Vradius : Interfaces.C.C_float;
+          Start   : Interfaces.C.C_float;
+          The_End : Interfaces.C.C_float;
+          Stops   : System.Address;
+          N_Stops : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_radial_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Center, Hradius, Vradius, Start, The_End, Stops'Address, Gsize (Stops'Length));
+   end Append_Radial_Gradient;
+
+   --------------------------------------
+   -- Append_Repeating_Linear_Gradient --
+   --------------------------------------
+
+   procedure Append_Repeating_Linear_Gradient
+      (Self        : not null access Gtk_Snapshot_Record;
+       Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+       Start_Point : not null access Graphene.Point.Graphene_Point_T;
+       End_Point   : not null access Graphene.Point.Graphene_Point_T;
+       Stops       : Gsk.Render_Node.Gsk_Color_Stop_Array)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Bounds      : not null access Graphene.Rect.Graphene_Rect_T;
+          Start_Point : not null access Graphene.Point.Graphene_Point_T;
+          End_Point   : not null access Graphene.Point.Graphene_Point_T;
+          Stops       : System.Address;
+          N_Stops     : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_repeating_linear_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Start_Point, End_Point, Stops'Address, Gsize (Stops'Length));
+   end Append_Repeating_Linear_Gradient;
+
+   --------------------------------------
+   -- Append_Repeating_Radial_Gradient --
+   --------------------------------------
+
+   procedure Append_Repeating_Radial_Gradient
+      (Self    : not null access Gtk_Snapshot_Record;
+       Bounds  : not null access Graphene.Rect.Graphene_Rect_T;
+       Center  : not null access Graphene.Point.Graphene_Point_T;
+       Hradius : Interfaces.C.C_float;
+       Vradius : Interfaces.C.C_float;
+       Start   : Interfaces.C.C_float;
+       The_End : Interfaces.C.C_float;
+       Stops   : Gsk.Render_Node.Gsk_Color_Stop_Array)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Bounds  : not null access Graphene.Rect.Graphene_Rect_T;
+          Center  : not null access Graphene.Point.Graphene_Point_T;
+          Hradius : Interfaces.C.C_float;
+          Vradius : Interfaces.C.C_float;
+          Start   : Interfaces.C.C_float;
+          The_End : Interfaces.C.C_float;
+          Stops   : System.Address;
+          N_Stops : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_append_repeating_radial_gradient");
+   begin
+      Internal (Get_Object (Self), Bounds, Center, Hradius, Vradius, Start, The_End, Stops'Address, Gsize (Stops'Length));
+   end Append_Repeating_Radial_Gradient;
 
    -------------------
    -- Append_Stroke --
@@ -302,6 +515,28 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Color_Matrix, Color_Offset);
    end Push_Color_Matrix;
 
+   -----------------------------
+   -- Push_Component_Transfer --
+   -----------------------------
+
+   procedure Push_Component_Transfer
+      (Self  : not null access Gtk_Snapshot_Record;
+       Red   : Gsk.Component_Transfer.Gsk_Component_Transfer;
+       Green : Gsk.Component_Transfer.Gsk_Component_Transfer;
+       Blue  : Gsk.Component_Transfer.Gsk_Component_Transfer;
+       Alpha : Gsk.Component_Transfer.Gsk_Component_Transfer)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          Red   : System.Address;
+          Green : System.Address;
+          Blue  : System.Address;
+          Alpha : System.Address);
+      pragma Import (C, Internal, "gtk_snapshot_push_component_transfer");
+   begin
+      Internal (Get_Object (Self), Get_Object (Red), Get_Object (Green), Get_Object (Blue), Get_Object (Alpha));
+   end Push_Component_Transfer;
+
    --------------------
    -- Push_Composite --
    --------------------
@@ -360,6 +595,26 @@ package body Gtk.Snapshot is
    begin
       Internal (Get_Object (Self), Get_Object (Path), Fill_Rule);
    end Push_Fill;
+
+   --------------------
+   -- Push_Gl_Shader --
+   --------------------
+
+   procedure Push_Gl_Shader
+      (Self      : not null access Gtk_Snapshot_Record;
+       Shader    : not null access Gsk.Glshader.Gsk_Glshader_Record'Class;
+       Bounds    : not null access Graphene.Rect.Graphene_Rect_T;
+       Take_Args : Glib.Bytes.Gbytes)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Shader    : System.Address;
+          Bounds    : not null access Graphene.Rect.Graphene_Rect_T;
+          Take_Args : System.Address);
+      pragma Import (C, Internal, "gtk_snapshot_push_gl_shader");
+   begin
+      Internal (Get_Object (Self), Get_Object (Shader), Bounds, Get_Object (Take_Args));
+   end Push_Gl_Shader;
 
    --------------------
    -- Push_Isolation --
@@ -424,6 +679,39 @@ package body Gtk.Snapshot is
    begin
       Internal (Get_Object (Self), Bounds, Child_Bounds);
    end Push_Repeat;
+
+   -----------------------
+   -- Push_Rounded_Clip --
+   -----------------------
+
+   procedure Push_Rounded_Clip
+      (Self   : not null access Gtk_Snapshot_Record;
+       Bounds : Gsk.Rounded_Rect.Gsk_Rounded_Rect)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Bounds : Gsk.Rounded_Rect.Gsk_Rounded_Rect);
+      pragma Import (C, Internal, "gtk_snapshot_push_rounded_clip");
+   begin
+      Internal (Get_Object (Self), Bounds);
+   end Push_Rounded_Clip;
+
+   -----------------
+   -- Push_Shadow --
+   -----------------
+
+   procedure Push_Shadow
+      (Self   : not null access Gtk_Snapshot_Record;
+       Shadow : Gsk.Shadow_Node.Gsk_Shadow_Array)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Shadow    : System.Address;
+          N_Shadows : Gsize);
+      pragma Import (C, Internal, "gtk_snapshot_push_shadow");
+   begin
+      Internal (Get_Object (Self), Shadow'Address, Gsize (Shadow'Length));
+   end Push_Shadow;
 
    -----------------
    -- Push_Stroke --
@@ -656,6 +944,20 @@ package body Gtk.Snapshot is
    begin
       Internal (Get_Object (Self), Factor_X, Factor_Y, Factor_Z);
    end Scale_3D;
+
+   -------------
+   -- To_Node --
+   -------------
+
+   function To_Node
+      (Self : not null access Gtk_Snapshot_Record)
+       return Gsk.Render_Node.Gsk_Render_Node
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_snapshot_to_node");
+   begin
+      return From_Object_Full_Ownership (Internal (Get_Object (Self)));
+   end To_Node;
 
    ------------------
    -- To_Paintable --

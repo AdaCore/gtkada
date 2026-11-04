@@ -89,6 +89,7 @@ with Glib.Action_Map;       use Glib.Action_Map;
 with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
 with Glib.Variant;          use Glib.Variant;
+with Gsk.Renderer;          use Gsk.Renderer;
 with Gtk.Accessible;        use Gtk.Accessible;
 with Gtk.Application;       use Gtk.Application;
 with Gtk.Atcontext;         use Gtk.Atcontext;
@@ -312,6 +313,10 @@ package Gtk.Application_Window is
    procedure Update_Platform_State
       (Self  : not null access Gtk_Application_Window_Record;
        State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+
+   function Get_Renderer
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gsk.Renderer.Gsk_Renderer;
 
    function Get_Surface
       (Self : not null access Gtk_Application_Window_Record)

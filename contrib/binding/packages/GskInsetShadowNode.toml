@@ -1,0 +1,57 @@
+# ============================================================
+#   GskInsetShadowNode
+# ============================================================
+
+[[method]]
+id = "gsk_inset_shadow_node_get_blur_radius"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Inset_Shadow_Node"
+
+[[method]]
+id = "gsk_inset_shadow_node_get_color"
+return = "access constant Gdk.RGBA.Gdk_RGBA"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Inset_Shadow_Node"
+
+[[method]]
+id = "gsk_inset_shadow_node_get_dx"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Inset_Shadow_Node"
+
+[[method]]
+id = "gsk_inset_shadow_node_get_dy"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Inset_Shadow_Node"
+
+[[method]]
+id = "gsk_inset_shadow_node_get_outline"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Inset_Shadow_Node"
+
+[[method]]
+id = "gsk_inset_shadow_node_get_spread"
+
+[[method.parameter]]
+name = "node"
+type = "Gsk_Inset_Shadow_Node"
+
+[[method]]
+id = "gsk_inset_shadow_node_new"
+
+[[method.parameter]]
+name = "outline"
+direction = "not null access"
+
+[[method.parameter]]
+name = "color"
+direction = "not null access"
