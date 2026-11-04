@@ -60,10 +60,11 @@ package Gtk.Shortcut_Trigger is
    --  is returned.
    --  The accepted strings are:
    --  - `never`, for `GtkNeverTrigger` - a string parsed by
-   --  gtk_accelerator_parse, for a `GtkKeyvalTrigger`, e.g. `<Control>C` -
-   --  underscore, followed by a single character, for `GtkMnemonicTrigger`,
-   --  e.g. `_l` - two valid trigger strings, separated by a `|` character, for
-   --  a `GtkAlternativeTrigger`: `<Control>q|<Control>w`
+   --  Gtk.Accel_Group.Accelerator_Parse, for a `GtkKeyvalTrigger`, e.g.
+   --  `<Control>C` - underscore, followed by a single character, for
+   --  `GtkMnemonicTrigger`, e.g. `_l` - two valid trigger strings, separated
+   --  by a `|` character, for a `GtkAlternativeTrigger`:
+   --  `<Control>q|<Control>w`
    --  Note that you will have to escape the `<` and `>` characters when
    --  specifying triggers in XML files, such as GtkBuilder ui files. Use `<`
    --  instead of `<` and `>` instead of `>`.
@@ -78,10 +79,11 @@ package Gtk.Shortcut_Trigger is
    --  is returned.
    --  The accepted strings are:
    --  - `never`, for `GtkNeverTrigger` - a string parsed by
-   --  gtk_accelerator_parse, for a `GtkKeyvalTrigger`, e.g. `<Control>C` -
-   --  underscore, followed by a single character, for `GtkMnemonicTrigger`,
-   --  e.g. `_l` - two valid trigger strings, separated by a `|` character, for
-   --  a `GtkAlternativeTrigger`: `<Control>q|<Control>w`
+   --  Gtk.Accel_Group.Accelerator_Parse, for a `GtkKeyvalTrigger`, e.g.
+   --  `<Control>C` - underscore, followed by a single character, for
+   --  `GtkMnemonicTrigger`, e.g. `_l` - two valid trigger strings, separated
+   --  by a `|` character, for a `GtkAlternativeTrigger`:
+   --  `<Control>q|<Control>w`
    --  Note that you will have to escape the `<` and `>` characters when
    --  specifying triggers in XML files, such as GtkBuilder ui files. Use `<`
    --  instead of `<` and `>` instead of `>`.
