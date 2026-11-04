@@ -1,0 +1,235 @@
+# ============================================================
+#   GDrive
+# ============================================================
+
+ada = "Glib.GDrives"
+
+[[method]]
+id = "g_drive_eject"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_drive_eject_finish"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_drive_get_volumes"
+return = "Glib.GVolumes.GVolume_GList"
+body = '''
+      function Internal (Self : Gdrive) return System.Address;
+      pragma Import (C, Internal, "g_drive_get_volumes");
+      Res : Glib.GVolumes.GVolume_GList;
+   begin
+      Glib.GVolumes.GVolume_List.Set_Object (Res, Internal(Self));
+      return Res;
+'''
+
+[[virtual_method]]
+id = "eject"
+bind = false # Obsolescent
+
+[[virtual_method]]
+id = "eject_finish"
+bind = false # Obsolescent
+
+[[virtual_method]]
+id = "get_volumes"
+return = "System.Address"
+
+[[method]]
+id = "g_drive_poll_for_media"
+bind = false # manual binding
+
+[[extra.spec]]
+text = '''
+   procedure Poll_For_Media
+      (Self        : Gdrive;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback);
+   --  Asynchronously polls Drive to see if media has been inserted or
+   --  removed.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GDrives.Poll_For_Media_Finish to obtain the result of the
+   --  operation.
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore.
+   --  @param Callback a Gasync_Ready_Callback, or null.
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Poll_For_Media_User_Data is
+
+      type Gasync_Ready_Callback is access procedure
+        (Source_Object : access Glib.Object.GObject_Record'Class;
+         Res           : Glib.G_Async_Result;
+         Data          : User_Data_Type);
+      --  Type definition for a function that will be called back when an
+      --  asynchronous operation within GIO has been completed.
+      --  Gasync_Ready_Callback callbacks from Gtask.Gtask are guaranteed to be
+      --  invoked in a later iteration of the thread-default main context (see
+      --  [methodGlib.MainContext.push_thread_default]) where the Gtask.Gtask was
+      --  created. All other users of Gasync_Ready_Callback must likewise call it
+      --  asynchronously in a later iteration of the main context.
+      --  The asynchronous operation is guaranteed to have held a reference to
+      --  Source_Object from the time when the `*_async` function was called,
+      --  until after this callback returns.
+      --  @param Source_Object the object the asynchronous operation was started
+      --  with.
+      --  @param Res a Glib.G_Async_Result.
+      --  @param Data user data passed to the callback.
+
+      procedure Poll_For_Media
+         (Self        : Glib.GDrives.Gdrive;
+          Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+          Callback    : Gasync_Ready_Callback;
+          User_Data   : User_Data_Type);
+      --  Asynchronously polls Drive to see if media has been inserted or
+      --  removed.
+      --  When the operation is finished, Callback will be called. You can
+      --  then call Glib.GDrives.Poll_For_Media_Finish to obtain the result of
+      --  the operation.
+      --  @param Cancellable optional Glib.Cancellable.Gcancellable object,
+      --  null to ignore.
+      --  @param Callback a Gasync_Ready_Callback, or null.
+      --  @param User_Data user data to pass to Callback
+
+   end Poll_For_Media_User_Data;
+'''
+
+[extra]
+body = '''
+   procedure Internal_Poll_For_Media
+     (Self        : Gdrive;
+      Cancellable : System.Address;
+      Callback    : System.Address;
+      User_Data   : System.Address);
+   pragma Import (C, Internal_Poll_For_Media, "g_drive_poll_for_media");
+
+   function Internal_To_Gasync_Ready_Callback is new Ada.Unchecked_Conversion
+     (System.Address, Gasync_Ready_Callback);
+
+   function Internal_To_Address is new Ada.Unchecked_Conversion
+     (Gasync_Ready_Callback, System.Address);
+
+   procedure Internal_Callback
+      (Source_Object : System.Address;
+       Res           : Glib.G_Async_Result;
+       Data          : System.Address);
+   pragma Convention (C, Internal_Callback);
+   --  @param Source_Object the object the asynchronous operation was started
+   --  with.
+   --  @param Res a Glib.G_Async_Result.
+   --  @param Data user data passed to the callback.
+
+   -----------------------
+   -- Internal_Callback --
+   -----------------------
+
+   procedure Internal_Callback
+      (Source_Object : System.Address;
+       Res           : Glib.G_Async_Result;
+       Data          : System.Address)
+   is
+      Func         : constant Gasync_Ready_Callback :=
+        Internal_To_Gasync_Ready_Callback (Data);
+      Stub_GObject : Glib.Object.GObject_Record;
+   begin
+      Func (Get_User_Data (Source_Object, Stub_GObject), Res);
+   end Internal_Callback;
+
+   --------------------
+   -- Poll_For_Media --
+   --------------------
+
+   procedure Poll_For_Media
+      (Self        : Gdrive;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         Internal_Poll_For_Media
+           (Self, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         Internal_Poll_For_Media
+           (Self, Get_Object_Or_Null (GObject (Cancellable)),
+            Internal_Callback'Address,
+            Internal_To_Address (Callback));
+      end if;
+   end Poll_For_Media;
+
+   package body Poll_For_Media_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+
+      function To_Gasync_Ready_Callback is new Ada.Unchecked_Conversion
+        (System.Address, Gasync_Ready_Callback);
+
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gasync_Ready_Callback, System.Address);
+
+      procedure Internal_Cb
+         (Source_Object : System.Address;
+          Res           : Glib.G_Async_Result;
+          Data          : System.Address);
+      pragma Convention (C, Internal_Cb);
+      --  Type definition for a function that will be called back when an
+      --  asynchronous operation within GIO has been completed.
+      --  Gasync_Ready_Callback callbacks from Gtask.Gtask are guaranteed to be
+      --  invoked in a later iteration of the thread-default main context (see
+      --  [methodGlib.MainContext.push_thread_default]) where the Gtask.Gtask
+      --  was created. All other users of Gasync_Ready_Callback must likewise
+      --  call it asynchronously in a later iteration of the main context.
+      --  The asynchronous operation is guaranteed to have held a reference to
+      --  Source_Object from the time when the `*_async` function was called,
+      --  until after this callback returns.
+      --  @param Source_Object the object the asynchronous operation was
+      --  started with.
+      --  @param Res a Glib.G_Async_Result.
+      --  @param Data user data passed to the callback.
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      procedure Internal_Cb
+         (Source_Object : System.Address;
+          Res           : Glib.G_Async_Result;
+          Data          : System.Address)
+      is
+         D            : constant Users.Internal_Data_Access := Users.Convert (Data);
+         Stub_GObject : Glib.Object.GObject_Record;
+      begin
+         To_Gasync_Ready_Callback (D.Func) (Get_User_Data (Source_Object, Stub_GObject), Res, D.Data.all);
+         Users.Free_Data (Data);
+      exception
+        when others =>
+           Users.Free_Data (Data);
+      end Internal_Cb;
+
+      --------------------
+      -- Poll_For_Media --
+      --------------------
+
+      procedure Poll_For_Media
+         (Self        : Glib.GDrives.Gdrive;
+          Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+          Callback    : Gasync_Ready_Callback;
+          User_Data   : User_Data_Type)
+      is
+         D : System.Address;
+      begin
+         if Callback = null then
+            Internal_Poll_For_Media
+              (Self, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+         else
+            D := Users.Build (To_Address (Callback), User_Data);
+            Internal_Poll_For_Media
+              (Self, Get_Object_Or_Null (GObject (Cancellable)), Internal_Cb'Address, D);
+         end if;
+      end Poll_For_Media;
+
+   end Poll_For_Media_User_Data;
+'''

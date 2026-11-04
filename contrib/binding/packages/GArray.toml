@@ -1,0 +1,17 @@
+# ============================================================
+#   GArray
+# ============================================================
+
+ada = "Glib.Arrays"
+
+[[record]]
+ctype = "GArray"
+
+[[extra.type]]
+ctype = "GArray*"
+ada = "Garray_Access"
+text = '''
+
+    type Garray_Access is access all Garray;
+    pragma Convention (C, Garray_Access);
+'''

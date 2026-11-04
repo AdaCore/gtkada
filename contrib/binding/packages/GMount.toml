@@ -1,0 +1,45 @@
+# ============================================================
+#   GMount
+# ============================================================
+
+ada = "Glib.GMounts"
+
+[[extra.with_spec]]
+pkg = "Glib.GDrives"
+limited = true
+
+[[extra.with_spec]]
+pkg = "Glib.GVolumes"
+limited = true
+
+[[method]]
+id = "g_mount_eject"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_mount_eject_finish"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_mount_unmount"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_mount_unmount_finish"
+bind = false # Obsolescent
+
+[[virtual_method]]
+id = "eject"
+bind = false # Obsolescent
+
+[[virtual_method]]
+id = "eject_finish"
+bind = false # Obsolescent
+
+[[virtual_method]]
+id = "unmount"
+bind = false # Obsolescent
+
+[[virtual_method]]
+id = "unmount_finish"
+bind = false # Obsolescent
