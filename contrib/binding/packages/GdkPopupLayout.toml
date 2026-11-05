@@ -2,17 +2,17 @@
 #   GdkPopupLayout
 # ============================================================
 
-[[method]]
-id = "gdk_popup_layout_get_anchor_rect"
-bind = false
-
-[[method]]
-id = "gdk_popup_layout_set_anchor_rect"
-bind = false
-
 [[extra.with_spec]]
 pkg = "System"
 use = false
+
+[[method]]
+id = "gdk_popup_layout_get_anchor_rect"
+bind = false # manual binding
+
+[[method]]
+id = "gdk_popup_layout_set_anchor_rect"
+bind = false # manual binding
 
 [[extra.spec]]
 text = '''

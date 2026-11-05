@@ -24,13 +24,9 @@ bind = false
 # valist
 
 [[method]]
-id = "g_string_free_to_bytes"
-bind = false
-# requires GByte
-
-[[method]]
 id = "g_string_append_c"
 ada = "Append_Char"
+
 [[method]]
 id = "g_string_prepend_c"
 ada = "Prepend_Char"

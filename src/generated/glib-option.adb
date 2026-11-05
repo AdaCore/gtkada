@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Application;         use Glib.Application;
 with Glib.Object;
 
 package body Glib.Option is

@@ -341,7 +341,7 @@ binding = (
     "Gtk.Bitset",
     "Gtk.BitsetIter",
     "Gtk.BookmarkList",
-    "--Gtk.Border", # record
+    "Gtk.Border",
     "Gtk.Box",
     "Gtk.Builder",
     "Gtk.BuilderCScope",

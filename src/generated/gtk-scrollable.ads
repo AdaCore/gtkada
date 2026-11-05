@@ -57,23 +57,13 @@ with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Adjustment;  use Gtk.Adjustment;
+with Gtk.Border;      use Gtk.Border;
 with Gtk.Enums;       use Gtk.Enums;
 
 package Gtk.Scrollable is
 
    type Gtk_Scrollable is new Glib.Types.GType_Interface;
    Null_Gtk_Scrollable : constant Gtk_Scrollable;
-
-   type Gtk_Border is record
-      Left : Gint16;
-      Right : Gint16;
-      Top : Gint16;
-      Bottom : Gint16;
-   end record;
-   pragma Convention (C, Gtk_Border);
-   --  Specifies a border around a rectangular area.
-   --
-   --  Each side can have a different width.
 
    ------------------
    -- Constructors --
@@ -88,7 +78,7 @@ package Gtk.Scrollable is
 
    function Get_Border
       (Self   : Gtk_Scrollable;
-       Border : out Gtk_Border) return Boolean;
+       Border : out Gtk.Border.Gtk_Border) return Boolean;
    --  Returns the size of a non-scrolling border around the outside of the
    --  scrollable.
    --  An example for this would be treeview headers. GTK can use this
@@ -149,17 +139,6 @@ package Gtk.Scrollable is
    --  minimum height or below the natural height.
    --  @param Policy the vertical `GtkScrollablePolicy`
 
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Gtk_Border) return Gtk_Border;
-   pragma Inline (From_Object_Free);
-   --  Return the underlying object and free the pointer.
-   --  This is meant to be used internally by GtkAda,
-   --  and should not in general be called by user code.
-
    ----------------
    -- Properties --
    ----------------
@@ -200,7 +179,7 @@ package Gtk.Scrollable is
 
    type Virtual_Get_Border is access function
      (Self   : Gtk_Scrollable;
-      Border : out Gtk_Border) return Glib.Gboolean;
+      Border : out Gtk.Border.Gtk_Border) return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Border);
    --  Returns the size of a non-scrolling border around the outside of the
    --  scrollable.

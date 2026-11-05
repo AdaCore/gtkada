@@ -166,6 +166,9 @@ package Glib.GFile is
 
    package Gfile_SList is new Generic_SList (Glib.GFile.Gfile);
 
+   type GFile_Array is array (Positive range <>) of GFile;
+   pragma Convention (C, GFile_Array);
+
    ---------------
    -- Callbacks --
    ---------------

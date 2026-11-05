@@ -30,6 +30,8 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtk.Event_Controller;       use Gtk.Event_Controller;
 with Gtk.Layout_Manager;         use Gtk.Layout_Manager;
+with Gtk.Root;                   use Gtk.Root;
+with Gtk.Snapshot;               use Gtk.Snapshot;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
@@ -1271,6 +1273,19 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Request_Mode;
+
+   --------------
+   -- Get_Root --
+   --------------
+
+   function Get_Root
+      (Widget : not null access Gtk_Widget_Record) return Gtk.Root.Gtk_Root
+   is
+      function Internal (Widget : System.Address) return Gtk.Root.Gtk_Root;
+      pragma Import (C, Internal, "gtk_widget_get_root");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Root;
 
    ----------------------
    -- Get_Scale_Factor --
@@ -2568,6 +2583,24 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Allocation, Baseline);
    end Size_Allocate;
+
+   --------------------
+   -- Snapshot_Child --
+   --------------------
+
+   procedure Snapshot_Child
+      (Widget   : not null access Gtk_Widget_Record;
+       Child    : not null access Gtk_Widget_Record'Class;
+       Snapshot : not null access Gtk.Snapshot.Gtk_Snapshot_Record'Class)
+   is
+      procedure Internal
+         (Widget   : System.Address;
+          Child    : System.Address;
+          Snapshot : System.Address);
+      pragma Import (C, Internal, "gtk_widget_snapshot_child");
+   begin
+      Internal (Get_Object (Widget), Get_Object (Child), Get_Object (Snapshot));
+   end Snapshot_Child;
 
    ---------------------------
    -- Translate_Coordinates --

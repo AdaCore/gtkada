@@ -38,6 +38,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;          use Gdk;
+with Gdk.Surface;
 with Glib;         use Glib;
 with Glib.Types;   use Glib.Types;
 with Gsk.Renderer; use Gsk.Renderer;
@@ -87,6 +88,17 @@ package Gtk.Native is
    pragma Import (C, Unrealize, "gtk_native_unrealize");
    --  Unrealizes a `GtkNative`.
    --  This should only be used by subclasses.
+
+   ---------------
+   -- Functions --
+   ---------------
+
+   function Get_For_Surface
+      (Surface : not null access Gdk.Surface.Gdk_Surface_Record'Class)
+       return Gtk_Native;
+   --  Finds the `GtkNative` associated with the surface.
+   --  @param Surface a `GdkSurface`
+   --  @return the `GtkNative` that is associated with Surface
 
    ----------------
    -- Interfaces --

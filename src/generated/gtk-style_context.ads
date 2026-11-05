@@ -66,6 +66,7 @@ with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
+with Gtk.Border;              use Gtk.Border;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Style_Provider;      use Gtk.Style_Provider;
 with Gtk.Widget;              use Gtk.Widget;
@@ -144,6 +145,14 @@ package Gtk.Style_Context is
    --  will be in the range between GTK_STYLE_PROVIDER_PRIORITY_FALLBACK and
    --  GTK_STYLE_PROVIDER_PRIORITY_USER
 
+   procedure Get_Border
+      (Self   : not null access Gtk_Style_Context_Record;
+       Border : out Gtk.Border.Gtk_Border);
+   pragma Obsolescent (Get_Border);
+   --  Gets the border for a given state as a `GtkBorder`.
+   --  Deprecated since 4.10, 1
+   --  @param Border return value for the border settings
+
    procedure Get_Color
       (Self  : not null access Gtk_Style_Context_Record;
        Color : out Gdk.RGBA.Gdk_RGBA);
@@ -172,6 +181,22 @@ package Gtk.Style_Context is
    --  yourself.
    --  Deprecated since 4.10, 1
    --  @param Display a `GdkDisplay`
+
+   procedure Get_Margin
+      (Self   : not null access Gtk_Style_Context_Record;
+       Margin : out Gtk.Border.Gtk_Border);
+   pragma Obsolescent (Get_Margin);
+   --  Gets the margin for a given state as a `GtkBorder`.
+   --  Deprecated since 4.10, 1
+   --  @param Margin return value for the margin settings
+
+   procedure Get_Padding
+      (Self    : not null access Gtk_Style_Context_Record;
+       Padding : out Gtk.Border.Gtk_Border);
+   pragma Obsolescent (Get_Padding);
+   --  Gets the padding for a given state as a `GtkBorder`.
+   --  Deprecated since 4.10, 1
+   --  @param Padding return value for the padding settings
 
    function Get_Scale
       (Self : not null access Gtk_Style_Context_Record) return Glib.Gint;

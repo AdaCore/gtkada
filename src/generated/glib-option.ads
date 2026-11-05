@@ -26,7 +26,7 @@
 --  not be directly accessed.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib.Application;        use Glib.Application;
+limited with Glib.Application;
 with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Gtkada.Bindings;         use Gtkada.Bindings;

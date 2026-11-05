@@ -32,14 +32,14 @@ package body Gtk.Scrollable is
 
    function Get_Border
       (Self   : Gtk_Scrollable;
-       Border : out Gtk_Border) return Boolean
+       Border : out Gtk.Border.Gtk_Border) return Boolean
    is
       function Internal
          (Self       : Gtk_Scrollable;
-          Acc_Border : access Gtk_Border) return Glib.Gboolean;
+          Acc_Border : access Gtk.Border.Gtk_Border) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_scrollable_get_border");
-      Acc_Border     : aliased Gtk_Border;
-      Tmp_Acc_Border : aliased Gtk_Border;
+      Acc_Border     : aliased Gtk.Border.Gtk_Border;
+      Tmp_Acc_Border : aliased Gtk.Border.Gtk_Border;
       Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Self, Tmp_Acc_Border'Access);
@@ -107,19 +107,6 @@ package body Gtk.Scrollable is
    begin
       Internal (Self, Get_Object_Or_Null (GObject (Vadjustment)));
    end Set_Vadjustment;
-
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Gtk_Border) return Gtk_Border
-   is
-      Result : constant Gtk_Border := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
 
    function "+" (W : Gtk_Scrollable) return Gtk_Scrollable is
    begin

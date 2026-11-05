@@ -23,7 +23,6 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Surface;
 
 package body Gtk.Native is
 
@@ -52,6 +51,20 @@ package body Gtk.Native is
    begin
       return Gdk.Gdk_Surface (Get_User_Data (Internal (Self), Stub_Gdk_Surface));
    end Get_Surface;
+
+   ---------------------
+   -- Get_For_Surface --
+   ---------------------
+
+   function Get_For_Surface
+      (Surface : not null access Gdk.Surface.Gdk_Surface_Record'Class)
+       return Gtk_Native
+   is
+      function Internal (Surface : System.Address) return Gtk_Native;
+      pragma Import (C, Internal, "gtk_native_get_for_surface");
+   begin
+      return Internal (Get_Object (Surface));
+   end Get_For_Surface;
 
    function "+" (W : Gtk_Native) return Gtk_Native is
    begin

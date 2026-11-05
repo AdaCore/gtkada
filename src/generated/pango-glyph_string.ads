@@ -29,6 +29,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;       use Glib;
 with Pango.Font; use Pango.Font;
+with Pango.Item; use Pango.Item;
 
 package Pango.Glyph_String is
 
@@ -162,12 +163,53 @@ package Pango.Glyph_String is
    --  Since: gtk+ 1.14
    --  @return the logical width of the glyph string.
 
+   procedure Index_To_X
+      (Self     : access Pango_Glyph_String;
+       Text     : UTF8_String;
+       Length   : Glib.Gint;
+       Analysis : access Pango.Item.Pango_Analysis;
+       Index    : Glib.Gint;
+       Trailing : Boolean;
+       X_Pos    : out Glib.Gint);
+   --  Converts from character position to x position. (X position is measured
+   --  from the left edge of the run). Character positions are computed by
+   --  dividing up each cluster into equal portions.
+   --  @param Text the text for the run
+   --  @param Length the number of bytes (not characters) in Text.
+   --  @param Analysis the analysis information return from pango_itemize
+   --  @param Index the byte index within Text
+   --  @param Trailing whether we should compute the result for the beginning
+   --  (False) or end (True) of the character.
+   --  @param X_Pos location to store result
+
    procedure Set_Size
       (Self    : access Pango_Glyph_String;
        New_Len : Glib.Gint);
    pragma Import (C, Set_Size, "pango_glyph_string_set_size");
    --  Resize a glyph string to the given length.
    --  @param New_Len the new length of the string.
+
+   procedure X_To_Index
+      (Self     : access Pango_Glyph_String;
+       Text     : UTF8_String;
+       Length   : Glib.Gint;
+       Analysis : access Pango.Item.Pango_Analysis;
+       X_Pos    : Glib.Gint;
+       Index    : out Glib.Gint;
+       Trailing : out Glib.Gint);
+   --  Convert from x offset to character position. Character positions are
+   --  computed by dividing up each cluster into equal portions. In scripts
+   --  where positioning within a cluster is not allowed (such as Thai), the
+   --  returned value may not be a valid cursor position; the caller must
+   --  combine the result with the logical attributes for the text to compute
+   --  the valid cursor position.
+   --  @param Text the text for the run
+   --  @param Length the number of bytes (not characters) in text.
+   --  @param Analysis the analysis information return from pango_itemize
+   --  @param X_Pos the x offset (in Pango units)
+   --  @param Index location to store calculated byte index within Text
+   --  @param Trailing location to store a boolean indicating whether the user
+   --  clicked on the leading or trailing edge of the character.
 
    ----------------------
    -- GtkAda additions --

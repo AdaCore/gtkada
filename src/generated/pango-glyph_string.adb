@@ -113,6 +113,62 @@ package body Pango.Glyph_String is
       Free (Tmp_Text);
    end Get_Logical_Widths;
 
+   ----------------
+   -- Index_To_X --
+   ----------------
+
+   procedure Index_To_X
+      (Self     : access Pango_Glyph_String;
+       Text     : UTF8_String;
+       Length   : Glib.Gint;
+       Analysis : access Pango.Item.Pango_Analysis;
+       Index    : Glib.Gint;
+       Trailing : Boolean;
+       X_Pos    : out Glib.Gint)
+   is
+      procedure Internal
+         (Self     : access Pango_Glyph_String;
+          Text     : Gtkada.Types.Chars_Ptr;
+          Length   : Glib.Gint;
+          Analysis : access Pango.Item.Pango_Analysis;
+          Index    : Glib.Gint;
+          Trailing : Glib.Gboolean;
+          X_Pos    : out Glib.Gint);
+      pragma Import (C, Internal, "pango_glyph_string_index_to_x");
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
+   begin
+      Internal (Self, Tmp_Text, Length, Analysis, Index, Boolean'Pos (Trailing), X_Pos);
+      Free (Tmp_Text);
+   end Index_To_X;
+
+   ----------------
+   -- X_To_Index --
+   ----------------
+
+   procedure X_To_Index
+      (Self     : access Pango_Glyph_String;
+       Text     : UTF8_String;
+       Length   : Glib.Gint;
+       Analysis : access Pango.Item.Pango_Analysis;
+       X_Pos    : Glib.Gint;
+       Index    : out Glib.Gint;
+       Trailing : out Glib.Gint)
+   is
+      procedure Internal
+         (Self     : access Pango_Glyph_String;
+          Text     : Gtkada.Types.Chars_Ptr;
+          Length   : Glib.Gint;
+          Analysis : access Pango.Item.Pango_Analysis;
+          X_Pos    : Glib.Gint;
+          Index    : out Glib.Gint;
+          Trailing : out Glib.Gint);
+      pragma Import (C, Internal, "pango_glyph_string_x_to_index");
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
+   begin
+      Internal (Self, Tmp_Text, Length, Analysis, X_Pos, Index, Trailing);
+      Free (Tmp_Text);
+   end X_To_Index;
+
    ----------------------
    -- From_Object_Free --
    ----------------------

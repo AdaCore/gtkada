@@ -277,6 +277,10 @@ package Gsk.Enums is
    --
    --  It defines both what the type is called in the GLSL shader code, and
    --  what the corresponding C type is on the Gtk side.
+   --  The filters used when scaling texture data.
+   --
+   --  The actual implementation of each filter is deferred to the rendering
+   --  pipeline.
 
    ----------------------------
    -- Enumeration Properties --

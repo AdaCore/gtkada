@@ -143,6 +143,58 @@ package body Glib.Application is
       Internal (Get_Object (Self));
    end Activate;
 
+   ---------------------
+   -- Add_Main_Option --
+   ---------------------
+
+   procedure Add_Main_Option
+      (Self            : not null access Gapplication_Record;
+       Long_Name       : UTF8_String;
+       Short_Name      : gchar;
+       Flags           : Glib.Option.GOption_Flags;
+       Arg             : Glib.Option.GOption_Arg;
+       Description     : UTF8_String;
+       Arg_Description : UTF8_String := "")
+   is
+      procedure Internal
+         (Self            : System.Address;
+          Long_Name       : Gtkada.Types.Chars_Ptr;
+          Short_Name      : gchar;
+          Flags           : Glib.Option.GOption_Flags;
+          Arg             : Glib.Option.GOption_Arg;
+          Description     : Gtkada.Types.Chars_Ptr;
+          Arg_Description : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_application_add_main_option");
+      Tmp_Long_Name       : Gtkada.Types.Chars_Ptr := New_String (Long_Name);
+      Tmp_Description     : Gtkada.Types.Chars_Ptr := New_String (Description);
+      Tmp_Arg_Description : Gtkada.Types.Chars_Ptr;
+   begin
+      Tmp_Arg_Description :=
+        (if Arg_Description = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Arg_Description));
+      Internal (Get_Object (Self), Tmp_Long_Name, Short_Name, Flags, Arg, Tmp_Description, Tmp_Arg_Description);
+      Free (Tmp_Arg_Description);
+      Free (Tmp_Description);
+      Free (Tmp_Long_Name);
+   end Add_Main_Option;
+
+   ----------------------
+   -- Add_Option_Group --
+   ----------------------
+
+   procedure Add_Option_Group
+      (Self  : not null access Gapplication_Record;
+       Group : Glib.Option.GOption_Group)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          Group : Glib.Option.GOption_Group);
+      pragma Import (C, Internal, "g_application_add_option_group");
+   begin
+      Internal (Get_Object (Self), Group);
+   end Add_Option_Group;
+
    ------------------------
    -- Bind_Busy_Property --
    ------------------------
@@ -459,6 +511,27 @@ package body Glib.Application is
    begin
       Internal (Get_Object (Self));
    end Mark_Busy;
+
+   ----------
+   -- Open --
+   ----------
+
+   procedure Open
+      (Self  : not null access Gapplication_Record;
+       Files : GFile_Array;
+       Hint  : UTF8_String)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Files   : System.Address;
+          N_Files : Glib.Gint;
+          Hint    : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_application_open");
+      Tmp_Hint : Gtkada.Types.Chars_Ptr := New_String (Hint);
+   begin
+      Internal (Get_Object (Self), Files'Address, Glib.Gint (Files'Length), Tmp_Hint);
+      Free (Tmp_Hint);
+   end Open;
 
    -------------------
    -- Print_Literal --

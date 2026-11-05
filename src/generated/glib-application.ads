@@ -150,6 +150,7 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Input_Stream;       use Glib.Input_Stream;
 with Glib.Notification;       use Glib.Notification;
 with Glib.Object;             use Glib.Object;
+with Glib.Option;             use Glib.Option;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Glib.Variant;            use Glib.Variant;
@@ -247,6 +248,62 @@ package Glib.Application is
    --  signal being emitted in the primary instance.
    --  The application must be registered before calling this function.
    --  Since: gtk+ 2.28
+
+   procedure Add_Main_Option
+      (Self            : not null access Gapplication_Record;
+       Long_Name       : UTF8_String;
+       Short_Name      : gchar;
+       Flags           : Glib.Option.GOption_Flags;
+       Arg             : Glib.Option.GOption_Arg;
+       Description     : UTF8_String;
+       Arg_Description : UTF8_String := "");
+   --  Add an option to be handled by Application.
+   --  Calling this function is the equivalent of calling
+   --  g_application_add_main_option_entries with a single
+   --  Glib.Option.GOption_Entry that has its arg_data member set to null.
+   --  The parsed arguments will be packed into a Gvariant.Dict.Gvariant_Dict
+   --  which is passed to Glib.Application.Gapplication::handle-local-options.
+   --  If Glib.Application.G_Application_Handles_Command_Line is set, then it
+   --  will also be sent to the primary instance. See
+   --  g_application_add_main_option_entries for more details.
+   --  See Glib.Option.GOption_Entry for more documentation of the arguments.
+   --  Since: gtk+ 2.42
+   --  @param Long_Name the long name of an option used to specify it in a
+   --  commandline
+   --  @param Short_Name the short name of an option
+   --  @param Flags flags from Glib.Option.GOption_Flags
+   --  @param Arg the type of the option, as a Glib.Option.GOption_Arg
+   --  @param Description the description for the option in `--help` output
+   --  @param Arg_Description the placeholder to use for the extra argument
+   --  parsed by the option in `--help` output
+
+   procedure Add_Option_Group
+      (Self  : not null access Gapplication_Record;
+       Group : Glib.Option.GOption_Group);
+   --  Adds a Glib.Option.GOption_Group to the commandline handling of
+   --  Application.
+   --  This function is comparable to Glib.Option.Add_Group.
+   --  Unlike g_application_add_main_option_entries, this function does not
+   --  deal with null Arg_Data and never transmits options to the primary
+   --  instance.
+   --  The reason for that is because, by the time the options arrive at the
+   --  primary instance, it is typically too late to do anything with them.
+   --  Taking the GTK option group as an example: GTK will already have been
+   --  initialised by the time the Glib.Application.Gapplication::command-line
+   --  handler runs. In the case that this is not the first-running instance of
+   --  the application, the existing instance may already have been running for
+   --  a very long time.
+   --  This means that the options from Glib.Option.GOption_Group are only
+   --  really usable in the case that the instance of the application being run
+   --  is the first instance. Passing options like `--display=` or
+   --  `--gdk-debug=` on future runs will have no effect on the existing
+   --  primary instance.
+   --  Calling this function will cause the options in the supplied option
+   --  group to be parsed, but it does not cause you to be "opted in" to the
+   --  new functionality whereby unrecognised options are rejected even if
+   --  Glib.Application.G_Application_Handles_Command_Line was given.
+   --  Since: gtk+ 2.40
+   --  @param Group a Glib.Option.GOption_Group
 
    procedure Bind_Busy_Property
       (Self     : not null access Gapplication_Record;
@@ -432,6 +489,24 @@ package Glib.Application is
    --  To cancel the busy indication, use Glib.Application.Unmark_Busy.
    --  The application must be registered before calling this function.
    --  Since: gtk+ 2.38
+
+   procedure Open
+      (Self  : not null access Gapplication_Record;
+       Files : GFile_Array;
+       Hint  : UTF8_String);
+   --  Opens the given files.
+   --  In essence, this results in the Glib.Application.Gapplication::open
+   --  signal being emitted in the primary instance.
+   --  N_Files must be greater than zero.
+   --  Hint is simply passed through to the ::open signal. It is intended to
+   --  be used by applications that have multiple modes for opening files (eg:
+   --  "view" vs "edit", etc). Unless you have a need for this functionality,
+   --  you should use "".
+   --  The application must be registered before calling this function and it
+   --  must have the Glib.Application.G_Application_Handles_Open flag set.
+   --  Since: gtk+ 2.28
+   --  @param Files an array of GFiles to open
+   --  @param Hint a hint (or ""), but never null
 
    procedure Quit (Self : not null access Gapplication_Record);
    --  Immediately quits the application.
@@ -1058,7 +1133,7 @@ package Glib.Application is
    --
    --  You can add options to be recognised during commandline option parsing
    --  using g_application_add_main_option_entries and
-   --  g_application_add_option_group.
+   --  Glib.Application.Add_Option_Group.
    --
    --  Signal handlers can inspect Options (along with values pointed to from
    --  the Arg_Data of an installed GOption_Entrys) in order to decide to
@@ -1076,10 +1151,10 @@ package Glib.Application is
    --  is not set, "normal processing" will treat the remaining uncollected
    --  command line arguments as filenames or URIs. If there are no arguments,
    --  the application is activated by Glib.Application.Activate. One or more
-   --  arguments results in a call to g_application_open.
+   --  arguments results in a call to Glib.Application.Open.
    --
    --  If you want to handle the local commandline arguments for yourself by
-   --  converting them to calls to g_application_open or
+   --  converting them to calls to Glib.Application.Open or
    --  Glib.Action_Group.Activate_Action then you must be sure to register the
    --  application first. You should probably not call
    --  Glib.Application.Activate for yourself, however: just return -1 and
@@ -1131,7 +1206,7 @@ package Glib.Application is
 
    Signal_Open : constant Glib.Signal_Name := "open";
    --  The ::open signal is emitted on the primary instance when there are
-   --  files to open. See g_application_open for more information.
+   --  files to open. See Glib.Application.Open for more information.
    --    procedure Handler
    --       (Self    : access Gapplication_Record'Class;
    --        Files   : array_of_File;

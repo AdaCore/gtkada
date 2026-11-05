@@ -108,6 +108,7 @@ with Glib.Types;              use Glib.Types;
 with Gtk.Accessible;          use Gtk.Accessible;
 with Gtk.Adjustment;          use Gtk.Adjustment;
 with Gtk.Atcontext;           use Gtk.Atcontext;
+with Gtk.Border;              use Gtk.Border;
 with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Cell_Renderer;       use Gtk.Cell_Renderer;
 with Gtk.Constraint_Target;   use Gtk.Constraint_Target;
@@ -1632,7 +1633,7 @@ package Gtk.Tree_View is
 
    function Get_Border
       (Self   : not null access Gtk_Tree_View_Record;
-       Border : out Gtk.Scrollable.Gtk_Border) return Boolean;
+       Border : out Gtk.Border.Gtk_Border) return Boolean;
 
    function Get_Hadjustment
       (Self : not null access Gtk_Tree_View_Record)

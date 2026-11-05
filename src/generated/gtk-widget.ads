@@ -335,7 +335,9 @@ with Gtk.Enums;            use Gtk.Enums;
 limited with Gtk.Event_Controller;
 limited with Gtk.Layout_Manager;
 with Gtk.Native;           use Gtk.Native;
+limited with Gtk.Root;
 with Gtk.Settings;         use Gtk.Settings;
+limited with Gtk.Snapshot;
 with Pango.Context;        use Pango.Context;
 with Pango.Font_Map;       use Pango.Font_Map;
 with Pango.Layout;         use Pango.Layout;
@@ -1420,6 +1422,14 @@ package Gtk.Widget is
    --  their children or in context of their allocation capabilities.
    --  @return The `GtkSizeRequestMode` preferred by Widget.
 
+   function Get_Root
+      (Widget : not null access Gtk_Widget_Record) return Gtk.Root.Gtk_Root;
+   --  Returns the `GtkRoot` widget of the widget.
+   --  This function will return `NULL` if the widget is not contained inside
+   --  a widget tree with a root widget.
+   --  `GtkRoot` widgets will return themselves here.
+   --  @return the root widget of Widget
+
    function Get_Scale_Factor
       (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    --  Retrieves the internal scale factor that maps from window coordinates
@@ -2074,6 +2084,25 @@ package Gtk.Widget is
    --  This is a simple form of [methodGtk.Widget.allocate].
    --  @param Allocation position and size to be allocated to Widget
    --  @param Baseline the baseline of the child, or -1
+
+   procedure Snapshot_Child
+      (Widget   : not null access Gtk_Widget_Record;
+       Child    : not null access Gtk_Widget_Record'Class;
+       Snapshot : not null access Gtk.Snapshot.Gtk_Snapshot_Record'Class);
+   --  Snapshots a child of the widget.
+   --  When a widget receives a call to the snapshot function, it must send
+   --  synthetic [vfuncGtk.Widget.snapshot] calls to all children. This
+   --  function provides a convenient way of doing this. A widget, when it
+   --  receives a call to its [vfuncGtk.Widget.snapshot] function, calls
+   --  Gtk.Widget.Snapshot_Child once for each child, passing in the Snapshot
+   --  the widget received.
+   --  This function takes care of translating the origin of Snapshot, and
+   --  deciding whether the child needs to be snapshot.
+   --  It does nothing for children that implement `GtkNative`.
+   --  @param Child a child of Widget
+   --  @param Snapshot snapshot as passed to the widget. In particular, no
+   --  calls to [methodGtk.Snapshot.translate] or other transform calls should
+   --  have been made
 
    procedure Translate_Coordinates
       (Widget      : not null access Gtk_Widget_Record;

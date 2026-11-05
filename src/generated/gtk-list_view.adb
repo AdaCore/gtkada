@@ -399,15 +399,14 @@ package body Gtk.List_View is
 
    function Get_Border
       (Self   : not null access Gtk_List_View_Record;
-       Border : out Gtk.Scrollable.Gtk_Border) return Boolean
+       Border : out Gtk.Border.Gtk_Border) return Boolean
    is
       function Internal
          (Self       : System.Address;
-          Acc_Border : access Gtk.Scrollable.Gtk_Border)
-          return Glib.Gboolean;
+          Acc_Border : access Gtk.Border.Gtk_Border) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_scrollable_get_border");
-      Acc_Border     : aliased Gtk.Scrollable.Gtk_Border;
-      Tmp_Acc_Border : aliased Gtk.Scrollable.Gtk_Border;
+      Acc_Border     : aliased Gtk.Border.Gtk_Border;
+      Tmp_Acc_Border : aliased Gtk.Border.Gtk_Border;
       Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Acc_Border'Access);
