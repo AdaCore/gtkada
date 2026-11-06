@@ -373,6 +373,26 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Bounds, Center, Hradius, Vradius, Start, The_End, Stops'Address, Gsize (Stops'Length));
    end Append_Repeating_Radial_Gradient;
 
+   ---------------------------
+   -- Append_Scaled_Texture --
+   ---------------------------
+
+   procedure Append_Scaled_Texture
+      (Self    : not null access Gtk_Snapshot_Record;
+       Texture : not null access Gdk.Texture.Gdk_Texture_Record'Class;
+       Filter  : Gsk.Enums.Gsk_Scaling_Filter;
+       Bounds  : not null access Graphene.Rect.Graphene_Rect_T)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Texture : System.Address;
+          Filter  : Gsk.Enums.Gsk_Scaling_Filter;
+          Bounds  : not null access Graphene.Rect.Graphene_Rect_T);
+      pragma Import (C, Internal, "gtk_snapshot_append_scaled_texture");
+   begin
+      Internal (Get_Object (Self), Get_Object (Texture), Filter, Bounds);
+   end Append_Scaled_Texture;
+
    -------------------
    -- Append_Stroke --
    -------------------

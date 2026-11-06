@@ -7,8 +7,22 @@ needs_merge = false
 pkg = "Gtk.Layout_Manager"
 limited = true
 
+[[extra.with_spec]]
+pkg = "Gtk.Snapshot"
+limited = true
+
+[[extra.with_spec]]
+pkg = "Gtk.Root"
+limited = true
+
 [[extra.with_body]]
 pkg = "Gtk.Layout_Manager"
+
+[[extra.with_body]]
+pkg = "Gtk.Snapshot"
+
+[[extra.with_body]]
+pkg = "Gtk.Root"
 
 #  Gtk.Event_Controller withs Gtk.Widget back, for Get_Widget. Break the
 #  cycle the same way: an incomplete view is all the spec needs here, since
@@ -33,21 +47,6 @@ id = "gtk_widget_size_allocate"
 [[method.parameter]]
 name = "allocation"
 ctype = "GdkRectangle*"
-
-##############
-# TRANSITION #
-##############
-
-# The following are deactivated until the corresponding packages
-# are bound.
-
-[[method]]
-id = "gtk_widget_get_root"
-bind = false # Needs Gtk.Root
-
-[[method]]
-id = "gtk_widget_snapshot_child"
-bind = false # Needs Gtk.Snapshot
 
 ####################
 # Gtk3 definitions #

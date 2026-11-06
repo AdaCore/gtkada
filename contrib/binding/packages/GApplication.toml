@@ -20,34 +20,50 @@ direction = "access"
 ctype = "GApplicationFlags"
 
 [[method]]
+id = "g_application_open"
+body = '''
+      procedure Internal
+         (Self    : System.Address;
+          Files   : System.Address;
+          N_Files : Glib.Gint;
+          Hint    : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_application_open");
+      Tmp_Hint : Gtkada.Types.Chars_Ptr := New_String (Hint);
+   begin
+      Internal (Get_Object (Self), Files'Address, Glib.Gint (Files'Length), Tmp_Hint);
+      Free (Tmp_Hint);
+'''
+
+[[method.parameter]]
+name = "files"
+type = "GFile_Array"
+
+[[method.parameter]]
+name = "n_files"
+ada = ""
+
+
+[[method]]
+id = "g_application_add_main_option"
+
+[[method.parameter]]
+name = "short_name"
+type = "gchar"
+
+[[method]]
 id = "g_application_get_dbus_connection"
 bind = false
 # requires DBus
 
 [[method]]
-id = "g_application_open"
-bind = false
-# requires GFile
-
-[[method]]
 id = "::open"
 bind = false
-# requires GFile
+# requires array_of_GFile
 
 [[method]]
 id = "g_application_add_main_option_entries"
 bind = false
 # requires GOptionEntry
-
-[[method]]
-id = "g_application_add_main_option"
-bind = false
-# circular dependency
-
-[[method]]
-id = "g_application_add_option_group"
-bind = false
-# circular dependency
 
 [[method]]
 id = "g_application_set_action_group"

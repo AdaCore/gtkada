@@ -3,6 +3,13 @@
 # ============================================================
 ada = "Glib.Option"
 
+[[extra.with_spec]]
+pkg = "Glib.Application"
+limited = true
+
+[[extra.with_body]]
+pkg = "Glib.Application"
+
 [[record]]
 ctype = "GOptionGroup"
 

@@ -84,6 +84,24 @@ package body Gtk.Style_Context is
       Internal (Get_Object (Self), Provider, Priority);
    end Add_Provider;
 
+   ----------------
+   -- Get_Border --
+   ----------------
+
+   procedure Get_Border
+      (Self   : not null access Gtk_Style_Context_Record;
+       Border : out Gtk.Border.Gtk_Border)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Border : out Gtk.Border.Gtk_Border);
+      pragma Import (C, Internal, "gtk_style_context_get_border");
+      Tmp_Border : aliased Gtk.Border.Gtk_Border;
+   begin
+      Internal (Get_Object (Self), Tmp_Border);
+      Border := Tmp_Border;
+   end Get_Border;
+
    ---------------
    -- Get_Color --
    ---------------
@@ -114,6 +132,42 @@ package body Gtk.Style_Context is
    begin
       return Gdk.Gdk_Display (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Display));
    end Get_Display;
+
+   ----------------
+   -- Get_Margin --
+   ----------------
+
+   procedure Get_Margin
+      (Self   : not null access Gtk_Style_Context_Record;
+       Margin : out Gtk.Border.Gtk_Border)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Margin : out Gtk.Border.Gtk_Border);
+      pragma Import (C, Internal, "gtk_style_context_get_margin");
+      Tmp_Margin : aliased Gtk.Border.Gtk_Border;
+   begin
+      Internal (Get_Object (Self), Tmp_Margin);
+      Margin := Tmp_Margin;
+   end Get_Margin;
+
+   -----------------
+   -- Get_Padding --
+   -----------------
+
+   procedure Get_Padding
+      (Self    : not null access Gtk_Style_Context_Record;
+       Padding : out Gtk.Border.Gtk_Border)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Padding : out Gtk.Border.Gtk_Border);
+      pragma Import (C, Internal, "gtk_style_context_get_padding");
+      Tmp_Padding : aliased Gtk.Border.Gtk_Border;
+   begin
+      Internal (Get_Object (Self), Tmp_Padding);
+      Padding := Tmp_Padding;
+   end Get_Padding;
 
    ---------------
    -- Get_Scale --

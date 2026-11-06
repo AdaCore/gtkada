@@ -284,6 +284,20 @@ package Gtk.Snapshot is
    --  @param The_End the end position (on the horizontal axis)
    --  @param Stops the color stops defining the gradient
 
+   procedure Append_Scaled_Texture
+      (Self    : not null access Gtk_Snapshot_Record;
+       Texture : not null access Gdk.Texture.Gdk_Texture_Record'Class;
+       Filter  : Gsk.Enums.Gsk_Scaling_Filter;
+       Bounds  : not null access Graphene.Rect.Graphene_Rect_T);
+   --  Creates a new render node drawing the Texture into the given Bounds and
+   --  appends it to the current render node of Snapshot.
+   --  In contrast to [methodGtk.Snapshot.append_texture], this function
+   --  provides control about how the filter that is used when scaling.
+   --  Since: gtk+ 4.10
+   --  @param Texture the texture to render
+   --  @param Filter the filter to use
+   --  @param Bounds the bounds for the new node
+
    procedure Append_Stroke
       (Self   : not null access Gtk_Snapshot_Record;
        Path   : Gsk.Path.Gsk_Path;

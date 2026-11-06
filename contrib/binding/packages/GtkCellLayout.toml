@@ -18,7 +18,7 @@ bind = false
 
 [[method]]
 id = "gtk_cell_layout_set_attributes"
-bind = false
+bind = false # deprecated
 
 [[method]]
 id = "gtk_cell_layout_get_cells"

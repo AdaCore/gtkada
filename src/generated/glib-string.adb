@@ -287,6 +287,17 @@ package body Glib.String is
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
    end Free_And_Steal;
 
+   -------------------
+   -- Free_To_Bytes --
+   -------------------
+
+   function Free_To_Bytes (Self : Gstring) return Glib.Bytes.Gbytes is
+      function Internal (Self : Gstring) return System.Address;
+      pragma Import (C, Internal, "g_string_free_to_bytes");
+   begin
+      return From_Object (Internal (Self));
+   end Free_To_Bytes;
+
    ------------
    -- Insert --
    ------------

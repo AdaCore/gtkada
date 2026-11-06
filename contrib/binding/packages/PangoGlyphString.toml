@@ -2,16 +2,6 @@
 #   PangoGlyphString
 # ============================================================
 
-### To-Do ###
-[[method]]
-id = "pango_glyph_string_index_to_x"
-bind = false # depends on PangoAnalysis
-
-[[method]]
-id = "pango_glyph_string_x_to_index"
-bind = false # depends on PangoAnalysis
-###
-
 [[record]]
 ctype = "PangoGlyphVisAttr"
 
@@ -116,6 +106,28 @@ id = "pango_glyph_string_set_size"
 
 [[method.parameter]]
 name = "Self"
+direction = "access"
+
+[[method]]
+id = "pango_glyph_string_index_to_x"
+
+[[method.parameter]]
+name = "Self"
+direction = "access"
+
+[[method.parameter]]
+name = "analysis"
+direction = "access"
+
+[[method]]
+id = "pango_glyph_string_x_to_index"
+
+[[method.parameter]]
+name = "Self"
+direction = "access"
+
+[[method.parameter]]
+name = "analysis"
 direction = "access"
 
 [[extra.spec]]

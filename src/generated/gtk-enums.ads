@@ -713,6 +713,16 @@ package Gtk.Enums is
    Align_Baseline : constant Gtk_Align := 4;
    Align_Baseline_Center : constant Gtk_Align := 5;
 
+   type Gtk_Text_Buffer_Notify_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Text_Buffer_Notify_Flags);
+   --  Values for [callbackGtk.TextBufferCommitNotify] to denote the point of
+   --  the notification.
+
+   Before_Insert : constant Gtk_Text_Buffer_Notify_Flags := 1;
+   After_Insert : constant Gtk_Text_Buffer_Notify_Flags := 2;
+   Before_Delete : constant Gtk_Text_Buffer_Notify_Flags := 4;
+   After_Delete : constant Gtk_Text_Buffer_Notify_Flags := 8;
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -952,6 +962,10 @@ package Gtk.Enums is
    package Gtk_Align_Properties is
       new Generic_Internal_Flags_Property (Gtk_Align);
    type Property_Gtk_Align is new Gtk_Align_Properties.Property;
+
+   package Gtk_Text_Buffer_Notify_Flags_Properties is
+      new Generic_Internal_Flags_Property (Gtk_Text_Buffer_Notify_Flags);
+   type Property_Gtk_Text_Buffer_Notify_Flags is new Gtk_Text_Buffer_Notify_Flags_Properties.Property;
 
    ----------------------
    -- GtkAda additions --

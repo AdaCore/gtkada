@@ -34,6 +34,7 @@
 --  of many convenience methods for text, and a guaranteed nul terminator.
 
 pragma Warnings (Off, "*is already use-visible*");
+with Glib.Bytes;   use Glib.Bytes;
 with Gtkada.Types; use Gtkada.Types;
 
 package Glib.String is
@@ -254,6 +255,19 @@ package Glib.String is
    --  with g_free.
    --  Since: gtk+ 2.76
    --  @return the character data of String
+
+   function Free_To_Bytes (Self : Gstring) return Glib.Bytes.Gbytes;
+   --  Transfers ownership of the contents of String to a newly allocated
+   --  Glib.Bytes.Gbytes. The Glib.String.Gstring structure itself is
+   --  deallocated, and it is therefore invalid to use String after invoking
+   --  this function.
+   --  Note that while Glib.String.Gstring ensures that its buffer always has
+   --  a trailing nul character (not reflected in its "len"), the returned
+   --  Glib.Bytes.Gbytes does not include this extra nul; i.e. it has length
+   --  exactly equal to the "len" member.
+   --  Since: gtk+ 2.34
+   --  @return A newly allocated Glib.Bytes.Gbytes containing contents of
+   --  String; String itself is freed. Has transfer-ownership='full'.
 
    function Hash (Self : Gstring) return Guint;
    pragma Import (C, Hash, "g_string_hash");

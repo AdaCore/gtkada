@@ -189,6 +189,10 @@ ctype = "GtkFontRendering"
 ctype = "GtkAlign"
 asbitfield = true
 
+[[enum]]
+ctype = "GtkTextBufferNotifyFlags"
+prefix = "GTK_TEXT_BUFFER_NOTIFY_"
+
 [extra]
 body = '''
 

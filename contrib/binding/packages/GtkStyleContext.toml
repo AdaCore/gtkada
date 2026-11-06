@@ -9,21 +9,6 @@ pkg = "Gtk.Widget"
 ctype = "GtkStyleContextPrintFlags"
 
 [[method]]
-id = "gtk_style_context_get_border"
-bind = false
-#  GtkBorder is not bound yet.
-
-[[method]]
-id = "gtk_style_context_get_margin"
-bind = false
-#  GtkBorder is not bound yet.
-
-[[method]]
-id = "gtk_style_context_get_padding"
-bind = false
-#  GtkBorder is not bound yet.
-
-[[method]]
 id = "gtk_style_context_lookup_color"
 return_as_param = "Found"
 

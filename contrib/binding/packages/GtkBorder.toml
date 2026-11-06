@@ -1,0 +1,21 @@
+# ============================================================
+#   GtkBorder
+# ============================================================
+
+[[record]]
+ctype = "GtkBorder"
+
+[[method]]
+id = "gtk_border_free"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+# The methods below are useless in Ada
+[[method]]
+id = "gtk_border_new"
+bind = false
+[[method]]
+id = "gtk_border_copy"
+bind = false

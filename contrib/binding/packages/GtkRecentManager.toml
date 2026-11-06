@@ -19,7 +19,7 @@ ctype = "GtkRecentInfo"
 
 [[method]]
 id = "gtk_recent_manager_add_full"
-bind = false
+bind = false # manual binding
 
 [extra]
 body = '''

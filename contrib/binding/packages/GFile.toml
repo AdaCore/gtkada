@@ -31,6 +31,13 @@ ctype = "GFileCreateFlags"
 [[enum]]
 ctype = "GFileCopyFlags"
 
+[[extra.type]]
+text = '''
+
+   type GFile_Array is array (Positive range <>) of GFile;
+   pragma Convention (C, GFile_Array);
+'''
+
 # --- lists of GFile ----------------------------------------------------
 # GLib hands out both flavours: a GList* of GFile in
 # g_app_info_launch / g_app_launch_context_*, and a GSList* of GFile in

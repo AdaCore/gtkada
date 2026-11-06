@@ -11,11 +11,6 @@
 # the derivation and the `with Gdk.Snapshot` clause are generated.
 parent = "Gdk.Snapshot.Gdk_Snapshot"
 
-# --- Scaled texture: needs Gsk.ScalingFilter ------------------------------
-[[method]]
-id   = "gtk_snapshot_append_scaled_texture"
-bind = false  # needs Gsk.ScalingFilter
-
 # --- not directly available ----------------------------------------
 # For next methods the documentation says:
 # This method is not directly available to language bindings.
