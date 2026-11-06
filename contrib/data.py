@@ -15,6 +15,7 @@ enums = (
     "GdkEnums",
     "graphene_simd4f_t",
     "graphene_simd4x4f_t",
+    "GEnums",
 )
 
 # List of interfaces to bind. These are processed before the widgets themselves
@@ -70,12 +71,12 @@ interfaces = (
     "--Gio.DBusObject",  # Not tested yet, from Gio
     "--Gio.DBusObjectManager",  # Not tested yet, from Gio
     "--Gio.DesktopAppInfoLookup",  # Not tested yet, from Gio
-    "--Gio.Drive",  # Not tested yet, from Gio
+    "Gio.Drive",
     "Gio.File",
     "--Gio.FileDescriptorBased",  # Not tested yet, from Gio
     "--Gio.Initable",  # Not tested yet, from Gio
     "Gio.LoadableIcon",  # Not tested yet, from Gio
-    "--Gio.Mount",  # Not tested yet, from Gio
+    "Gio.Mount",
     "--Gio.NetworkMonitor",  # Not tested yet, from Gio
     "--Gio.PollableInputStream",  # Not tested yet, from Gio
     "--Gio.PollableOutputStream",  # Not tested yet, from Gio
@@ -88,7 +89,7 @@ interfaces = (
     "--Gio.TlsClientConnection",  # Not tested yet, from Gio
     "--Gio.TlsFileDatabase",  # Not tested yet, from Gio
     "--Gio.TlsServerConnection",  # Not tested yet, from Gio
-    "--Gio.Volume",  # Not tested yet, from Gio
+    "Gio.Volume",
 )
 
 # List of GIR widgets to bind.
@@ -208,7 +209,7 @@ binding = (
     "Gio.MenuAttributeIter",  # Not tested yet, from Gio
     "Gio.MenuItem",  # Not tested yet, from Gio
     "Gio.MenuLinkIter",  # Not tested yet, from Gio
-    "--Gio.MountOperation",  # Not tested yet, from Gio
+    "Gio.MountOperation",
     "--Gio.NativeVolumeMonitor",  # Not tested yet, from Gio
     "--Gio.NetworkAddress",  # Not tested yet, from Gio
     "--Gio.NetworkService",  # Not tested yet, from Gio
@@ -676,6 +677,7 @@ manual_binding = (
     "Gtk.AccessibleText",
     "GtkMain",
     "GtkAccelGroup",
+    "GArray",
 )
 
 # Handling of functions with user data. The names below are the likely names

@@ -1,0 +1,38 @@
+# ============================================================
+#   GVolume
+# ============================================================
+
+ada = "Glib.GVolumes"
+
+[[extra.with_spec]]
+pkg = "Glib.GDrives"
+limited = true
+
+[[extra.with_spec]]
+pkg = "Glib.GMounts"
+limited = true
+
+[[list]]
+ctype = "GVolume"
+ada   = "GVolume_List"
+
+[[extra.spec]]
+text = '''
+   subtype GVolume_GList is GVolume_List.GList;
+'''
+
+[[method]]
+id = "g_volume_eject"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_volume_eject_finish"
+bind = false # Obsolescent
+
+[[virtual_method]]
+id = "eject"
+bind = false # Obsolescent
+
+[[virtual_method]]
+id = "eject_finish"
+bind = false # Obsolescent

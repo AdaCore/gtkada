@@ -43,6 +43,8 @@ with Cairo.Region;
 with Glib.Values;
 with Glib.Object;
 with Glib.Types;
+with GLib.GEnums;
+with Glib.Arrays;
 --  with Gdk.Drag_Contexts;
 with Gdk.Drag;
 with Gdk.Enums;
@@ -58,6 +60,7 @@ with Gtk.Print_Operation;
 with Gtk.Text_Iter;
 with Gtk.Text_View;
 with Gtk.Tree_Model;
+with Gtkada.Bindings;
 --  with Gtk.Widget;
 
 package Gtk.Arguments is
@@ -109,6 +112,8 @@ package Gtk.Arguments is
       return Glib.Types.GType_Interface;
    function Unchecked_To_Gint
      (Args : Glib.Values.C_GValues; Num : Guint) return Gint;
+   function Unchecked_To_Gint64
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gint64;
    function Unchecked_To_Gint_Access
      (Args : Glib.Values.C_GValues; Num : Guint) return access Gint;
    function Unchecked_To_Gdouble
@@ -238,6 +243,17 @@ package Gtk.Arguments is
    function Unchecked_To_Gdk_Rectangle_Access
      (Args : Glib.Values.C_GValues; Num : Guint)
       return access Gdk.Rectangle.Gdk_Rectangle;
+   function Unchecked_To_GMount_Operation_Result
+     is new Glib.Values.Unsafe_Enum_Nth
+        (Glib.GEnums.GMount_Operation_Result);
+   function Unchecked_To_GAsk_Password_Flags is new
+     Glib.Values.Unsafe_Flags_Nth (Glib.GEnums.GAsk_Password_Flags);        
+   function Unchecked_To_Garray_Access
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Glib.Arrays.Garray_Access;
+   function Unchecked_To_chars_ptr_array_access
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gtkada.Bindings.chars_ptr_array_access;
    --   function Unchecked_To_Gtk_Allocation
    --     (Args : Glib.Values.C_GValues; Num : Guint)
    --     return Gtk.Widget.Gtk_Allocation

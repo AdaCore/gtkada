@@ -1,0 +1,80 @@
+# ============================================================
+#   GMountOperation
+# ============================================================
+
+ada = "Glib.GMountOperations"
+
+[[parameter]]
+name = "processes"
+type = "Glib.Arrays.Garray_Access"
+
+[[method]]
+id = "::ask-password"
+
+[[method.parameter]]
+name = "flags"
+type = "Glib.GEnums.GAsk_Password_Flags"
+
+[[method]]
+id = "::reply"
+
+[[method.parameter]]
+name = "result"
+type = "Glib.GEnums.GMount_Operation_Result"
+
+[[method]]
+id = "::show-processes"
+
+[[method.parameter]]
+name = "choices"
+type = "Gtkada.Bindings.chars_ptr_array_access"
+
+[[method]]
+id = "::ask-question"
+
+[[method.parameter]]
+name = "choices"
+type = "Gtkada.Bindings.chars_ptr_array_access"
+
+[[property]]
+id = "password-save"
+bind = false # manual binding
+
+[[method]]
+id = "g_mount_operation_set_password"
+bind = false # manual binding
+
+[[extra.spec]]
+text = '''
+   procedure Set_Password
+      (Self     : not null access Gmount_Operation_Record;
+       Password : UTF8_String := "");
+   --  Sets the mount operation's password to Password.
+   --  @param Password password to set.
+
+   Password_Save_Property : constant Glib.GEnums.Property_GPassword_Save :=
+    Glib.GEnums.Build ("password-save");
+   --  Type: Password_Save
+   --  Determines if and how the password information should be saved.
+'''
+
+[extra]
+body = '''
+   ------------------
+   -- Set_Password --
+   ------------------
+
+   procedure Set_Password
+      (Self     : not null access Gmount_Operation_Record;
+       Password : UTF8_String := "")
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Password : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_mount_operation_set_password");
+      Tmp_Password : Gtkada.Types.Chars_Ptr := New_String (Password);
+   begin
+      Internal (Get_Object (Self), Tmp_Password);
+      Free (Tmp_Password);
+   end Set_Password;
+'''

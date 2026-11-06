@@ -213,6 +213,15 @@ package body Gtk.Arguments is
       return Get_Int (Val);
    end Unchecked_To_Gint;
 
+   function Unchecked_To_Gint64
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gint64
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Int64 (Val);
+   end Unchecked_To_Gint64;
+
    ------------------------------
    -- Unchecked_To_Gint_Access --
    ------------------------------
@@ -430,6 +439,39 @@ package body Gtk.Arguments is
       Unsafe_Nth (Args, Num, Val);
       return Convert (Get_Proxy (Val));
    end Unchecked_To_Gdk_Rectangle_Access;
+
+   --------------------------------
+   -- Unchecked_To_Garray_Access --
+   --------------------------------
+
+   function Unchecked_To_Garray_Access
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Glib.Arrays.Garray_Access
+   is
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Glib.Arrays.Garray_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Address (Val));
+   end Unchecked_To_Garray_Access;
+
+   -----------------------------------------
+   -- Unchecked_To_chars_ptr_array_access --
+   -----------------------------------------
+
+   function Unchecked_To_chars_ptr_array_access
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gtkada.Bindings.chars_ptr_array_access
+   is
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, Gtkada.Bindings.chars_ptr_array_access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Address (Val));
+   end Unchecked_To_chars_ptr_array_access;
+
 --
 --   ---------------------------
 --   -- Unchecked_To_Gdk_RGBA --

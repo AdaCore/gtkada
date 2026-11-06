@@ -150,12 +150,14 @@ package Glib.Values is
    procedure Init_Set_Int (Value : in out GValue; V : Gint);
    procedure Set_Int (Value : in out GValue; V_Int : Gint);
    function  Get_Int (Value : GValue) return Gint;
+   function  Get_Int64 (Value : GValue) return Gint64;
    --  Set_Int must only be called when Init has already been used.
    --  Otherwise use Init_Set_Int.
 
    procedure Init_Set_Uint (Value : in out GValue; V : Guint);
    procedure Set_Uint (Value : in out GValue; V_Uint : Guint);
    function  Get_Uint (Value : GValue) return Guint;
+   function  Get_Uint64 (Value : GValue) return Guint64;
 
    procedure Set_Long (Value : in out GValue; V_Long : Glong);
    function  Get_Long (Value : GValue) return Glong;
@@ -263,8 +265,10 @@ private
    pragma Import (C, Get_Uchar, "g_value_get_uchar");
    pragma Import (C, Set_Int, "g_value_set_int");
    pragma Import (C, Get_Int, "g_value_get_int");
+   pragma Import (C, Get_Int64, "g_value_get_int64");
    pragma Import (C, Set_Uint, "g_value_set_uint");
    pragma Import (C, Get_Uint, "g_value_get_uint");
+   pragma Import (C, Get_Uint64, "g_value_get_uint64");
    pragma Import (C, Set_Long, "g_value_set_long");
    pragma Import (C, Get_Long, "g_value_get_long");
    pragma Import (C, Set_Ulong, "g_value_set_ulong");

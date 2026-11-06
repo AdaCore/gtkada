@@ -626,6 +626,126 @@ void gtkada_App_Info_set_supports_uris(GAppInfoIface* iface, void* handler) {
     iface->supports_uris = handler;
 }
 
+void gtkada_GDrives_set_can_eject(GDriveIface* iface, void* handler) {
+    iface->can_eject = handler;
+}
+
+void gtkada_GDrives_set_can_poll_for_media(GDriveIface* iface, void* handler) {
+    iface->can_poll_for_media = handler;
+}
+
+void gtkada_GDrives_set_can_start(GDriveIface* iface, void* handler) {
+    iface->can_start = handler;
+}
+
+void gtkada_GDrives_set_can_start_degraded(GDriveIface* iface, void* handler) {
+    iface->can_start_degraded = handler;
+}
+
+void gtkada_GDrives_set_can_stop(GDriveIface* iface, void* handler) {
+    iface->can_stop = handler;
+}
+
+void gtkada_GDrives_set_changed(GDriveIface* iface, void* handler) {
+    iface->changed = handler;
+}
+
+void gtkada_GDrives_set_disconnected(GDriveIface* iface, void* handler) {
+    iface->disconnected = handler;
+}
+
+void gtkada_GDrives_set_eject_button(GDriveIface* iface, void* handler) {
+    iface->eject_button = handler;
+}
+
+void gtkada_GDrives_set_eject_with_operation(GDriveIface* iface, void* handler) {
+    iface->eject_with_operation = handler;
+}
+
+void gtkada_GDrives_set_eject_with_operation_finish(GDriveIface* iface, void* handler) {
+    iface->eject_with_operation_finish = handler;
+}
+
+void gtkada_GDrives_set_enumerate_identifiers(GDriveIface* iface, void* handler) {
+    iface->enumerate_identifiers = handler;
+}
+
+void gtkada_GDrives_set_get_icon(GDriveIface* iface, void* handler) {
+    iface->get_icon = handler;
+}
+
+void gtkada_GDrives_set_get_identifier(GDriveIface* iface, void* handler) {
+    iface->get_identifier = handler;
+}
+
+void gtkada_GDrives_set_get_name(GDriveIface* iface, void* handler) {
+    iface->get_name = handler;
+}
+
+void gtkada_GDrives_set_get_sort_key(GDriveIface* iface, void* handler) {
+    iface->get_sort_key = handler;
+}
+
+void gtkada_GDrives_set_get_start_stop_type(GDriveIface* iface, void* handler) {
+    iface->get_start_stop_type = handler;
+}
+
+void gtkada_GDrives_set_get_symbolic_icon(GDriveIface* iface, void* handler) {
+    iface->get_symbolic_icon = handler;
+}
+
+void gtkada_GDrives_set_get_volumes(GDriveIface* iface, void* handler) {
+    iface->get_volumes = handler;
+}
+
+void gtkada_GDrives_set_has_media(GDriveIface* iface, void* handler) {
+    iface->has_media = handler;
+}
+
+void gtkada_GDrives_set_has_volumes(GDriveIface* iface, void* handler) {
+    iface->has_volumes = handler;
+}
+
+void gtkada_GDrives_set_is_media_check_automatic(GDriveIface* iface, void* handler) {
+    iface->is_media_check_automatic = handler;
+}
+
+void gtkada_GDrives_set_is_media_removable(GDriveIface* iface, void* handler) {
+    iface->is_media_removable = handler;
+}
+
+void gtkada_GDrives_set_is_removable(GDriveIface* iface, void* handler) {
+    iface->is_removable = handler;
+}
+
+void gtkada_GDrives_set_poll_for_media(GDriveIface* iface, void* handler) {
+    iface->poll_for_media = handler;
+}
+
+void gtkada_GDrives_set_poll_for_media_finish(GDriveIface* iface, void* handler) {
+    iface->poll_for_media_finish = handler;
+}
+
+void gtkada_GDrives_set_start(GDriveIface* iface, void* handler) {
+    iface->start = handler;
+}
+
+void gtkada_GDrives_set_start_finish(GDriveIface* iface, void* handler) {
+    iface->start_finish = handler;
+}
+
+void gtkada_GDrives_set_stop(GDriveIface* iface, void* handler) {
+    iface->stop = handler;
+}
+
+void gtkada_GDrives_set_stop_button(GDriveIface* iface, void* handler) {
+    iface->stop_button = handler;
+}
+
+void gtkada_GDrives_set_stop_finish(GDriveIface* iface, void* handler) {
+    iface->stop_finish = handler;
+}
+
 void gtkada_Loadable_Icon_set_load(GLoadableIconIface* iface, void* handler) {
     iface->load = handler;
 }
@@ -636,6 +756,174 @@ void gtkada_Loadable_Icon_set_load_async(GLoadableIconIface* iface, void* handle
 
 void gtkada_Loadable_Icon_set_load_finish(GLoadableIconIface* iface, void* handler) {
     iface->load_finish = handler;
+}
+
+void gtkada_GMounts_set_can_eject(GMountIface* iface, void* handler) {
+    iface->can_eject = handler;
+}
+
+void gtkada_GMounts_set_can_unmount(GMountIface* iface, void* handler) {
+    iface->can_unmount = handler;
+}
+
+void gtkada_GMounts_set_changed(GMountIface* iface, void* handler) {
+    iface->changed = handler;
+}
+
+void gtkada_GMounts_set_eject_with_operation(GMountIface* iface, void* handler) {
+    iface->eject_with_operation = handler;
+}
+
+void gtkada_GMounts_set_eject_with_operation_finish(GMountIface* iface, void* handler) {
+    iface->eject_with_operation_finish = handler;
+}
+
+void gtkada_GMounts_set_get_default_location(GMountIface* iface, void* handler) {
+    iface->get_default_location = handler;
+}
+
+void gtkada_GMounts_set_get_drive(GMountIface* iface, void* handler) {
+    iface->get_drive = handler;
+}
+
+void gtkada_GMounts_set_get_icon(GMountIface* iface, void* handler) {
+    iface->get_icon = handler;
+}
+
+void gtkada_GMounts_set_get_name(GMountIface* iface, void* handler) {
+    iface->get_name = handler;
+}
+
+void gtkada_GMounts_set_get_root(GMountIface* iface, void* handler) {
+    iface->get_root = handler;
+}
+
+void gtkada_GMounts_set_get_sort_key(GMountIface* iface, void* handler) {
+    iface->get_sort_key = handler;
+}
+
+void gtkada_GMounts_set_get_symbolic_icon(GMountIface* iface, void* handler) {
+    iface->get_symbolic_icon = handler;
+}
+
+void gtkada_GMounts_set_get_uuid(GMountIface* iface, void* handler) {
+    iface->get_uuid = handler;
+}
+
+void gtkada_GMounts_set_get_volume(GMountIface* iface, void* handler) {
+    iface->get_volume = handler;
+}
+
+void gtkada_GMounts_set_guess_content_type(GMountIface* iface, void* handler) {
+    iface->guess_content_type = handler;
+}
+
+void gtkada_GMounts_set_guess_content_type_finish(GMountIface* iface, void* handler) {
+    iface->guess_content_type_finish = handler;
+}
+
+void gtkada_GMounts_set_guess_content_type_sync(GMountIface* iface, void* handler) {
+    iface->guess_content_type_sync = handler;
+}
+
+void gtkada_GMounts_set_pre_unmount(GMountIface* iface, void* handler) {
+    iface->pre_unmount = handler;
+}
+
+void gtkada_GMounts_set_remount(GMountIface* iface, void* handler) {
+    iface->remount = handler;
+}
+
+void gtkada_GMounts_set_remount_finish(GMountIface* iface, void* handler) {
+    iface->remount_finish = handler;
+}
+
+void gtkada_GMounts_set_unmount_with_operation(GMountIface* iface, void* handler) {
+    iface->unmount_with_operation = handler;
+}
+
+void gtkada_GMounts_set_unmount_with_operation_finish(GMountIface* iface, void* handler) {
+    iface->unmount_with_operation_finish = handler;
+}
+
+void gtkada_GMounts_set_unmounted(GMountIface* iface, void* handler) {
+    iface->unmounted = handler;
+}
+
+void gtkada_GVolumes_set_can_eject(GVolumeIface* iface, void* handler) {
+    iface->can_eject = handler;
+}
+
+void gtkada_GVolumes_set_can_mount(GVolumeIface* iface, void* handler) {
+    iface->can_mount = handler;
+}
+
+void gtkada_GVolumes_set_changed(GVolumeIface* iface, void* handler) {
+    iface->changed = handler;
+}
+
+void gtkada_GVolumes_set_eject_with_operation(GVolumeIface* iface, void* handler) {
+    iface->eject_with_operation = handler;
+}
+
+void gtkada_GVolumes_set_eject_with_operation_finish(GVolumeIface* iface, void* handler) {
+    iface->eject_with_operation_finish = handler;
+}
+
+void gtkada_GVolumes_set_enumerate_identifiers(GVolumeIface* iface, void* handler) {
+    iface->enumerate_identifiers = handler;
+}
+
+void gtkada_GVolumes_set_get_activation_root(GVolumeIface* iface, void* handler) {
+    iface->get_activation_root = handler;
+}
+
+void gtkada_GVolumes_set_get_drive(GVolumeIface* iface, void* handler) {
+    iface->get_drive = handler;
+}
+
+void gtkada_GVolumes_set_get_icon(GVolumeIface* iface, void* handler) {
+    iface->get_icon = handler;
+}
+
+void gtkada_GVolumes_set_get_identifier(GVolumeIface* iface, void* handler) {
+    iface->get_identifier = handler;
+}
+
+void gtkada_GVolumes_set_get_mount(GVolumeIface* iface, void* handler) {
+    iface->get_mount = handler;
+}
+
+void gtkada_GVolumes_set_get_name(GVolumeIface* iface, void* handler) {
+    iface->get_name = handler;
+}
+
+void gtkada_GVolumes_set_get_sort_key(GVolumeIface* iface, void* handler) {
+    iface->get_sort_key = handler;
+}
+
+void gtkada_GVolumes_set_get_symbolic_icon(GVolumeIface* iface, void* handler) {
+    iface->get_symbolic_icon = handler;
+}
+
+void gtkada_GVolumes_set_get_uuid(GVolumeIface* iface, void* handler) {
+    iface->get_uuid = handler;
+}
+
+void gtkada_GVolumes_set_mount_finish(GVolumeIface* iface, void* handler) {
+    iface->mount_finish = handler;
+}
+
+void gtkada_GVolumes_set_mount_fn(GVolumeIface* iface, void* handler) {
+    iface->mount_fn = handler;
+}
+
+void gtkada_GVolumes_set_removed(GVolumeIface* iface, void* handler) {
+    iface->removed = handler;
+}
+
+void gtkada_GVolumes_set_should_automount(GVolumeIface* iface, void* handler) {
+    iface->should_automount = handler;
 }
 
 void gtkada_Application_set_command_line(GApplicationClass* iface, void* handler) {

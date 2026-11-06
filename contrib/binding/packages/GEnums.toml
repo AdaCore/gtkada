@@ -1,0 +1,33 @@
+# ============================================================
+#   GEnums
+# ============================================================
+
+ada = "Glib.GEnums"
+
+[[enum]]
+ctype = "GMountMountFlags"
+asbitfield = true
+
+[[enum]]
+ctype = "GMountUnmountFlags"
+asbitfield = true
+
+[[enum]]
+ctype = "GDriveStartStopType"
+prefix = "G_DRIVE_START_STOP_TYPE_"
+
+[[enum]]
+ctype = "GDriveStartFlags"
+asbitfield = true
+
+[[enum]]
+ctype = "GMountOperationResult"
+prefix = "G_MOUNT_OPERATION_"
+
+[[enum]]
+ctype = "GAskPasswordFlags"
+asbitfield = true
+
+[[enum]]
+ctype = "GPasswordSave"
+prefix = "G_PASSWORD_SAVE_"
