@@ -15,6 +15,20 @@ the caller; release the file with
 
 '''
 
+[[extra.with_spec]]
+pkg = "Glib.File_Monitors"
+limited = true
+
+[[extra.with_spec]]
+pkg = "Glib.GMounts"
+limited = true
+
+[[extra.with_body]]
+pkg = "Glib.File_Monitors"
+
+[[extra.with_body]]
+pkg = "Glib.GMounts"
+
 # GFile is the interface a filesystem back-end implements. No Ada program
 # does, so none of the 94 vtable slots is worth an access-to-subprogram type
 # plus a trampoline in src/misc_generated.c.
@@ -49,6 +63,43 @@ ada   = "Gfile_List"
 [[slist]]
 ctype = "GFile"
 ada   = "Gfile_SList"
+
+[[method]]
+id = "g_file_eject_mountable"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_file_eject_mountable_finish"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_file_unmount_mountable"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_file_unmount_mountable_finish"
+bind = false # Obsolescent
+
+[[method]]
+id = "g_file_poll_mountable"
+
+[method.doc]
+extend = true
+text = "Use poll_mountable_finish to get the result of the operation."
+
+[[method]]
+id = "g_file_start_mountable"
+
+[method.doc]
+extend = true
+text = "Use start_mountable_finish to get the result of the operation."
+
+[[method]]
+id = "g_file_unmount_mountable_with_operation"
+
+[method.doc]
+extend = true
+text = "Use unmount_mountable_with_operation_finish to get the result of the operation."
 
 # --- varargs -----------------------------------------------------------
 [[method]]
@@ -92,128 +143,6 @@ bind = false
 id = "g_file_enumerate_children_finish"
 bind = false
 # Needs GFile_Enumerator
-
-# --- needs GFileMonitor / GFileMonitorFlags ----------------------------
-[[method]]
-id = "g_file_monitor"
-bind = false
-# Needs GFile_Monitor
-
-[[method]]
-id = "g_file_monitor_directory"
-bind = false
-# Needs GFile_Monitor
-
-[[method]]
-id = "g_file_monitor_file"
-bind = false
-# Needs GFile_Monitor
-
-# --- needs GMount / GMountOperation ------------------------------------
-[[method]]
-id = "g_file_find_enclosing_mount"
-bind = false
-# Needs GMount
-
-[[method]]
-id = "g_file_find_enclosing_mount_async"
-bind = false
-# Needs GMount
-
-[[method]]
-id = "g_file_find_enclosing_mount_finish"
-bind = false
-# Needs GMount
-
-[[method]]
-id = "g_file_mount_enclosing_volume"
-bind = false
-# Needs GMount_Operation
-
-[[method]]
-id = "g_file_mount_enclosing_volume_finish"
-bind = false
-# Needs GMount_Operation, see g_file_mount_enclosing_volume
-
-[[method]]
-id = "g_file_mount_mountable"
-bind = false
-# Needs GMount_Operation
-
-[[method]]
-id = "g_file_mount_mountable_finish"
-bind = false
-# Needs GMount_Operation, see g_file_mount_mountable
-
-[[method]]
-id = "g_file_unmount_mountable"
-bind = false
-# Needs GMount_Operation
-
-[[method]]
-id = "g_file_unmount_mountable_finish"
-bind = false
-# Needs GMount_Operation, see g_file_unmount_mountable
-
-[[method]]
-id = "g_file_unmount_mountable_with_operation"
-bind = false
-# Needs GMount_Operation
-
-[[method]]
-id = "g_file_unmount_mountable_with_operation_finish"
-bind = false
-# Needs GMount_Operation, see g_file_unmount_mountable_with_operation
-
-[[method]]
-id = "g_file_eject_mountable"
-bind = false
-# Needs GMount_Operation
-
-[[method]]
-id = "g_file_eject_mountable_finish"
-bind = false
-# Needs GMount_Operation, see g_file_eject_mountable
-
-[[method]]
-id = "g_file_eject_mountable_with_operation"
-bind = false
-# Needs GMount_Operation
-
-[[method]]
-id = "g_file_eject_mountable_with_operation_finish"
-bind = false
-# Needs GMount_Operation, see g_file_eject_mountable_with_operation
-
-[[method]]
-id = "g_file_start_mountable"
-bind = false
-# Needs GMount_Operation
-
-[[method]]
-id = "g_file_start_mountable_finish"
-bind = false
-# Needs GMount_Operation, see g_file_start_mountable
-
-[[method]]
-id = "g_file_stop_mountable"
-bind = false
-# Needs GMount_Operation
-
-[[method]]
-id = "g_file_stop_mountable_finish"
-bind = false
-# Needs GMount_Operation, see g_file_stop_mountable
-
-[[method]]
-id = "g_file_poll_mountable"
-bind = false
-# Useless without GMount
-
-[[method]]
-id = "g_file_poll_mountable_finish"
-bind = false
-# Useless without GMount, see g_file_poll_mountable
 
 # --- needs GFileMeasureProgressCallback --------------------------------
 [[method]]

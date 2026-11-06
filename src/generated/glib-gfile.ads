@@ -91,9 +91,9 @@
 --
 --  Some Glib.GFile.Gfile operations almost always take a noticeable amount of
 --  time, and so do not have synchronous analogs. Notable cases include: -
---  g_file_mount_mountable to mount a mountable file. -
---  g_file_unmount_mountable_with_operation to unmount a mountable file. -
---  g_file_eject_mountable_with_operation to eject a mountable file.
+--  Glib.GFile.Mount_Mountable to mount a mountable file. -
+--  Glib.GFile.Unmount_Mountable_With_Operation to unmount a mountable file. -
+--  Glib.GFile.Eject_Mountable_With_Operation to eject a mountable file.
 --
 --  ## Entity Tags # {gfile-etag}
 --
@@ -120,7 +120,11 @@ with Glib.Error;              use Glib.Error;
 with Glib.File_IO_Stream;     use Glib.File_IO_Stream;
 with Glib.File_Info;          use Glib.File_Info;
 with Glib.File_Input_Stream;  use Glib.File_Input_Stream;
+limited with Glib.File_Monitors;
 with Glib.File_Output_Stream; use Glib.File_Output_Stream;
+with Glib.GEnums;             use Glib.GEnums;
+with Glib.GMountOperations;   use Glib.GMountOperations;
+limited with Glib.GMounts;
 with Glib.GSlist;             use Glib.GSlist;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Glist;              use Glib.Glist;
@@ -518,6 +522,39 @@ package Glib.GFile is
    --  @return a new Glib.GFile.Gfile that is a duplicate of the given
    --  Glib.GFile.Gfile.
 
+   procedure Eject_Mountable_With_Operation
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Unmount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback);
+   --  Starts an asynchronous eject on a mountable. When this operation has
+   --  completed, Callback will be called with User_User data, and the
+   --  operation can be finalized with
+   --  Glib.GFile.Eject_Mountable_With_Operation_Finish.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  Since: gtk+ 2.22
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+
+   function Eject_Mountable_With_Operation_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
+   --  Finishes an asynchronous eject operation started by
+   --  Glib.GFile.Eject_Mountable_With_Operation.
+   --  Since: gtk+ 2.22
+   --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return True if the File was ejected successfully. False otherwise.
+
    function Equal (Self : Gfile; File2 : Gfile) return Boolean;
    --  Checks if the two given GFiles refer to the same file.
    --  Note that two GFiles that differ can still refer to the same file on
@@ -525,6 +562,53 @@ package Glib.GFile is
    --  This call does no blocking I/O.
    --  @param File2 the second Glib.GFile.Gfile
    --  @return True if File1 and File2 are equal.
+
+   function Find_Enclosing_Mount
+      (Self        : Gfile;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.GMounts.Gmount;
+   --  Gets a Glib.GMounts.Gmount for the Glib.GFile.Gfile.
+   --  Glib.GMounts.Gmount is returned only for user interesting locations,
+   --  see Gvolume.Monitor.Gvolume_Monitor. If the GFile_Iface for File does
+   --  not have a mount, Error will be set to G_IO_ERROR_NOT_FOUND and null
+   --  will be returned.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Error the return location for a recoverable error
+   --  @return a Glib.GMounts.Gmount where the File is located or null on
+   --  error. Free the returned object with g_object_unref.
+
+   procedure Find_Enclosing_Mount_Async
+      (Self        : Gfile;
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback);
+   --  Asynchronously gets the mount for the file.
+   --  For more details, see Glib.GFile.Find_Enclosing_Mount which is the
+   --  synchronous version of this call.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Find_Enclosing_Mount_Finish to get the result of the
+   --  operation.
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+
+   function Find_Enclosing_Mount_Finish
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError) return Glib.GMounts.Gmount;
+   pragma Import (C, Find_Enclosing_Mount_Finish, "g_file_find_enclosing_mount_finish");
+   --  Finishes an asynchronous find mount request. See
+   --  Glib.GFile.Find_Enclosing_Mount_Async.
+   --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return Glib.GMounts.Gmount for given File or null on error. Free the
+   --  returned object with g_object_unref.
 
    function Get_Basename (Self : Gfile) return UTF8_String;
    --  Gets the base name (the last component of the path) for a given
@@ -852,6 +936,145 @@ package Glib.GFile is
    --  @param Error the return location for a recoverable error
    --  @return True on successful directory creation, False otherwise.
 
+   function Monitor
+      (Self        : Gfile;
+       Flags       : Glib.GEnums.GFile_Monitor_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
+       return Glib.File_Monitors.Gfile_Monitor;
+   --  Obtains a file or directory monitor for the given file, depending on
+   --  the type of the file.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  Since: gtk+ 2.18
+   --  @param Flags a set of Glib.GEnums.GFile_Monitor_Flags
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Error the return location for a recoverable error
+   --  @return a Glib.File_Monitors.Gfile_Monitor for the given File, or null
+   --  on error. Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
+
+   function Monitor_Directory
+      (Self        : Gfile;
+       Flags       : Glib.GEnums.GFile_Monitor_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
+       return Glib.File_Monitors.Gfile_Monitor;
+   --  Obtains a directory monitor for the given file. This may fail if
+   --  directory monitoring is not supported.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  It does not make sense for Flags to contain
+   --  Glib.GEnums.G_File_Monitor_Watch_Hard_Links, since hard links can not be
+   --  made to directories. It is not possible to monitor all the files in a
+   --  directory for changes made via hard links; if you want to do this then
+   --  you must register individual watches with Glib.GFile.Monitor.
+   --  @param Flags a set of Glib.GEnums.GFile_Monitor_Flags
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Error the return location for a recoverable error
+   --  @return a Glib.File_Monitors.Gfile_Monitor for the given File, or null
+   --  on error. Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
+
+   function Monitor_File
+      (Self        : Gfile;
+       Flags       : Glib.GEnums.GFile_Monitor_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
+       return Glib.File_Monitors.Gfile_Monitor;
+   --  Obtains a file monitor for the given file. If no file notification
+   --  mechanism exists, then regular polling of the file is used.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  If Flags contains Glib.GEnums.G_File_Monitor_Watch_Hard_Links then the
+   --  monitor will also attempt to report changes made to the file via another
+   --  filename (ie, a hard link). Without this flag, you can only rely on
+   --  changes made through the filename contained in File to be reported.
+   --  Using this flag may result in an increase in resource usage, and may not
+   --  have any effect depending on the Glib.File_Monitors.Gfile_Monitor
+   --  backend and/or filesystem type.
+   --  @param Flags a set of Glib.GEnums.GFile_Monitor_Flags
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Error the return location for a recoverable error
+   --  @return a Glib.File_Monitors.Gfile_Monitor for the given File, or null
+   --  on error. Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
+
+   procedure Mount_Enclosing_Volume
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Mount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback);
+   --  Starts a Mount_Operation, mounting the volume that contains the file
+   --  Location.
+   --  When this operation has completed, Callback will be called with
+   --  User_User data, and the operation can be finalized with
+   --  Glib.GFile.Mount_Enclosing_Volume_Finish.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation or null
+   --  to avoid user interaction
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied, or null
+
+   function Mount_Enclosing_Volume_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
+   --  Finishes a mount operation started by
+   --  Glib.GFile.Mount_Enclosing_Volume.
+   --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return True if successful. If an error has occurred, this function
+   --  will return False and set Error appropriately if present.
+
+   procedure Mount_Mountable
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Mount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback);
+   --  Mounts a file of type G_FILE_TYPE_MOUNTABLE. Using Mount_Operation, you
+   --  can request callbacks when, for instance, passwords are needed during
+   --  authentication.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Mount_Mountable_Finish to get the result of the
+   --  operation.
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+
+   function Mount_Mountable_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gfile;
+   pragma Import (C, Mount_Mountable_Finish, "g_file_mount_mountable_finish");
+   --  Finishes a mount operation. See Glib.GFile.Mount_Mountable for details.
+   --  Finish an asynchronous mount operation that was started with
+   --  Glib.GFile.Mount_Mountable.
+   --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return a Glib.GFile.Gfile or null on error. Free the returned object
+   --  with g_object_unref.
+
    procedure Move_Async_With_Closures
       (Self                      : Gfile;
        Destination               : Gfile;
@@ -936,6 +1159,36 @@ package Glib.GFile is
    --  Since: gtk+ 2.56
    --  @return string containing the Glib.GFile.Gfile's path, or null if no
    --  such path exists. The returned string is owned by File.
+
+   procedure Poll_Mountable
+      (Self        : Gfile;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback);
+   --  Polls a file of type Glib.File_Info.G_File_Type_Mountable.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Mount_Mountable_Finish to get the result of the
+   --  operation.
+   --  Use poll_mountable_finish to get the result of the operation.
+   --  Since: gtk+ 2.22
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied, or null
+
+   function Poll_Mountable_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
+   --  Finishes a poll operation. See Glib.GFile.Poll_Mountable for details.
+   --  Finish an asynchronous poll operation that was polled with
+   --  Glib.GFile.Poll_Mountable.
+   --  Since: gtk+ 2.22
+   --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return True if the operation finished successfully. False otherwise.
 
    function Query_Exists
       (Self        : Gfile;
@@ -1676,6 +1929,77 @@ package Glib.GFile is
    --  @return a Glib.GFile.Gfile or null on error. Free the returned object
    --  with g_object_unref.
 
+   procedure Start_Mountable
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GDrive_Start_Flags;
+       Start_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback);
+   --  Starts a file of type Glib.File_Info.G_File_Type_Mountable. Using
+   --  Start_Operation, you can request callbacks when, for instance, passwords
+   --  are needed during authentication.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Mount_Mountable_Finish to get the result of the
+   --  operation.
+   --  Use start_mountable_finish to get the result of the operation.
+   --  Since: gtk+ 2.22
+   --  @param Flags flags affecting the operation
+   --  @param Start_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied, or null
+
+   function Start_Mountable_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
+   --  Finishes a start operation. See Glib.GFile.Start_Mountable for details.
+   --  Finish an asynchronous start operation that was started with
+   --  Glib.GFile.Start_Mountable.
+   --  Since: gtk+ 2.22
+   --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return True if the operation finished successfully. False otherwise.
+
+   procedure Stop_Mountable
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Unmount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback);
+   --  Stops a file of type Glib.File_Info.G_File_Type_Mountable.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Stop_Mountable_Finish to get the result of the
+   --  operation.
+   --  Since: gtk+ 2.22
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction.
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied, or null
+
+   function Stop_Mountable_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
+   --  Finishes a stop operation, see Glib.GFile.Stop_Mountable for details.
+   --  Finish an asynchronous stop operation that was started with
+   --  Glib.GFile.Stop_Mountable.
+   --  Since: gtk+ 2.22
+   --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return True if the operation finished successfully. False otherwise.
+
    function Supports_Thread_Contexts (Self : Gfile) return Boolean;
    --  Checks if File supports [thread-default
    --  contexts][g-main-context-push-thread-default-context]. If this returns
@@ -1726,6 +2050,42 @@ package Glib.GFile is
    --  @param Result a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return True on successful trash, False otherwise.
+
+   procedure Unmount_Mountable_With_Operation
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Unmount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback);
+   --  Unmounts a file of type Glib.File_Info.G_File_Type_Mountable.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call g_file_unmount_mountable_finish to get the result of the operation.
+   --  Use unmount_mountable_with_operation_finish to get the result of the
+   --  operation.
+   --  Since: gtk+ 2.22
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+
+   function Unmount_Mountable_With_Operation_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
+   --  Finishes an unmount operation, see
+   --  Glib.GFile.Unmount_Mountable_With_Operation for details.
+   --  Finish an asynchronous unmount operation that was started with
+   --  Glib.GFile.Unmount_Mountable_With_Operation.
+   --  Since: gtk+ 2.22
+   --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return True if the operation finished successfully. False otherwise.
 
    procedure New_Tmp_Async
       (Tmpl        : UTF8_String := "";

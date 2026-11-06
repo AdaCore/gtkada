@@ -42,6 +42,7 @@ with Glib.Cancellable;  use Glib.Cancellable;
 with Glib.Error;        use Glib.Error;
 with Glib.Object;       use Glib.Object;
 with Glib.Properties;   use Glib.Properties;
+with Gtk.Filter;        use Gtk.Filter;
 with Gtk.Window;        use Gtk.Window;
 with Pango.Font;        use Pango.Font;
 with Pango.Font_Face;   use Pango.Font_Face;
@@ -184,6 +185,24 @@ package Gtk.Font_Dialog is
    --  @param Result the result
    --  @param Error the return location for a recoverable error
    --  @return a [structPango.FontDescription] describing the selected font
+
+   function Get_Filter
+      (Self : not null access Gtk_Font_Dialog_Record)
+       return Gtk.Filter.Gtk_Filter;
+   --  Returns the filter that decides which fonts to display in the font
+   --  chooser dialog.
+   --  Since: gtk+ 4.10
+   --  @return the filter. Has transfer-ownership='none'.
+
+   procedure Set_Filter
+      (Self   : not null access Gtk_Font_Dialog_Record;
+       Filter : access Gtk.Filter.Gtk_Filter_Record'Class);
+   --  Adds a filter that decides which fonts to display in the font chooser
+   --  dialog.
+   --  The filter must be able to handle both `PangoFontFamily` and
+   --  `PangoFontFace` objects.
+   --  Since: gtk+ 4.10
+   --  @param Filter the filter
 
    function Get_Font_Map
       (Self : not null access Gtk_Font_Dialog_Record)
