@@ -25,6 +25,8 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Error;
+with Glib.File_Monitors;       use Glib.File_Monitors;
+with Glib.GMounts;             use Glib.GMounts;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;          use Gtkada.Bindings;
 with Gtkada.Types;             use Gtkada.Types;
@@ -129,6 +131,51 @@ package body Glib.GFile is
    --  satisfied
    --  @param User_Data the data to pass to callback function
 
+   procedure C_G_File_Eject_Mountable_With_Operation
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Unmount_Flags;
+       Mount_Operation : System.Address;
+       Cancellable     : System.Address;
+       Callback        : System.Address;
+       User_Data       : System.Address);
+   pragma Import (C, C_G_File_Eject_Mountable_With_Operation, "g_file_eject_mountable_with_operation");
+   --  Starts an asynchronous eject on a mountable. When this operation has
+   --  completed, Callback will be called with User_User data, and the
+   --  operation can be finalized with
+   --  Glib.GFile.Eject_Mountable_With_Operation_Finish.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  Since: gtk+ 2.22
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+   --  @param User_Data the data to pass to callback function
+
+   procedure C_G_File_Find_Enclosing_Mount_Async
+      (Self        : Gfile;
+       Io_Priority : Glib.Gint;
+       Cancellable : System.Address;
+       Callback    : System.Address;
+       User_Data   : System.Address);
+   pragma Import (C, C_G_File_Find_Enclosing_Mount_Async, "g_file_find_enclosing_mount_async");
+   --  Asynchronously gets the mount for the file.
+   --  For more details, see Glib.GFile.Find_Enclosing_Mount which is the
+   --  synchronous version of this call.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Find_Enclosing_Mount_Finish to get the result of the
+   --  operation.
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+   --  @param User_Data the data to pass to callback function
+
    procedure C_G_File_Load_Bytes_Async
       (Self        : Gfile;
        Cancellable : System.Address;
@@ -178,6 +225,57 @@ package body Glib.GFile is
    --  @param Symlink_Value a string with the path for the target of the new
    --  symlink
    --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+   --  @param User_Data the data to pass to callback function
+
+   procedure C_G_File_Mount_Enclosing_Volume
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Mount_Flags;
+       Mount_Operation : System.Address;
+       Cancellable     : System.Address;
+       Callback        : System.Address;
+       User_Data       : System.Address);
+   pragma Import (C, C_G_File_Mount_Enclosing_Volume, "g_file_mount_enclosing_volume");
+   --  Starts a Mount_Operation, mounting the volume that contains the file
+   --  Location.
+   --  When this operation has completed, Callback will be called with
+   --  User_User data, and the operation can be finalized with
+   --  Glib.GFile.Mount_Enclosing_Volume_Finish.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation or null
+   --  to avoid user interaction
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied, or null
+   --  @param User_Data the data to pass to callback function
+
+   procedure C_G_File_Mount_Mountable
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Mount_Flags;
+       Mount_Operation : System.Address;
+       Cancellable     : System.Address;
+       Callback        : System.Address;
+       User_Data       : System.Address);
+   pragma Import (C, C_G_File_Mount_Mountable, "g_file_mount_mountable");
+   --  Mounts a file of type G_FILE_TYPE_MOUNTABLE. Using Mount_Operation, you
+   --  can request callbacks when, for instance, passwords are needed during
+   --  authentication.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Mount_Mountable_Finish to get the result of the
+   --  operation.
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
    --  @param Callback a Gasync_Ready_Callback to call when the request is
@@ -247,6 +345,27 @@ package body Glib.GFile is
    --  to ignore
    --  @param Callback a Gasync_Ready_Callback to call when the request is
    --  satisfied
+   --  @param User_Data the data to pass to callback function
+
+   procedure C_G_File_Poll_Mountable
+      (Self        : Gfile;
+       Cancellable : System.Address;
+       Callback    : System.Address;
+       User_Data   : System.Address);
+   pragma Import (C, C_G_File_Poll_Mountable, "g_file_poll_mountable");
+   --  Polls a file of type Glib.File_Info.G_File_Type_Mountable.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Mount_Mountable_Finish to get the result of the
+   --  operation.
+   --  Use poll_mountable_finish to get the result of the operation.
+   --  Since: gtk+ 2.22
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied, or null
    --  @param User_Data the data to pass to callback function
 
    procedure C_G_File_Query_Filesystem_Info_Async
@@ -482,6 +601,59 @@ package body Glib.GFile is
    --  satisfied
    --  @param User_Data the data to pass to callback function
 
+   procedure C_G_File_Start_Mountable
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GDrive_Start_Flags;
+       Start_Operation : System.Address;
+       Cancellable     : System.Address;
+       Callback        : System.Address;
+       User_Data       : System.Address);
+   pragma Import (C, C_G_File_Start_Mountable, "g_file_start_mountable");
+   --  Starts a file of type Glib.File_Info.G_File_Type_Mountable. Using
+   --  Start_Operation, you can request callbacks when, for instance, passwords
+   --  are needed during authentication.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Mount_Mountable_Finish to get the result of the
+   --  operation.
+   --  Use start_mountable_finish to get the result of the operation.
+   --  Since: gtk+ 2.22
+   --  @param Flags flags affecting the operation
+   --  @param Start_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied, or null
+   --  @param User_Data the data to pass to callback function
+
+   procedure C_G_File_Stop_Mountable
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Unmount_Flags;
+       Mount_Operation : System.Address;
+       Cancellable     : System.Address;
+       Callback        : System.Address;
+       User_Data       : System.Address);
+   pragma Import (C, C_G_File_Stop_Mountable, "g_file_stop_mountable");
+   --  Stops a file of type Glib.File_Info.G_File_Type_Mountable.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Stop_Mountable_Finish to get the result of the
+   --  operation.
+   --  Since: gtk+ 2.22
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction.
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied, or null
+   --  @param User_Data the data to pass to callback function
+
    procedure C_G_File_Trash_Async
       (Self        : Gfile;
        Io_Priority : Glib.Gint;
@@ -492,6 +664,32 @@ package body Glib.GFile is
    --  Asynchronously sends File to the Trash location, if possible.
    --  Since: gtk+ 2.38
    --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+   --  @param User_Data the data to pass to callback function
+
+   procedure C_G_File_Unmount_Mountable_With_Operation
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Unmount_Flags;
+       Mount_Operation : System.Address;
+       Cancellable     : System.Address;
+       Callback        : System.Address;
+       User_Data       : System.Address);
+   pragma Import (C, C_G_File_Unmount_Mountable_With_Operation, "g_file_unmount_mountable_with_operation");
+   --  Unmounts a file of type Glib.File_Info.G_File_Type_Mountable.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call g_file_unmount_mountable_finish to get the result of the operation.
+   --  Use unmount_mountable_with_operation_finish to get the result of the
+   --  operation.
+   --  Since: gtk+ 2.22
+   --  @param Flags flags affecting the operation
+   --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation, or
+   --  null to avoid user interaction
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
    --  @param Callback a Gasync_Ready_Callback to call when the request is
@@ -904,6 +1102,47 @@ package body Glib.GFile is
       return Tmp_Return /= 0;
    end Delete_Finish;
 
+   ------------------------------------
+   -- Eject_Mountable_With_Operation --
+   ------------------------------------
+
+   procedure Eject_Mountable_With_Operation
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Unmount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         C_G_File_Eject_Mountable_With_Operation (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         C_G_File_Eject_Mountable_With_Operation (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      end if;
+   end Eject_Mountable_With_Operation;
+
+   -------------------------------------------
+   -- Eject_Mountable_With_Operation_Finish --
+   -------------------------------------------
+
+   function Eject_Mountable_With_Operation_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
+   is
+      function Internal
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_eject_mountable_with_operation_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
+   end Eject_Mountable_With_Operation_Finish;
+
    -----------
    -- Equal --
    -----------
@@ -914,6 +1153,49 @@ package body Glib.GFile is
    begin
       return Internal (Self, File2) /= 0;
    end Equal;
+
+   --------------------------
+   -- Find_Enclosing_Mount --
+   --------------------------
+
+   function Find_Enclosing_Mount
+      (Self        : Gfile;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.GMounts.Gmount
+   is
+      function Internal
+         (Self        : Gfile;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.GMounts.Gmount;
+      pragma Import (C, Internal, "g_file_find_enclosing_mount");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.GMounts.Gmount;
+   begin
+      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return
+        (if Error = null
+         then Tmp_Return
+         else Null_Gmount);
+   end Find_Enclosing_Mount;
+
+   --------------------------------
+   -- Find_Enclosing_Mount_Async --
+   --------------------------------
+
+   procedure Find_Enclosing_Mount_Async
+      (Self        : Gfile;
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         C_G_File_Find_Enclosing_Mount_Async (Self, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         C_G_File_Find_Enclosing_Mount_Async (Self, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      end if;
+   end Find_Enclosing_Mount_Async;
 
    ------------------
    -- Get_Basename --
@@ -1318,6 +1600,156 @@ package body Glib.GFile is
       return Tmp_Return /= 0;
    end Make_Symbolic_Link_Finish;
 
+   -------------
+   -- Monitor --
+   -------------
+
+   function Monitor
+      (Self        : Gfile;
+       Flags       : Glib.GEnums.GFile_Monitor_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
+       return Glib.File_Monitors.Gfile_Monitor
+   is
+      function Internal
+         (Self        : Gfile;
+          Flags       : Glib.GEnums.GFile_Monitor_Flags;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
+      pragma Import (C, Internal, "g_file_monitor");
+      Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.File_Monitors.Gfile_Monitor;
+      Stub_Gfile_Monitor : Glib.File_Monitors.Gfile_Monitor_Record;
+      Tmp_Return         : System.Address;
+   begin
+      Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Monitors.Gfile_Monitor (Get_User_Data (Tmp_Return, Stub_Gfile_Monitor));
+      end if;
+      return Return_Obj;
+   end Monitor;
+
+   -----------------------
+   -- Monitor_Directory --
+   -----------------------
+
+   function Monitor_Directory
+      (Self        : Gfile;
+       Flags       : Glib.GEnums.GFile_Monitor_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
+       return Glib.File_Monitors.Gfile_Monitor
+   is
+      function Internal
+         (Self        : Gfile;
+          Flags       : Glib.GEnums.GFile_Monitor_Flags;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
+      pragma Import (C, Internal, "g_file_monitor_directory");
+      Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.File_Monitors.Gfile_Monitor;
+      Stub_Gfile_Monitor : Glib.File_Monitors.Gfile_Monitor_Record;
+      Tmp_Return         : System.Address;
+   begin
+      Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Monitors.Gfile_Monitor (Get_User_Data (Tmp_Return, Stub_Gfile_Monitor));
+      end if;
+      return Return_Obj;
+   end Monitor_Directory;
+
+   ------------------
+   -- Monitor_File --
+   ------------------
+
+   function Monitor_File
+      (Self        : Gfile;
+       Flags       : Glib.GEnums.GFile_Monitor_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
+       return Glib.File_Monitors.Gfile_Monitor
+   is
+      function Internal
+         (Self        : Gfile;
+          Flags       : Glib.GEnums.GFile_Monitor_Flags;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
+      pragma Import (C, Internal, "g_file_monitor_file");
+      Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.File_Monitors.Gfile_Monitor;
+      Stub_Gfile_Monitor : Glib.File_Monitors.Gfile_Monitor_Record;
+      Tmp_Return         : System.Address;
+   begin
+      Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Monitors.Gfile_Monitor (Get_User_Data (Tmp_Return, Stub_Gfile_Monitor));
+      end if;
+      return Return_Obj;
+   end Monitor_File;
+
+   ----------------------------
+   -- Mount_Enclosing_Volume --
+   ----------------------------
+
+   procedure Mount_Enclosing_Volume
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Mount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         C_G_File_Mount_Enclosing_Volume (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         C_G_File_Mount_Enclosing_Volume (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      end if;
+   end Mount_Enclosing_Volume;
+
+   -----------------------------------
+   -- Mount_Enclosing_Volume_Finish --
+   -----------------------------------
+
+   function Mount_Enclosing_Volume_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
+   is
+      function Internal
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_mount_enclosing_volume_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
+   end Mount_Enclosing_Volume_Finish;
+
+   ---------------------
+   -- Mount_Mountable --
+   ---------------------
+
+   procedure Mount_Mountable
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Mount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         C_G_File_Mount_Mountable (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         C_G_File_Mount_Mountable (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      end if;
+   end Mount_Mountable;
+
    ------------------------------
    -- Move_Async_With_Closures --
    ------------------------------
@@ -1508,6 +1940,45 @@ package body Glib.GFile is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
    end Peek_Path;
+
+   --------------------
+   -- Poll_Mountable --
+   --------------------
+
+   procedure Poll_Mountable
+      (Self        : Gfile;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         C_G_File_Poll_Mountable (Self, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         C_G_File_Poll_Mountable (Self, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      end if;
+   end Poll_Mountable;
+
+   ---------------------------
+   -- Poll_Mountable_Finish --
+   ---------------------------
+
+   function Poll_Mountable_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
+   is
+      function Internal
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_poll_mountable_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
+   end Poll_Mountable_Finish;
 
    ------------------
    -- Query_Exists --
@@ -2449,6 +2920,88 @@ package body Glib.GFile is
       end if;
    end Set_Display_Name_Async;
 
+   ---------------------
+   -- Start_Mountable --
+   ---------------------
+
+   procedure Start_Mountable
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GDrive_Start_Flags;
+       Start_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         C_G_File_Start_Mountable (Self, Flags, Get_Object_Or_Null (GObject (Start_Operation)), Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         C_G_File_Start_Mountable (Self, Flags, Get_Object_Or_Null (GObject (Start_Operation)), Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      end if;
+   end Start_Mountable;
+
+   ----------------------------
+   -- Start_Mountable_Finish --
+   ----------------------------
+
+   function Start_Mountable_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
+   is
+      function Internal
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_start_mountable_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
+   end Start_Mountable_Finish;
+
+   --------------------
+   -- Stop_Mountable --
+   --------------------
+
+   procedure Stop_Mountable
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Unmount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         C_G_File_Stop_Mountable (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         C_G_File_Stop_Mountable (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      end if;
+   end Stop_Mountable;
+
+   ---------------------------
+   -- Stop_Mountable_Finish --
+   ---------------------------
+
+   function Stop_Mountable_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
+   is
+      function Internal
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_stop_mountable_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
+   end Stop_Mountable_Finish;
+
    ------------------------------
    -- Supports_Thread_Contexts --
    ------------------------------
@@ -2521,6 +3074,47 @@ package body Glib.GFile is
       Error := Acc_Error;
       return Tmp_Return /= 0;
    end Trash_Finish;
+
+   --------------------------------------
+   -- Unmount_Mountable_With_Operation --
+   --------------------------------------
+
+   procedure Unmount_Mountable_With_Operation
+      (Self            : Gfile;
+       Flags           : Glib.GEnums.GMount_Unmount_Flags;
+       Mount_Operation : access Glib.GMountOperations.Gmount_Operation_Record'Class;
+       Cancellable     : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback        : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         C_G_File_Unmount_Mountable_With_Operation (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         C_G_File_Unmount_Mountable_With_Operation (Self, Flags, Get_Object_Or_Null (GObject (Mount_Operation)), Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      end if;
+   end Unmount_Mountable_With_Operation;
+
+   ---------------------------------------------
+   -- Unmount_Mountable_With_Operation_Finish --
+   ---------------------------------------------
+
+   function Unmount_Mountable_With_Operation_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
+   is
+      function Internal
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_unmount_mountable_with_operation_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
+   end Unmount_Mountable_With_Operation_Finish;
 
    -------------------------
    -- New_Build_Filenamev --

@@ -185,7 +185,7 @@ binding = (
     "--Gio.FileIcon",  # Not tested yet, from Gio
     "Gio.FileInfo",
     "Gio.FileInputStream",
-    "--Gio.FileMonitor",  # Not tested yet, from Gio
+    "Gio.FileMonitor",
     "Gio.FileOutputStream",
     "--Gio.FilenameCompleter",  # Not tested yet, from Gio
     "--Gio.FilterInputStream",  # Not tested yet, from Gio

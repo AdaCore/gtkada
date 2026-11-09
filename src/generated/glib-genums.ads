@@ -87,6 +87,32 @@ package Glib.GEnums is
    --  Gvfs.Gvfs stores passwords in the Gnome keyring when this flag allows
    --  it to, and later retrieves it again from there.
 
+   type GFile_Monitor_Event is (
+      Changed,
+      Changes_Done_Hint,
+      Deleted,
+      Created,
+      Attribute_Changed,
+      Pre_Unmount,
+      Unmounted,
+      Moved,
+      Renamed,
+      Moved_In,
+      Moved_Out);
+   pragma Convention (C, GFile_Monitor_Event);
+   --  Specifies what type of event a monitor event is.
+
+   type GFile_Monitor_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, GFile_Monitor_Flags);
+   --  Flags used to set what a Glib.File_Monitors.Gfile_Monitor will watch
+   --  for.
+
+   G_File_Monitor_None : constant GFile_Monitor_Flags := 0;
+   G_File_Monitor_Watch_Mounts : constant GFile_Monitor_Flags := 1;
+   G_File_Monitor_Send_Moved : constant GFile_Monitor_Flags := 2;
+   G_File_Monitor_Watch_Hard_Links : constant GFile_Monitor_Flags := 4;
+   G_File_Monitor_Watch_Moves : constant GFile_Monitor_Flags := 8;
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -118,5 +144,13 @@ package Glib.GEnums is
    package GPassword_Save_Properties is
       new Generic_Internal_Discrete_Property (GPassword_Save);
    type Property_GPassword_Save is new GPassword_Save_Properties.Property;
+
+   package GFile_Monitor_Event_Properties is
+      new Generic_Internal_Discrete_Property (GFile_Monitor_Event);
+   type Property_GFile_Monitor_Event is new GFile_Monitor_Event_Properties.Property;
+
+   package GFile_Monitor_Flags_Properties is
+      new Generic_Internal_Flags_Property (GFile_Monitor_Flags);
+   type Property_GFile_Monitor_Flags is new GFile_Monitor_Flags_Properties.Property;
 
 end Glib.GEnums;

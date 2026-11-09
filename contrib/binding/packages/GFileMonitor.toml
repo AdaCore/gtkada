@@ -1,0 +1,20 @@
+# ============================================================
+#   GFileMonitor
+# ============================================================
+
+ada = "Glib.File_Monitors"
+
+[[method]]
+id = "::changed"
+
+[[method.parameter]]
+name = "file"
+ctype = "GFile"
+
+[[method.parameter]]
+name = "other_file"
+ctype = "GFile"
+
+[[method.parameter]]
+name = "event_type"
+ctype = "GFileMonitorEvent"

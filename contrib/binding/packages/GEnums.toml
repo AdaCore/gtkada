@@ -31,3 +31,11 @@ asbitfield = true
 [[enum]]
 ctype = "GPasswordSave"
 prefix = "G_PASSWORD_SAVE_"
+
+[[enum]]
+ctype = "GFileMonitorEvent"
+prefix = "G_FILE_MONITOR_EVENT_"
+
+[[enum]]
+ctype = "GFileMonitorFlags"
+asbitfield = true

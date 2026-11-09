@@ -302,6 +302,21 @@ package body Gtk.Font_Dialog is
       return Return_Obj;
    end Choose_Font_Finish;
 
+   ----------------
+   -- Get_Filter --
+   ----------------
+
+   function Get_Filter
+      (Self : not null access Gtk_Font_Dialog_Record)
+       return Gtk.Filter.Gtk_Filter
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_font_dialog_get_filter");
+      Stub_Gtk_Filter : Gtk.Filter.Gtk_Filter_Record;
+   begin
+      return Gtk.Filter.Gtk_Filter (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Filter));
+   end Get_Filter;
+
    ------------------
    -- Get_Font_Map --
    ------------------
@@ -357,6 +372,20 @@ package body Gtk.Font_Dialog is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Title;
+
+   ----------------
+   -- Set_Filter --
+   ----------------
+
+   procedure Set_Filter
+      (Self   : not null access Gtk_Font_Dialog_Record;
+       Filter : access Gtk.Filter.Gtk_Filter_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Filter : System.Address);
+      pragma Import (C, Internal, "gtk_font_dialog_set_filter");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Filter)));
+   end Set_Filter;
 
    ------------------
    -- Set_Font_Map --

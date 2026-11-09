@@ -254,6 +254,8 @@ package Gtk.Arguments is
    function Unchecked_To_chars_ptr_array_access
      (Args : Glib.Values.C_GValues; Num : Guint)
       return Gtkada.Bindings.chars_ptr_array_access;
+   function Unchecked_To_GFile_Monitor_Event is new
+     Glib.Values.Unsafe_Enum_Nth (Glib.GEnums.GFile_Monitor_Event);        
    --   function Unchecked_To_Gtk_Allocation
    --     (Args : Glib.Values.C_GValues; Num : Guint)
    --     return Gtk.Widget.Gtk_Allocation
