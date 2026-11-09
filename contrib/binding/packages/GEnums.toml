@@ -39,3 +39,11 @@ prefix = "G_FILE_MONITOR_EVENT_"
 [[enum]]
 ctype = "GFileMonitorFlags"
 asbitfield = true
+
+[[enum]]
+ctype = "GFileAttributeType"
+prefix = "G_FILE_ATTRIBUTE_TYPE_"
+
+[[enum]]
+ctype = "GFileAttributeStatus"
+prefix = "G_FILE_ATTRIBUTE_STATUS_"

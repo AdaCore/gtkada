@@ -113,6 +113,28 @@ package Glib.GEnums is
    G_File_Monitor_Watch_Hard_Links : constant GFile_Monitor_Flags := 4;
    G_File_Monitor_Watch_Moves : constant GFile_Monitor_Flags := 8;
 
+   type GFile_Attribute_Type is (
+      Invalid,
+      String,
+      Byte_String,
+      Boolean,
+      Uint32,
+      Int32,
+      Uint64,
+      Int64,
+      Object,
+      Stringv);
+   pragma Convention (C, GFile_Attribute_Type);
+   --  The data types for file attributes.
+
+   type GFile_Attribute_Status is (
+      Unset,
+      Set,
+      Error_Setting);
+   pragma Convention (C, GFile_Attribute_Status);
+   --  Used by Glib.GFile.Set_Attributes_From_Info when setting file
+   --  attributes.
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -152,5 +174,13 @@ package Glib.GEnums is
    package GFile_Monitor_Flags_Properties is
       new Generic_Internal_Flags_Property (GFile_Monitor_Flags);
    type Property_GFile_Monitor_Flags is new GFile_Monitor_Flags_Properties.Property;
+
+   package GFile_Attribute_Type_Properties is
+      new Generic_Internal_Discrete_Property (GFile_Attribute_Type);
+   type Property_GFile_Attribute_Type is new GFile_Attribute_Type_Properties.Property;
+
+   package GFile_Attribute_Status_Properties is
+      new Generic_Internal_Discrete_Property (GFile_Attribute_Status);
+   type Property_GFile_Attribute_Status is new GFile_Attribute_Status_Properties.Property;
 
 end Glib.GEnums;

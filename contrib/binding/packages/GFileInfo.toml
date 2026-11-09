@@ -10,6 +10,10 @@ ada = "Glib.File_Info"
 [[enum]]
 ctype = "GFileType"
 
+[[list]]
+ctype = "GFileInfo"
+ada   = "File_Info_List"
+
 [[method]]
 id = "g_file_info_set_attribute_mask"
 bind = false
@@ -26,31 +30,6 @@ bind = false
 id = "g_file_info_set_modification_time"
 bind = false
 # Needs GTimeVal, deprecated
-
-[[method]]
-id = "g_file_info_get_attribute_data"
-bind = false
-# Needs GFileAttributeType
-
-[[method]]
-id = "g_file_info_get_attribute_type"
-bind = false
-# Needs GFileAttributeType
-
-[[method]]
-id = "g_file_info_set_attribute"
-bind = false
-# Needs GFileAttributeType
-
-[[method]]
-id = "g_file_info_get_attribute_status"
-bind = false
-# Needs GFile_Attribute_Status
-
-[[method]]
-id = "g_file_info_set_attribute_status"
-bind = false
-# Needs GFile_Attribute_Status
 
 [[method]]
 id = "g_file_info_get_size"

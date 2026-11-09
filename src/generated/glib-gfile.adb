@@ -24,8 +24,10 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.App_Info;            use Glib.App_Info;
 with Glib.Error;
 with Glib.File_Monitors;       use Glib.File_Monitors;
+with Glib.GFile_Enumerators;   use Glib.GFile_Enumerators;
 with Glib.GMounts;             use Glib.GMounts;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;          use Gtkada.Bindings;
@@ -150,6 +152,33 @@ package body Glib.GFile is
    --  @param Flags flags affecting the operation
    --  @param Mount_Operation a Glib.GMountOperations.Gmount_Operation, or
    --  null to avoid user interaction
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+   --  @param User_Data the data to pass to callback function
+
+   procedure C_G_File_Enumerate_Children_Async
+      (Self        : Gfile;
+       Attributes  : Gtkada.Types.Chars_Ptr;
+       Flags       : GFile_Query_Info_Flags;
+       Io_Priority : Glib.Gint;
+       Cancellable : System.Address;
+       Callback    : System.Address;
+       User_Data   : System.Address);
+   pragma Import (C, C_G_File_Enumerate_Children_Async, "g_file_enumerate_children_async");
+   --  Asynchronously gets the requested information about the files in a
+   --  directory. The result is a Glib.GFile_Enumerators.Gfile_Enumerator
+   --  object that will give out Glib.File_Info.Gfile_Info objects for all the
+   --  files in the directory.
+   --  For more details, see Glib.GFile.Enumerate_Children which is the
+   --  synchronous version of this call.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Enumerate_Children_Finish to get the result of the
+   --  operation.
+   --  @param Attributes an attribute query string
+   --  @param Flags a set of Glib.GFile.GFile_Query_Info_Flags
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
    --  @param Callback a Gasync_Ready_Callback to call when the request is
@@ -367,6 +396,22 @@ package body Glib.GFile is
    --  @param Callback a Gasync_Ready_Callback to call when the request is
    --  satisfied, or null
    --  @param User_Data the data to pass to callback function
+
+   procedure C_G_File_Query_Default_Handler_Async
+      (Self        : Gfile;
+       Io_Priority : Glib.Gint;
+       Cancellable : System.Address;
+       Callback    : System.Address;
+       User_Data   : System.Address);
+   pragma Import (C, C_G_File_Query_Default_Handler_Async, "g_file_query_default_handler_async");
+   --  Async version of Glib.GFile.Query_Default_Handler.
+   --  Since: gtk+ 2.60
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  done
+   --  @param User_Data data to pass to Callback
 
    procedure C_G_File_Query_Filesystem_Info_Async
       (Self        : Gfile;
@@ -1142,6 +1187,91 @@ package body Glib.GFile is
       Error := Acc_Error;
       return Tmp_Return /= 0;
    end Eject_Mountable_With_Operation_Finish;
+
+   ------------------------
+   -- Enumerate_Children --
+   ------------------------
+
+   function Enumerate_Children
+      (Self        : Gfile;
+       Attributes  : UTF8_String;
+       Flags       : GFile_Query_Info_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
+       return Glib.GFile_Enumerators.Gfile_Enumerator
+   is
+      function Internal
+         (Self        : Gfile;
+          Attributes  : Gtkada.Types.Chars_Ptr;
+          Flags       : GFile_Query_Info_Flags;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
+      pragma Import (C, Internal, "g_file_enumerate_children");
+      Acc_Error             : aliased Glib.Error.GError;
+      Return_Obj            : Glib.GFile_Enumerators.Gfile_Enumerator;
+      Tmp_Attributes        : Gtkada.Types.Chars_Ptr := New_String (Attributes);
+      Stub_Gfile_Enumerator : Glib.GFile_Enumerators.Gfile_Enumerator_Record;
+      Tmp_Return            : System.Address;
+   begin
+      Tmp_Return := Internal (Self, Tmp_Attributes, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      Free (Tmp_Attributes);
+      if Error = null then
+         Return_Obj := Glib.GFile_Enumerators.Gfile_Enumerator (Get_User_Data (Tmp_Return, Stub_Gfile_Enumerator));
+      end if;
+      return Return_Obj;
+   end Enumerate_Children;
+
+   ------------------------------
+   -- Enumerate_Children_Async --
+   ------------------------------
+
+   procedure Enumerate_Children_Async
+      (Self        : Gfile;
+       Attributes  : UTF8_String;
+       Flags       : GFile_Query_Info_Flags;
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback)
+   is
+      Tmp_Attributes : Gtkada.Types.Chars_Ptr := New_String (Attributes);
+   begin
+      if Callback = null then
+         C_G_File_Enumerate_Children_Async (Self, Tmp_Attributes, Flags, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+         Free (Tmp_Attributes);
+      else
+         C_G_File_Enumerate_Children_Async (Self, Tmp_Attributes, Flags, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+         Free (Tmp_Attributes);
+      end if;
+   end Enumerate_Children_Async;
+
+   -------------------------------
+   -- Enumerate_Children_Finish --
+   -------------------------------
+
+   function Enumerate_Children_Finish
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
+       return Glib.GFile_Enumerators.Gfile_Enumerator
+   is
+      function Internal
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
+      pragma Import (C, Internal, "g_file_enumerate_children_finish");
+      Acc_Error             : aliased Glib.Error.GError;
+      Return_Obj            : Glib.GFile_Enumerators.Gfile_Enumerator;
+      Stub_Gfile_Enumerator : Glib.GFile_Enumerators.Gfile_Enumerator_Record;
+      Tmp_Return            : System.Address;
+   begin
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.GFile_Enumerators.Gfile_Enumerator (Get_User_Data (Tmp_Return, Stub_Gfile_Enumerator));
+      end if;
+      return Return_Obj;
+   end Enumerate_Children_Finish;
 
    -----------
    -- Equal --
@@ -1980,6 +2110,50 @@ package body Glib.GFile is
       return Tmp_Return /= 0;
    end Poll_Mountable_Finish;
 
+   ---------------------------
+   -- Query_Default_Handler --
+   ---------------------------
+
+   function Query_Default_Handler
+      (Self        : Gfile;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.App_Info.Gapp_Info
+   is
+      function Internal
+         (Self        : Gfile;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError)
+          return Glib.App_Info.Gapp_Info;
+      pragma Import (C, Internal, "g_file_query_default_handler");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.App_Info.Gapp_Info;
+   begin
+      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return
+        (if Error = null
+         then Tmp_Return
+         else Null_Gapp_Info);
+   end Query_Default_Handler;
+
+   ---------------------------------
+   -- Query_Default_Handler_Async --
+   ---------------------------------
+
+   procedure Query_Default_Handler_Async
+      (Self        : Gfile;
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback)
+   is
+   begin
+      if Callback = null then
+         C_G_File_Query_Default_Handler_Async (Self, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+      else
+         C_G_File_Query_Default_Handler_Async (Self, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      end if;
+   end Query_Default_Handler_Async;
+
    ------------------
    -- Query_Exists --
    ------------------
@@ -2609,6 +2783,38 @@ package body Glib.GFile is
       Free (Tmp_Relative_Path);
       return Tmp_Return;
    end Resolve_Relative_Path;
+
+   -------------------
+   -- Set_Attribute --
+   -------------------
+
+   function Set_Attribute
+      (Self        : Gfile;
+       Attribute   : UTF8_String;
+       The_Type    : Glib.GEnums.GFile_Attribute_Type;
+       Value_P     : System.Address;
+       Flags       : GFile_Query_Info_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
+   is
+      function Internal
+         (Self        : Gfile;
+          Attribute   : Gtkada.Types.Chars_Ptr;
+          The_Type    : Glib.GEnums.GFile_Attribute_Type;
+          Value_P     : System.Address;
+          Flags       : GFile_Query_Info_Flags;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_set_attribute");
+      Acc_Error     : aliased Glib.Error.GError;
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
+      Tmp_Return    : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Self, Tmp_Attribute, The_Type, Value_P, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      Free (Tmp_Attribute);
+      return Tmp_Return /= 0;
+   end Set_Attribute;
 
    -------------------------------
    -- Set_Attribute_Byte_String --

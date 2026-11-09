@@ -114,6 +114,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
+limited with Glib.App_Info;
 with Glib.Bytes;              use Glib.Bytes;
 with Glib.Cancellable;        use Glib.Cancellable;
 with Glib.Error;              use Glib.Error;
@@ -123,6 +124,7 @@ with Glib.File_Input_Stream;  use Glib.File_Input_Stream;
 limited with Glib.File_Monitors;
 with Glib.File_Output_Stream; use Glib.File_Output_Stream;
 with Glib.GEnums;             use Glib.GEnums;
+limited with Glib.GFile_Enumerators;
 with Glib.GMountOperations;   use Glib.GMountOperations;
 limited with Glib.GMounts;
 with Glib.GSlist;             use Glib.GSlist;
@@ -554,6 +556,80 @@ package Glib.GFile is
    --  @param Result a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return True if the File was ejected successfully. False otherwise.
+
+   function Enumerate_Children
+      (Self        : Gfile;
+       Attributes  : UTF8_String;
+       Flags       : GFile_Query_Info_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
+       return Glib.GFile_Enumerators.Gfile_Enumerator;
+   --  Gets the requested information about the files in a directory. The
+   --  result is a Glib.GFile_Enumerators.Gfile_Enumerator object that will
+   --  give out Glib.File_Info.Gfile_Info objects for all the files in the
+   --  directory.
+   --  The Attributes value is a string that specifies the file attributes
+   --  that should be gathered. It is not an error if it's not possible to read
+   --  a particular requested attribute from a file - it just won't be set.
+   --  Attributes should be a comma-separated list of attributes or attribute
+   --  wildcards. The wildcard "*" means all attributes, and a wildcard like
+   --  "standard::*" means all attributes in the standard namespace. An example
+   --  attribute query be "standard::*,owner::user". The standard attributes
+   --  are available as defines, like G_FILE_ATTRIBUTE_STANDARD_NAME.
+   --  G_FILE_ATTRIBUTE_STANDARD_NAME should always be specified if you plan to
+   --  call Glib.GFile_Enumerators.Get_Child or Glib.GFile_Enumerators.Iterate
+   --  on the returned enumerator.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  If the file does not exist, the G_IO_ERROR_NOT_FOUND error will be
+   --  returned. If the file is not a directory, the G_IO_ERROR_NOT_DIRECTORY
+   --  error will be returned. Other errors are possible too.
+   --  @param Attributes an attribute query string
+   --  @param Flags a set of Glib.GFile.GFile_Query_Info_Flags
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Error the return location for a recoverable error
+   --  @return A Glib.GFile_Enumerators.Gfile_Enumerator if successful, null
+   --  on error. Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
+
+   procedure Enumerate_Children_Async
+      (Self        : Gfile;
+       Attributes  : UTF8_String;
+       Flags       : GFile_Query_Info_Flags;
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback);
+   --  Asynchronously gets the requested information about the files in a
+   --  directory. The result is a Glib.GFile_Enumerators.Gfile_Enumerator
+   --  object that will give out Glib.File_Info.Gfile_Info objects for all the
+   --  files in the directory.
+   --  For more details, see Glib.GFile.Enumerate_Children which is the
+   --  synchronous version of this call.
+   --  When the operation is finished, Callback will be called. You can then
+   --  call Glib.GFile.Enumerate_Children_Finish to get the result of the
+   --  operation.
+   --  @param Attributes an attribute query string
+   --  @param Flags a set of Glib.GFile.GFile_Query_Info_Flags
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+
+   function Enumerate_Children_Finish
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
+       return Glib.GFile_Enumerators.Gfile_Enumerator;
+   --  Finishes an async enumerate children operation. See
+   --  Glib.GFile.Enumerate_Children_Async.
+   --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return a Glib.GFile_Enumerators.Gfile_Enumerator or null if an error
+   --  occurred. Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    function Equal (Self : Gfile; File2 : Gfile) return Boolean;
    --  Checks if the two given GFiles refer to the same file.
@@ -1190,6 +1266,48 @@ package Glib.GFile is
    --  @param Error the return location for a recoverable error
    --  @return True if the operation finished successfully. False otherwise.
 
+   function Query_Default_Handler
+      (Self        : Gfile;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.App_Info.Gapp_Info;
+   --  Returns the Glib.App_Info.Gapp_Info that is registered as the default
+   --  application to handle the file specified by File.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Error the return location for a recoverable error
+   --  @return a Glib.App_Info.Gapp_Info if the handle was found, null if
+   --  there were errors. When you are done with it, release it with
+   --  g_object_unref
+
+   procedure Query_Default_Handler_Async
+      (Self        : Gfile;
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback);
+   --  Async version of Glib.GFile.Query_Default_Handler.
+   --  Since: gtk+ 2.60
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  done
+
+   function Query_Default_Handler_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.App_Info.Gapp_Info;
+   pragma Import (C, Query_Default_Handler_Finish, "g_file_query_default_handler_finish");
+   --  Finishes a Glib.GFile.Query_Default_Handler_Async operation.
+   --  Since: gtk+ 2.60
+   --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
+   --  @return a Glib.App_Info.Gapp_Info if the handle was found, null if
+   --  there were errors. When you are done with it, release it with
+   --  g_object_unref
+
    function Query_Exists
       (Self        : Gfile;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
@@ -1694,6 +1812,30 @@ package Glib.GFile is
    --  @param Relative_Path a given relative path string
    --  @return a Glib.GFile.Gfile for the resolved path.
 
+   function Set_Attribute
+      (Self        : Gfile;
+       Attribute   : UTF8_String;
+       The_Type    : Glib.GEnums.GFile_Attribute_Type;
+       Value_P     : System.Address;
+       Flags       : GFile_Query_Info_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
+   --  Sets an attribute in the file with attribute name Attribute to Value_P.
+   --  Some attributes can be unset by setting Type to Glib.GEnums.Invalid and
+   --  Value_P to null.
+   --  If Cancellable is not null, then the operation can be cancelled by
+   --  triggering the cancellable object from another thread. If the operation
+   --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
+   --  @param Attribute a string containing the attribute's name
+   --  @param The_Type The type of the attribute
+   --  @param Value_P a pointer to the value (or the pointer itself if the
+   --  type is a pointer type)
+   --  @param Flags a set of Glib.GFile.GFile_Query_Info_Flags
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Error the return location for a recoverable error
+   --  @return True if the attribute was set, False otherwise.
+
    function Set_Attribute_Byte_String
       (Self        : Gfile;
        Attribute   : UTF8_String;
@@ -1701,9 +1843,8 @@ package Glib.GFile is
        Flags       : GFile_Query_Info_Flags;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError) return Boolean;
-   --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_BYTE_STRING to Value. If
-   --  Attribute is of a different type, this operation will fail, returning
-   --  False.
+   --  Sets Attribute of type Glib.GEnums.Byte_String to Value. If Attribute
+   --  is of a different type, this operation will fail, returning False.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -1723,8 +1864,8 @@ package Glib.GFile is
        Flags       : GFile_Query_Info_Flags;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError) return Boolean;
-   --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_INT32 to Value. If
-   --  Attribute is of a different type, this operation will fail.
+   --  Sets Attribute of type Glib.GEnums.Int32 to Value. If Attribute is of a
+   --  different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -1744,8 +1885,8 @@ package Glib.GFile is
        Flags       : GFile_Query_Info_Flags;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError) return Boolean;
-   --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_INT64 to Value. If
-   --  Attribute is of a different type, this operation will fail.
+   --  Sets Attribute of type Glib.GEnums.Int64 to Value. If Attribute is of a
+   --  different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -1764,8 +1905,8 @@ package Glib.GFile is
        Flags       : GFile_Query_Info_Flags;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError) return Boolean;
-   --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_STRING to Value. If
-   --  Attribute is of a different type, this operation will fail.
+   --  Sets Attribute of type Glib.GEnums.String to Value. If Attribute is of
+   --  a different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -1784,8 +1925,8 @@ package Glib.GFile is
        Flags       : GFile_Query_Info_Flags;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError) return Boolean;
-   --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_UINT32 to Value. If
-   --  Attribute is of a different type, this operation will fail.
+   --  Sets Attribute of type Glib.GEnums.Uint32 to Value. If Attribute is of
+   --  a different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -1805,8 +1946,8 @@ package Glib.GFile is
        Flags       : GFile_Query_Info_Flags;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError) return Boolean;
-   --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_UINT64 to Value. If
-   --  Attribute is of a different type, this operation will fail.
+   --  Sets Attribute of type Glib.GEnums.Uint64 to Value. If Attribute is of
+   --  a different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -1862,9 +2003,8 @@ package Glib.GFile is
    --  target values, not stopping on the first error.
    --  If there is any error during this operation then Error will be set to
    --  the first error. Error on particular fields are flagged by setting the
-   --  "status" field in the attribute value to
-   --  G_FILE_ATTRIBUTE_STATUS_ERROR_SETTING, which means you can also detect
-   --  further errors.
+   --  "status" field in the attribute value to Glib.GEnums.Error_Setting,
+   --  which means you can also detect further errors.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.

@@ -1,0 +1,26 @@
+# ============================================================
+#   GFileEnumerator
+# ============================================================
+
+ada = "Glib.GFile_Enumerators"
+
+[[property]]
+id = "container"
+bind = false # wrong generation
+
+[[method]]
+id = "g_file_enumerator_next_files_finish"
+return = "GFileInfoList"
+body = '''
+      function Internal
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
+      pragma Import (C, Internal, "g_file_enumerator_next_files_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.File_Info.File_Info_List.Glist;
+   begin
+      Glib.File_Info.File_Info_List.Set_Object (Tmp_Return, Internal (Get_Object (Self), Result, Acc_Error'Access));
+      Error := Acc_Error;
+      return Tmp_Return;
+'''

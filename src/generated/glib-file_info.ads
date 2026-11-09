@@ -62,8 +62,10 @@
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Glib.Date_Time;          use Glib.Date_Time;
+with Glib.GEnums;             use Glib.GEnums;
 with Glib.G_Icon;             use Glib.G_Icon;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Glist;              use Glib.Glist;
 with Glib.Object;             use Glib.Object;
 
 package Glib.File_Info is
@@ -92,6 +94,10 @@ package Glib.File_Info is
    --  represent this important distinction, which is why all Windows symlinks
    --  will continue to be reported as Glib.File_Info.G_File_Type_Regular or
    --  Glib.File_Info.G_File_Type_Directory.
+
+   function Convert (R : Glib.File_Info.Gfile_Info) return System.Address;
+   function Convert (R : System.Address) return Glib.File_Info.Gfile_Info;
+   package File_Info_List is new Generic_List (Glib.File_Info.Gfile_Info);
 
    ----------------------------
    -- Enumeration Properties --
@@ -206,6 +212,21 @@ package Glib.File_Info is
    --  @param Attribute a file attribute key.
    --  @param Attr_Value a byte string.
 
+   function Get_Attribute_Data
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String;
+       The_Type  : access Glib.GEnums.GFile_Attribute_Type := null;
+       Value_Pp  : access System.Address := null;
+       Status    : access Glib.GEnums.GFile_Attribute_Status := null)
+       return Boolean;
+   --  Gets the attribute type, value and status for an attribute key.
+   --  @param Attribute a file attribute key
+   --  @param The_Type return location for the attribute type, or null
+   --  @param Value_Pp return location for the attribute value, or null; the
+   --  attribute value will not be null
+   --  @param Status return location for the attribute status, or null
+   --  @return True if Info has an attribute named Attribute, False otherwise.
+
    function Get_Attribute_File_Path
       (Self      : not null access Gfile_Info_Record;
        Attribute : UTF8_String) return UTF8_String;
@@ -281,6 +302,28 @@ package Glib.File_Info is
    --  @param Attribute a file attribute key.
    --  @param Attr_Value a Glib.Object.GObject.
 
+   function Get_Attribute_Status
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String) return Glib.GEnums.GFile_Attribute_Status;
+   --  Gets the attribute status for an attribute key.
+   --  @param Attribute a file attribute key
+   --  @return a Glib.GEnums.GFile_Attribute_Status for the given Attribute,
+   --  or Glib.GEnums.Unset if the key is invalid.
+
+   function Set_Attribute_Status
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String;
+       Status    : Glib.GEnums.GFile_Attribute_Status) return Boolean;
+   --  Sets the attribute status for an attribute key. This is only needed by
+   --  external code that implement Glib.GFile.Set_Attributes_From_Info or
+   --  similar functions.
+   --  The attribute must exist in Info for this to work. Otherwise False is
+   --  returned and Info is unchanged.
+   --  Since: gtk+ 2.22
+   --  @param Attribute a file attribute key
+   --  @param Status a Glib.GEnums.GFile_Attribute_Status
+   --  @return True if the status was changed, False if the key was not set.
+
    function Get_Attribute_String
       (Self      : not null access Gfile_Info_Record;
        Attribute : UTF8_String) return UTF8_String;
@@ -316,6 +359,14 @@ package Glib.File_Info is
    --  Sinze: 2.22
    --  @param Attribute a file attribute key
    --  @param Attr_Value a null terminated array of UTF-8 strings.
+
+   function Get_Attribute_Type
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String) return Glib.GEnums.GFile_Attribute_Type;
+   --  Gets the attribute type for an attribute key.
+   --  @param Attribute a file attribute key.
+   --  @return a Glib.GEnums.GFile_Attribute_Type for the given Attribute, or
+   --  Glib.GEnums.Invalid if the key is not set.
 
    function Get_Attribute_Uint32
       (Self      : not null access Gfile_Info_Record;
@@ -636,6 +687,17 @@ package Glib.File_Info is
        Attribute : UTF8_String);
    --  Removes all cases of Attribute from Info if it exists.
    --  @param Attribute a file attribute key.
+
+   procedure Set_Attribute
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String;
+       The_Type  : Glib.GEnums.GFile_Attribute_Type;
+       Value_P   : System.Address);
+   --  Sets the Attribute to contain the given value, if possible. To unset
+   --  the attribute, use Glib.GEnums.Invalid for Type.
+   --  @param Attribute a file attribute key.
+   --  @param The_Type a Glib.GEnums.GFile_Attribute_Type
+   --  @param Value_P pointer to the value
 
    procedure Unset_Attribute_Mask (Self : not null access Gfile_Info_Record);
    --  Unsets a mask set by g_file_info_set_attribute_mask, if one is set.

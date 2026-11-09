@@ -31,6 +31,17 @@ pragma Warnings(On);
 
 package body Glib.File_Info is
 
+   function Convert (R : Glib.File_Info.Gfile_Info) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   function Convert (R : System.Address) return Glib.File_Info.Gfile_Info is
+      Stub : Glib.File_Info.Gfile_Info_Record;
+   begin
+      return Glib.File_Info.Gfile_Info (Glib.Object.Get_User_Data (R, Stub));
+   end Convert;
+
    package Type_Conversion_Gfile_Info is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gfile_Info_Record);
    pragma Unreferenced (Type_Conversion_Gfile_Info);
@@ -180,6 +191,34 @@ package body Glib.File_Info is
       return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
    end Get_Attribute_Byte_String;
 
+   ------------------------
+   -- Get_Attribute_Data --
+   ------------------------
+
+   function Get_Attribute_Data
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String;
+       The_Type  : access Glib.GEnums.GFile_Attribute_Type := null;
+       Value_Pp  : access System.Address := null;
+       Status    : access Glib.GEnums.GFile_Attribute_Status := null)
+       return Boolean
+   is
+      function Internal
+         (Self      : System.Address;
+          Attribute : Gtkada.Types.Chars_Ptr;
+          The_Type  : access Glib.GEnums.GFile_Attribute_Type;
+          Value_Pp  : access System.Address;
+          Status    : access Glib.GEnums.GFile_Attribute_Status)
+          return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_info_get_attribute_data");
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
+      Tmp_Return    : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Attribute, The_Type, Value_Pp, Status);
+      Free (Tmp_Attribute);
+      return Tmp_Return /= 0;
+   end Get_Attribute_Data;
+
    -----------------------------
    -- Get_Attribute_File_Path --
    -----------------------------
@@ -262,6 +301,27 @@ package body Glib.File_Info is
    end Get_Attribute_Object;
 
    --------------------------
+   -- Get_Attribute_Status --
+   --------------------------
+
+   function Get_Attribute_Status
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String) return Glib.GEnums.GFile_Attribute_Status
+   is
+      function Internal
+         (Self      : System.Address;
+          Attribute : Gtkada.Types.Chars_Ptr)
+          return Glib.GEnums.GFile_Attribute_Status;
+      pragma Import (C, Internal, "g_file_info_get_attribute_status");
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
+      Tmp_Return    : Glib.GEnums.GFile_Attribute_Status;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Attribute);
+      Free (Tmp_Attribute);
+      return Tmp_Return;
+   end Get_Attribute_Status;
+
+   --------------------------
    -- Get_Attribute_String --
    --------------------------
 
@@ -300,6 +360,27 @@ package body Glib.File_Info is
       Free (Tmp_Attribute);
       return To_String_List (Tmp_Return.all);
    end Get_Attribute_Stringv;
+
+   ------------------------
+   -- Get_Attribute_Type --
+   ------------------------
+
+   function Get_Attribute_Type
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String) return Glib.GEnums.GFile_Attribute_Type
+   is
+      function Internal
+         (Self      : System.Address;
+          Attribute : Gtkada.Types.Chars_Ptr)
+          return Glib.GEnums.GFile_Attribute_Type;
+      pragma Import (C, Internal, "g_file_info_get_attribute_type");
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
+      Tmp_Return    : Glib.GEnums.GFile_Attribute_Type;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Attribute);
+      Free (Tmp_Attribute);
+      return Tmp_Return;
+   end Get_Attribute_Type;
 
    --------------------------
    -- Get_Attribute_Uint32 --
@@ -667,6 +748,28 @@ package body Glib.File_Info is
       Internal (Get_Object (Self), Get_Object (Atime));
    end Set_Access_Date_Time;
 
+   -------------------
+   -- Set_Attribute --
+   -------------------
+
+   procedure Set_Attribute
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String;
+       The_Type  : Glib.GEnums.GFile_Attribute_Type;
+       Value_P   : System.Address)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Attribute : Gtkada.Types.Chars_Ptr;
+          The_Type  : Glib.GEnums.GFile_Attribute_Type;
+          Value_P   : System.Address);
+      pragma Import (C, Internal, "g_file_info_set_attribute");
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
+   begin
+      Internal (Get_Object (Self), Tmp_Attribute, The_Type, Value_P);
+      Free (Tmp_Attribute);
+   end Set_Attribute;
+
    ---------------------------
    -- Set_Attribute_Boolean --
    ---------------------------
@@ -790,6 +893,29 @@ package body Glib.File_Info is
       Internal (Get_Object (Self), Tmp_Attribute, Get_Object (Attr_Value));
       Free (Tmp_Attribute);
    end Set_Attribute_Object;
+
+   --------------------------
+   -- Set_Attribute_Status --
+   --------------------------
+
+   function Set_Attribute_Status
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String;
+       Status    : Glib.GEnums.GFile_Attribute_Status) return Boolean
+   is
+      function Internal
+         (Self      : System.Address;
+          Attribute : Gtkada.Types.Chars_Ptr;
+          Status    : Glib.GEnums.GFile_Attribute_Status)
+          return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_info_set_attribute_status");
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
+      Tmp_Return    : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Attribute, Status);
+      Free (Tmp_Attribute);
+      return Tmp_Return /= 0;
+   end Set_Attribute_Status;
 
    --------------------------
    -- Set_Attribute_String --
