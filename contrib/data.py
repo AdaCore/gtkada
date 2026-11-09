@@ -115,7 +115,7 @@ binding = (
     "Gdk.Drag",
     "Gdk.DrawContext",
     "Gdk.Drop",
-    "--Gdk.Event",
+    "--Gdk.Event", # manual binding
     "Gdk.FrameClock",
     "Gdk.FrameTimings",
     "Gdk.GLContext",
@@ -180,7 +180,7 @@ binding = (
     "--Gio.EmblemedIcon",  # Not tested yet, from Gio
     "--Gio.FileAttributeInfoList",  # Not tested yet, from Gio
     "--Gio.FileAttributeMatcher",  # Not tested yet, from Gio
-    "--Gio.FileEnumerator",  # Not tested yet, from Gio
+    "Gio.FileEnumerator",
     "Gio.FileIOStream",
     "--Gio.FileIcon",  # Not tested yet, from Gio
     "Gio.FileInfo",

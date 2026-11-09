@@ -40,7 +40,7 @@
 --  The `GFileInfo`s returned from a `GtkDirectoryList` have the
 --  "standard::file" attribute set to the `GFile` they refer to. This way you
 --  can get at the file that is referred to in the same way you would via
---  g_file_enumerator_get_child. This means you do not need access to the
+--  Glib.GFile_Enumerators.Get_Child. This means you do not need access to the
 --  `GtkDirectoryList`, but can access the `GFile` directly from the
 --  `GFileInfo` when operating with a `GtkListView` or similar.
 --
