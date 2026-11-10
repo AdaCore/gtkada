@@ -103,6 +103,7 @@ with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
 with Gsk.Renderer;          use Gsk.Renderer;
 with Gtk.Accessible;        use Gtk.Accessible;
+limited with Gtk.Application;
 with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
@@ -205,6 +206,27 @@ package Gtk.Window is
    --  [propertyGdk.Toplevel:state] property, or by listening to notifications
    --  of the [propertyGtk.Window:fullscreened] property.
    --  @param Monitor which monitor to go fullscreen on
+
+   function Get_Application
+      (Self : not null access Gtk_Window_Record)
+       return Gtk.Application.Gtk_Application;
+   --  Gets the application object associated with the window.
+   --  @return the application. Has transfer-ownership='none'.
+
+   procedure Set_Application
+      (Self        : not null access Gtk_Window_Record;
+       Application : access Gtk.Application.Gtk_Application_Record'Class);
+   --  Sets or unsets the application object associated with the window.
+   --  The application will be kept alive for at least as long as it has any
+   --  windows associated with it (see [methodGio.Application.hold] for a way
+   --  to keep it alive without windows).
+   --  Normally, the connection between the application and the window will
+   --  remain until the window is destroyed, but you can explicitly remove it
+   --  by setting the Application to null.
+   --  This is equivalent to calling [methodGtk.Application.remove_window]
+   --  and/or [methodGtk.Application.add_window] on the old/new applications as
+   --  relevant.
+   --  @param Application a `GtkApplication`
 
    function Get_Child
       (Self : not null access Gtk_Window_Record)
