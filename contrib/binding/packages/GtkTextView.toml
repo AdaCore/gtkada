@@ -22,9 +22,3 @@ ctype = "GtkTextExtendSelection"
 [[method]]
 id  = "gtk_text_view_new_with_buffer"
 ada = "Gtk_New"
-
-# im_context_filter_keypress takes a GdkEvent, which is not bound yet
-# (see transition_notes.md); suppress it for now.
-[[method]]
-id   = "gtk_text_view_im_context_filter_keypress"
-bind = false

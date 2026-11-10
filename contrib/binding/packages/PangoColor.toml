@@ -7,11 +7,11 @@ ctype="PangoColor"
 
 [[method]]
 id = "pango_color_copy"
-bind = false
+bind = false # useless in Ada
 
 [[method]]
 id = "pango_color_free"
-bind = false
+bind = false # useless in Ada
 
 [[method]]
 id = "pango_color_parse"

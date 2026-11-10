@@ -27,6 +27,7 @@ with Ada.Unchecked_Conversion;
 with Gdk.Surface;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
+with Gtk.Application;            use Gtk.Application;
 with Gtk.Arguments;              use Gtk.Arguments;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
@@ -175,6 +176,21 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Self), Get_Object (Monitor));
    end Fullscreen_On_Monitor;
+
+   ---------------------
+   -- Get_Application --
+   ---------------------
+
+   function Get_Application
+      (Self : not null access Gtk_Window_Record)
+       return Gtk.Application.Gtk_Application
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_window_get_application");
+      Stub_Gtk_Application : Gtk.Application.Gtk_Application_Record;
+   begin
+      return Gtk.Application.Gtk_Application (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Application));
+   end Get_Application;
 
    ---------------
    -- Get_Child --
@@ -571,6 +587,22 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Window_Group), Get_Object (Window));
    end Remove_Window;
+
+   ---------------------
+   -- Set_Application --
+   ---------------------
+
+   procedure Set_Application
+      (Self        : not null access Gtk_Window_Record;
+       Application : access Gtk.Application.Gtk_Application_Record'Class)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Application : System.Address);
+      pragma Import (C, Internal, "gtk_window_set_application");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Application)));
+   end Set_Application;
 
    ---------------
    -- Set_Child --

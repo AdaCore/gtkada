@@ -88,6 +88,7 @@
 --  <gtkada_demo>create_text_view.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Event;               use Gdk.Event;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
@@ -746,6 +747,29 @@ package Gtk.Text_View is
        Wrap_Mode : Gtk.Enums.Gtk_Wrap_Mode);
    --  Sets the line wrapping for the view.
    --  @param Wrap_Mode a `GtkWrapMode`
+
+   function Im_Context_Filter_Keypress
+      (View  : not null access Gtk_Text_View_Record;
+       Event : Gdk.Event.Gdk_Event) return Boolean;
+   --  Allow the `GtkTextView` input method to internally handle key press and
+   --  release events.
+   --  If this function returns True, then no further processing should be
+   --  done for this key event. See [methodGtk.IMContext.filter_keypress].
+   --  Note that you are expected to call this function from your handler when
+   --  overriding key event handling. This is needed in the case when you need
+   --  to insert your own key handling between the input method and the default
+   --  key event handling of the `GtkTextView`.
+   --  ```c static gboolean gtk_foo_bar_key_press_event (GtkWidget *widget,
+   --  GdkEvent *event) { guint keyval;
+   --  gdk_event_get_keyval ((GdkEvent*)event, &keyval);
+   --  if (keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter) { if
+   --  (gtk_text_view_im_context_filter_keypress (GTK_TEXT_VIEW (widget),
+   --  event)) return TRUE; }
+   --  // Do some stuff
+   --  return GTK_WIDGET_CLASS (gtk_foo_bar_parent_class)->key_press_event
+   --  (widget, event); } ```
+   --  @param Event the key event
+   --  @return True if the input method handled the key event.
 
    function Move_Mark_Onscreen
       (View : not null access Gtk_Text_View_Record;

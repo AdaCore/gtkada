@@ -2,15 +2,12 @@
 #   GtkWindow
 # ============================================================
 
-[[method]]
-id = "gtk_window_get_application"
-bind = false
-# Need Gtk_Application (circular)
+[[extra.with_spec]]
+pkg = "Gtk.Application"
+limited = true
 
-[[method]]
-id = "gtk_window_set_application"
-bind = false
-# Need Gtk_Application (circular)
+[[extra.with_body]]
+pkg = "Gtk.Application"
 
 [[method]]
 id = "gtk_window_set_focus"

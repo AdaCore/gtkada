@@ -281,6 +281,31 @@ package body Gtk.Cell_Area is
       return Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Flags, Boolean'Pos (Edit_Only)) /= 0;
    end Activate;
 
+   -------------------
+   -- Activate_Cell --
+   -------------------
+
+   function Activate_Cell
+      (Self      : not null access Gtk_Cell_Area_Record;
+       Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Event     : Gdk.Event.Gdk_Event;
+       Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State) return Boolean
+   is
+      function Internal
+         (Self      : System.Address;
+          Widget    : System.Address;
+          Renderer  : System.Address;
+          Event     : System.Address;
+          Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
+          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
+          return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_cell_area_activate_cell");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Widget), Get_Object (Renderer), Get_Object (Event), Cell_Area, Flags) /= 0;
+   end Activate_Cell;
+
    ---------
    -- Add --
    ---------
@@ -475,6 +500,32 @@ package body Gtk.Cell_Area is
    begin
       return Gtk.Cell_Area_Context.Gtk_Cell_Area_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Cell_Area_Context));
    end Create_Context;
+
+   -----------
+   -- Event --
+   -----------
+
+   function Event
+      (Self      : not null access Gtk_Cell_Area_Record;
+       Context   : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Event     : Gdk.Event.Gdk_Event;
+       Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
+       return Glib.Gint
+   is
+      function Internal
+         (Self      : System.Address;
+          Context   : System.Address;
+          Widget    : System.Address;
+          Event     : System.Address;
+          Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
+          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
+          return Glib.Gint;
+      pragma Import (C, Internal, "gtk_cell_area_event");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Get_Object (Event), Cell_Area, Flags);
+   end Event;
 
    -----------
    -- Focus --
@@ -682,6 +733,35 @@ package body Gtk.Cell_Area is
    begin
       Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Get_Object (Renderer), Cell_Area, Allocation);
    end Get_Cell_Allocation;
+
+   --------------------------
+   -- Get_Cell_At_Position --
+   --------------------------
+
+   function Get_Cell_At_Position
+      (Self       : not null access Gtk_Cell_Area_Record;
+       Context    : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
+       X          : Glib.Gint;
+       Y          : Glib.Gint;
+       Alloc_Area : access Gdk.Rectangle.Gdk_Rectangle := null)
+       return Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   is
+      function Internal
+         (Self       : System.Address;
+          Context    : System.Address;
+          Widget     : System.Address;
+          Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
+          X          : Glib.Gint;
+          Y          : Glib.Gint;
+          Alloc_Area : access Gdk.Rectangle.Gdk_Rectangle)
+          return System.Address;
+      pragma Import (C, Internal, "gtk_cell_area_get_cell_at_position");
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+   begin
+      return Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, X, Y, Alloc_Area), Stub_Gtk_Cell_Renderer));
+   end Get_Cell_At_Position;
 
    -----------------------------
    -- Get_Current_Path_String --

@@ -267,6 +267,7 @@
 --  <group>Layout Containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Event;             use Gdk.Event;
 with Gdk.Rectangle;         use Gdk.Rectangle;
 with Glib;                  use Glib;
 with Glib.Object;           use Glib.Object;
@@ -362,6 +363,27 @@ package Gtk.Cell_Area is
    --  @param Edit_Only if True then only cell renderers that are
    --  Gtk.Cell_Renderer.Cell_Renderer_Mode_Editable will be activated.
    --  @return Whether Area was successfully activated.
+
+   function Activate_Cell
+      (Self      : not null access Gtk_Cell_Area_Record;
+       Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Event     : Gdk.Event.Gdk_Event;
+       Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State) return Boolean;
+   pragma Obsolescent (Activate_Cell);
+   --  This is used by `GtkCellArea` subclasses when handling events to
+   --  activate cells, the base `GtkCellArea` class activates cells for
+   --  keyboard events for free in its own GtkCellArea->activate
+   --  implementation.
+   --  Deprecated since 4.10, 1
+   --  @param Widget the `GtkWidget` that Area is rendering onto
+   --  @param Renderer the `GtkCellRenderer` in Area to activate
+   --  @param Event the `GdkEvent` for which cell activation should occur
+   --  @param Cell_Area the `GdkRectangle` in Widget relative coordinates of
+   --  Renderer for the current row.
+   --  @param Flags the `GtkCellRenderer`State for Renderer
+   --  @return whether cell activation was successful
 
    procedure Add
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -493,6 +515,24 @@ package Gtk.Cell_Area is
    --  @return a newly created `GtkCellArea`Context which can be used with
    --  Area. Has transfer-ownership='full'.
 
+   function Event
+      (Self      : not null access Gtk_Cell_Area_Record;
+       Context   : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Event     : Gdk.Event.Gdk_Event;
+       Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
+       return Glib.Gint;
+   pragma Obsolescent (Event);
+   --  Delegates event handling to a `GtkCellArea`.
+   --  Deprecated since 4.10, 1
+   --  @param Context the `GtkCellArea`Context for this row of data.
+   --  @param Widget the `GtkWidget` that Area is rendering to
+   --  @param Event the `GdkEvent` to handle
+   --  @param Cell_Area the Widget relative coordinates for Area
+   --  @param Flags the `GtkCellRenderer`State for Area in this row.
+   --  @return True if the event was handled by Area.
+
    function Focus
       (Self      : not null access Gtk_Cell_Area_Record;
        Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
@@ -615,6 +655,30 @@ package Gtk.Cell_Area is
    --  @param Cell_Area the whole allocated area for Area in Widget for this
    --  row
    --  @param Allocation where to store the allocation for Renderer
+
+   function Get_Cell_At_Position
+      (Self       : not null access Gtk_Cell_Area_Record;
+       Context    : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
+       X          : Glib.Gint;
+       Y          : Glib.Gint;
+       Alloc_Area : access Gdk.Rectangle.Gdk_Rectangle := null)
+       return Gtk.Cell_Renderer.Gtk_Cell_Renderer;
+   pragma Obsolescent (Get_Cell_At_Position);
+   --  Gets the `GtkCellRenderer` at X and Y coordinates inside Area and
+   --  optionally returns the full cell allocation for it inside Cell_Area.
+   --  Deprecated since 4.10, 1
+   --  @param Context the `GtkCellArea`Context used to hold sizes for Area.
+   --  @param Widget the `GtkWidget` that Area is rendering on
+   --  @param Cell_Area the whole allocated area for Area in Widget for this
+   --  row
+   --  @param X the x position
+   --  @param Y the y position
+   --  @param Alloc_Area where to store the inner allocated area of the
+   --  returned cell renderer
+   --  @return the `GtkCellRenderer` at X and Y. Has
+   --  transfer-ownership='none'.
 
    function Get_Current_Path_String
       (Self : not null access Gtk_Cell_Area_Record) return UTF8_String;
@@ -1070,14 +1134,14 @@ package Gtk.Cell_Area is
    --  The widget currently editing the edited cell
    --
    --  This property is read-only and only changes as a result of a call
-   --  gtk_cell_area_activate_cell.
+   --  Gtk.Cell_Area.Activate_Cell.
 
    Edited_Cell_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  The cell in the area that is currently edited
    --
    --  This property is read-only and only changes as a result of a call
-   --  gtk_cell_area_activate_cell.
+   --  Gtk.Cell_Area.Activate_Cell.
 
    Focus_Cell_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer

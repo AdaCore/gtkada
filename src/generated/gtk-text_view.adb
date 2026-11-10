@@ -729,6 +729,22 @@ package body Gtk.Text_View is
       return Internal (Get_Object (View));
    end Get_Wrap_Mode;
 
+   --------------------------------
+   -- Im_Context_Filter_Keypress --
+   --------------------------------
+
+   function Im_Context_Filter_Keypress
+      (View  : not null access Gtk_Text_View_Record;
+       Event : Gdk.Event.Gdk_Event) return Boolean
+   is
+      function Internal
+         (View  : System.Address;
+          Event : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_text_view_im_context_filter_keypress");
+   begin
+      return Internal (Get_Object (View), Get_Object (Event)) /= 0;
+   end Im_Context_Filter_Keypress;
+
    ------------------------
    -- Move_Mark_Onscreen --
    ------------------------
