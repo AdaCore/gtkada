@@ -295,6 +295,15 @@ default    = "\"\""
 allow_none = "1"
 ```
 
+Callback formals remain nullable by default: the GIR often omits
+`allow-none` even when null is valid (for example, to clear a default sort
+function). An explicit `allow-none="0"` in the GIR or a per-method
+`allow_none = "0"` override excludes null, as for
+`gdk_clipboard_read_async`: the generated formal is
+`Callback : not null Gasync_Ready_Callback`, so a null value raises
+`Constraint_Error` before calling C. Nullable callbacks retain the
+branch that forwards a null callback and user-data pointer to C.
+
 ### Recovering a varargs subprogram
 
 The generator drops any subprogram with a `...` parameter: Ada has no

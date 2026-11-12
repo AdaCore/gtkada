@@ -647,8 +647,8 @@ class GtkAdaParameter(object):
 
         return None
 
-    def allow_none(self, girnode: GIRNode) -> bool:
-        default = girnode.get("allow-none", "0")
+    def allow_none(self, girnode: GIRNode, default: str = "0") -> bool:
+        default = girnode.get("allow-none", default)
         if self.node is not None:
             return self.node.get("allow_none", default) == "1"
         else:

@@ -339,6 +339,34 @@ procedure Main is
       Glib.Test.Assert_Cmpint_Eq (Glib.Gint (Slot_Exception_Count), 1);
    end Test_Callback_Exception_Containment;
 
+   procedure Test_Null_Read_Async_Callback with Convention => C;
+
+   --  Regression for gdk-clipboard.null-read-async-callback: GDK requires a
+   --  callback, despite the nullable annotation in the GIR. The Ada binding
+   --  must reject null before entering C, where Glib.Test makes the resulting
+   --  GDK critical fatal. A nullable variable keeps this call legal when the
+   --  formal becomes not null: its null-exclusion check raises Constraint_Error.
+   procedure Test_Null_Read_Async_Callback is
+      Callback : Gasync_Ready_Callback := null;
+      Mime_Types : GNAT.Strings.String_List (1 .. 1) :=
+        (1 => new String'("text/plain;charset=utf-8"));
+      Rejected : Boolean := False;
+   begin
+      Clipboard.Set_Text ("null callback guard");
+      begin
+         Clipboard.Read_Async
+           (Mime_Types, Glib.Gint (Glib.Main.Priority_Default), null, Callback);
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+      --  String_List owns its allocated strings; release them after the call
+      --  even when the expected Ada parameter check rejects the callback.
+      GNAT.Strings.Free (Mime_Types (1));
+      Glib.Test.Assert_True
+        (Rejected, "Read_Async must reject a null callback before calling GDK");
+   end Test_Null_Read_Async_Callback;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
@@ -359,5 +387,8 @@ begin
    Glib.Test.Add_Func
      ("/gdk-clipboard/callback-exception-containment",
       Test_Callback_Exception_Containment'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk-clipboard/null-read-async-callback",
+      Test_Null_Read_Async_Callback'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

@@ -971,6 +971,10 @@ class Callback(CType):
     def __repr__(self) -> str:
         return "<Callback %s>" % self.ada
 
+    def as_ada_param(self, pkg: Package) -> str:
+        prefix = "" if self.allow_none else "not null "
+        return prefix + super().as_ada_param(pkg)
+
     def convert_from_c(self) -> ConvertedValue:
         # Never return such a callback to Ada (because in fact we are pointing
         # to a function in one of the bodies of GtkAda, not the actual user

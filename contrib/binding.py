@@ -1229,6 +1229,14 @@ class SubprogramProfile(object):
                 pkg=pkg,
             )
 
+            if isinstance(type, Callback):
+                # Many GIR callbacks omit allow-none even when NULL is valid
+                # (for example, clearing a default sort function). Preserve
+                # their nullable profiles unless null is explicitly excluded.
+                type.allow_none = (
+                    gtkparam.allow_none(girnode=p, default="1") or default == "null"
+                )
+
             if type is None:
                 if nodeOrType.find(nvarargs) is not None:
                     type = gtkmethod.get_param("varargs").get_type(pkg=pkg)
@@ -1858,15 +1866,7 @@ class GIRClass(object):
             :return: the code for the Ada function's body
             """
 
-            values_if_null = copy.deepcopy(values)
-            values_if_null[cb.name.lower()] = "System.Null_Address"
-            if user_data is not None:
-                values_if_null[user_data.lower()] = "System.Null_Address"
             postcall_code: str = "".join(call)
-
-            # Code if no user data supplied
-            null_cbk_data = gtk_func.call(in_pkg=self.pkg, extra_postcall=postcall_code, values=values_if_null)
-            null_cbk = gtk_func.call_to_string(null_cbk_data, lang="ada->c").strip()
 
             # Code if user data supplied
             data_call = gtk_func.call(in_pkg=self.pkg, extra_postcall=postcall_code, values=values)
@@ -1878,6 +1878,16 @@ class GIRClass(object):
             data_cbk = "\n".join([user_data_setup, data_cbk_body, user_data_cleanup]).strip()
             if return_val is not None:
                 data_cbk += f"return {return_val};"
+            if not cb.type.allow_none:
+                return data_cbk, tmp_data
+
+            values_if_null = copy.deepcopy(values)
+            values_if_null[cb.name.lower()] = "System.Null_Address"
+            if user_data is not None:
+                values_if_null[user_data.lower()] = "System.Null_Address"
+            null_cbk_data = gtk_func.call(in_pkg=self.pkg, extra_postcall=postcall_code, values=values_if_null)
+            null_cbk = gtk_func.call_to_string(null_cbk_data, lang="ada->c").strip()
+
             return (
                 """if %s = null then
    %s
@@ -2158,7 +2168,9 @@ end if;"""
             full_profile.set_class_wide()
             if destroy is not None:
                 full_profile.remove_param([destroy])
-            full_profile.replace_param(cb.name, funcname)
+            user_cb_type = cb.type.copy()
+            user_cb_type.set_ada_name(funcname)
+            full_profile.replace_param(cb.name, user_cb_type)
             full_profile.replace_param(user_data, "User_Data_Type")
 
             if profile.callback_destroy() is None:

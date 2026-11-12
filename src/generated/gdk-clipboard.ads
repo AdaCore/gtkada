@@ -140,7 +140,7 @@ package Gdk.Clipboard is
        Mime_Types  : GNAT.Strings.String_List;
        Io_Priority : Glib.Gint;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Callback    : Gasync_Ready_Callback);
+       Callback    : not null Gasync_Ready_Callback);
    --  Asynchronously requests an input stream to read the Clipboard's
    --  contents from.
    --  The clipboard will choose the most suitable mime type from the given

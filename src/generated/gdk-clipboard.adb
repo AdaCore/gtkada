@@ -226,17 +226,12 @@ package body Gdk.Clipboard is
        Mime_Types  : GNAT.Strings.String_List;
        Io_Priority : Glib.Gint;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Callback    : Gasync_Ready_Callback)
+       Callback    : not null Gasync_Ready_Callback)
    is
       Tmp_Mime_Types : Gtkada.Types.chars_ptr_array := From_String_List (Mime_Types);
    begin
-      if Callback = null then
-         C_Gdk_Clipboard_Read_Async (Get_Object (Self), Tmp_Mime_Types, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
-         Gtkada.Types.Free (Tmp_Mime_Types);
-      else
-         C_Gdk_Clipboard_Read_Async (Get_Object (Self), Tmp_Mime_Types, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
-         Gtkada.Types.Free (Tmp_Mime_Types);
-      end if;
+      C_Gdk_Clipboard_Read_Async (Get_Object (Self), Tmp_Mime_Types, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      Gtkada.Types.Free (Tmp_Mime_Types);
    end Read_Async;
 
    -----------------
