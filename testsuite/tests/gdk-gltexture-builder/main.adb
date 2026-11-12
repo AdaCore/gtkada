@@ -12,6 +12,7 @@ with Gdk.Texture;
 with Glib;
 with Glib.Bytes;
 with Glib.Object;
+with Glib.Properties;
 with Glib.Test;
 with Gtk.Main;
 with System;
@@ -28,6 +29,42 @@ procedure Main is
    use type System.Address;
 
    procedure Test_Builder with Convention => C;
+   procedure Test_Sync_Property with Convention => C;
+
+   --  Regression for gdk-gltexture_builder.sync-property-type: GIR declares
+   --  sync as gpointer, so reading its property must preserve an opaque address
+   --  just like Get_Sync. No GL context is needed until a texture is built.
+   procedure Test_Sync_Property is
+      Builder : constant Gdk.GLTexture_Builder.Gdk_Gltexture_Builder :=
+        Gdk.GLTexture_Builder.Gdk_Gltexture_Builder_New;
+      Sentinel : aliased Integer := 7;
+
+      --  Overloading keeps the erroneous string profile compilable, allowing
+      --  the existing test case to run. The corrected Property_Address handle
+      --  selects the address assertion without any change to this test.
+      procedure Check_Sync (Value : System.Address) is
+      begin
+         Assert_True
+           (Value = Sentinel'Address,
+            "Sync_Property must preserve the opaque sync pointer");
+      end Check_Sync;
+
+      procedure Check_Sync (Value : String) is
+         pragma Unreferenced (Value);
+      begin
+         Assert_True (False, "Sync_Property must return an opaque pointer");
+      end Check_Sync;
+   begin
+      --  The direct setter supplies a borrowed sentinel, never dereferenced by
+      --  the builder. Using the generated handle selects the property getter;
+      --  its current string GValue causes a fatal GLib type mismatch.
+      Builder.Set_Sync (Sentinel'Address);
+      Check_Sync
+        (Glib.Properties.Get_Property
+           (Builder, Gdk.GLTexture_Builder.Sync_Property));
+      Builder.Set_Sync (System.Null_Address);
+      Glib.Object.Unref (Glib.Object.GObject (Builder));
+   end Test_Sync_Property;
 
    --  Round-trip optional object and scalar properties without creating GL
    --  resources; all the tested properties belong to the GObject builder.
@@ -105,6 +142,18 @@ procedure Main is
       Builder.Set_Sync (System.Null_Address);
       Assert_True (Builder.Get_Sync = System.Null_Address);
 
+      --  The property setter must accept the same opaque address, including
+      --  null. Check it through the direct accessor and property getter.
+      Glib.Properties.Set_Property
+        (Builder, Gdk.GLTexture_Builder.Sync_Property, Sync_Value'Address);
+      Assert_True (Builder.Get_Sync = Sync_Value'Address);
+      Glib.Properties.Set_Property
+        (Builder, Gdk.GLTexture_Builder.Sync_Property, System.Null_Address);
+      Assert_True (Builder.Get_Sync = System.Null_Address);
+      Assert_True
+        (Glib.Properties.Get_Property
+           (Builder, Gdk.GLTexture_Builder.Sync_Property) = System.Null_Address);
+
       --  The update pair holds a Cairo region and a normal GdkTexture; passing
       --  null afterward exercises the bindings' nullable object conversions.
       Builder.Set_Update_Region (Region);
@@ -132,5 +181,8 @@ begin
    Glib.Test.Add_Func
      ("/gdk/gltexture-builder/properties",
       Test_Builder'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk/gltexture-builder/sync-property",
+      Test_Sync_Property'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

@@ -548,6 +548,12 @@ to the interface's Ada type and use `Glib.Properties.Property_Interface`.
 No manual GIR-to-C mapping is needed; explicit mappings in `data.py` take
 precedence over the automatic registration.
 
+Opaque `gpointer` and `gconstpointer` properties use
+`Glib.Properties.Property_Address`. `Get_Property` returns a
+`System.Address`, and `Set_Property` accepts one. Both preserve the pointer
+without dereferencing it or taking ownership; the getter uses a
+`G_TYPE_POINTER` value.
+
 | Key             | Type   | Meaning                                              |
 |-----------------|--------|------------------------------------------------------|
 | `id`                 | string | **Required.** The C identifier of the property.|
