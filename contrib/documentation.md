@@ -376,6 +376,11 @@ function). An explicit `allow-none="0"` in the GIR or a per-method
 `Constraint_Error` before calling C. Nullable callbacks retain the
 branch that forwards a null callback and user-data pointer to C.
 
+For a required callback with no GIR nullability annotation, also set
+`allow_none = "0"` explicitly, as for `gtk_expression_watch`'s `notify`.
+This excludes null in both the ordinary and generic user-data formals
+and omits their null-forwarding branches.
+
 Generic user-data wrappers follow the callback's GIR scope. With no C
 destroy-notify hook, a `scope="call"` closure is released after the C call,
 while a `scope="async"` closure remains alive until the completion callback

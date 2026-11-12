@@ -257,7 +257,7 @@ package Gtk.Expression is
    function Watch
       (Self   : Gtk_Expression;
        This   : System.Address;
-       Notify : Gtk_Expression_Notify)
+       Notify : not null Gtk_Expression_Notify)
        return Gtk.Expression_Watch.Gtk_Expression_Watch;
    --  Watch the given `expression` for changes.
    --  The Notify function will be called whenever the evaluation of `self`
@@ -286,7 +286,7 @@ package Gtk.Expression is
       function Watch
          (Self      : Gtk.Expression.Gtk_Expression;
           This      : System.Address;
-          Notify    : Gtk_Expression_Notify;
+          Notify    : not null Gtk_Expression_Notify;
           User_Data : User_Data_Type)
           return Gtk.Expression_Watch.Gtk_Expression_Watch;
       --  Watch the given `expression` for changes.

@@ -203,15 +203,11 @@ package body Gtk.Expression is
    function Watch
       (Self   : Gtk_Expression;
        This   : System.Address;
-       Notify : Gtk_Expression_Notify)
+       Notify : not null Gtk_Expression_Notify)
        return Gtk.Expression_Watch.Gtk_Expression_Watch
    is
    begin
-      if Notify = null then
-         return From_Object (C_Gtk_Expression_Watch (Get_Object (Self), This, System.Null_Address, System.Null_Address, System.Null_Address));
-      else
-         return From_Object (C_Gtk_Expression_Watch (Get_Object (Self), This, Internal_Gtk_Expression_Notify'Address, To_Address (Notify), System.Null_Address));
-      end if;
+      return From_Object (C_Gtk_Expression_Watch (Get_Object (Self), This, Internal_Gtk_Expression_Notify'Address, To_Address (Notify), System.Null_Address));
    end Watch;
 
    package body Watch_User_Data is
@@ -248,18 +244,14 @@ package body Gtk.Expression is
       function Watch
          (Self      : Gtk.Expression.Gtk_Expression;
           This      : System.Address;
-          Notify    : Gtk_Expression_Notify;
+          Notify    : not null Gtk_Expression_Notify;
           User_Data : User_Data_Type)
           return Gtk.Expression_Watch.Gtk_Expression_Watch
       is
          D : System.Address;
       begin
-         if Notify = null then
-            return From_Object (C_Gtk_Expression_Watch (Get_Object (Self), This, System.Null_Address, System.Null_Address, Users.Free_Data'Address));
-         else
-            D := Users.Build (To_Address (Notify), User_Data);
-            return From_Object (C_Gtk_Expression_Watch (Get_Object (Self), This, Internal_Cb'Address, D, Users.Free_Data'Address));
-         end if;
+         D := Users.Build (To_Address (Notify), User_Data);
+         return From_Object (C_Gtk_Expression_Watch (Get_Object (Self), This, Internal_Cb'Address, D, Users.Free_Data'Address));
       end Watch;
 
    end Watch_User_Data;
