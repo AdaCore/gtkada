@@ -314,15 +314,28 @@ package body Glib.List_Store is
        N_Removals : Guint;
        Additions  : Array_GObject)
    is
+      type Address_Array is array (Natural range <>) of System.Address
+        with Convention => C;
+      Objects : Address_Array (Additions'Range);
+
       procedure Internal
-         (Self        : System.Address;
-          Position    : Guint;
-          N_Removals  : Guint;
-          Additions   : Array_GObject;
-          N_Additions : Guint);
+        (Self        : System.Address;
+         Position    : Guint;
+         N_Removals  : Guint;
+         Additions   : System.Address;
+         N_Additions : Guint);
       pragma Import (C, Internal, "g_list_store_splice");
    begin
-      Internal (Get_Object (Self), Position, N_Removals, Additions, Additions'Length);
+      --  Ada handles point to wrappers; GLib needs the C object pointers.
+      for J in Additions'Range loop
+         Objects (J) := Get_Object (Additions (J));
+      end loop;
+
+      Internal
+        (Get_Object (Self), Position, N_Removals,
+         (if Objects'Length = 0 then System.Null_Address
+          else Objects (Objects'First)'Address),
+         Guint (Objects'Length));
    end Splice;
 
    --------------
