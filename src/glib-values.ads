@@ -45,7 +45,11 @@ package Glib.Values is
    --  Set and Get functions below.
 
    type GValue_Access is access all GValue;
-   
+
+   type GValue_Const_Access is access constant GValue;
+   --  A read-only pointer to a GValue owned by C. Observe the lifetime
+   --  documented by the function returning it; do not unset or free it.
+
    type GValues is private;
    --  This type represents a table of values. Each argument of the
    --  table can be of any type.

@@ -14,6 +14,7 @@ with Gdk.Drop;
 with Gdk.Seat;
 with Gdk.Surface;
 with Glib;
+with Glib.Error;
 with Glib.Main;
 with Glib.Object;
 with Glib.Test;
@@ -28,6 +29,7 @@ procedure Main is
    use Glib.Test;
    use type Glib.GType;
    use type Glib.Gboolean;
+   use type Glib.Error.GError;
    use type Gdk.Gdk_Device;
    use type Gdk.Gdk_Display;
    use type Gdk.Gdk_Seat;
@@ -102,17 +104,31 @@ procedure Main is
    Callback_Source   : System.Address := System.Null_Address;
    Callback_Completed : Boolean := False;
    Callback_Task_Valid : Boolean := False;
+   Callback_Value_Matches : Boolean := False;
 
    procedure On_Value_Read
      (Source : access Glib.Object.GObject_Record'Class;
       Result : Glib.G_Async_Result);
    procedure On_Value_Read
      (Source : access Glib.Object.GObject_Record'Class;
-      Result : Glib.G_Async_Result) is
+      Result : Glib.G_Async_Result)
+   is
+      Error : Glib.Error.GError;
+      Value : constant access constant Glib.Values.GValue :=
+        Current_Drop.Read_Value_Finish (Result, Error);
    begin
       Callback_Source := Glib.Object.Get_Object (Source);
       Callback_Task_Valid := G_Task_Is_Valid
         (To_Address (Result), Glib.Object.Get_Object (Current_Drop)) /= 0;
+      --  Inspect the borrowed value while the async result is alive. Never
+      --  unset it or free its storage: GDK retains ownership.
+      Callback_Value_Matches :=
+        Error = null and then Value /= null
+        and then Glib.Values.Type_Of (Value.all) = Glib.GType_String
+        and then Glib.Values.Get_String (Value.all) = "gdk-drop test payload";
+      if Error /= null then
+         Glib.Error.Error_Free (Error);
+      end if;
       Callback_Completed := True;
    end On_Value_Read;
 
@@ -206,9 +222,8 @@ procedure Main is
       Assert_True (Stored_Drop.Get_Actions = Gdk.Drag.Gdk_Action_Copy);
 
       --  A successful async local read reaches Ada's callback conversion. The
-      --  result is also a GTask for this exact drop, as required by the finish
-      --  API; Read_Value_Finish itself is excluded due to the binding issue
-      --  recorded in the unit notes.
+      --  result is also a GTask for this exact drop. The callback finishes the
+      --  read and checks the borrowed GValue returned through the C pointer ABI.
       Stored_Drop.Read_Value_Async
         (Glib.GType_String, 0, null,
          On_Value_Read'Unrestricted_Access);
@@ -217,6 +232,7 @@ procedure Main is
       end loop;
       Assert_True (Callback_Source = Glib.Object.Get_Object (Stored_Drop));
       Assert_True (Callback_Task_Valid);
+      Assert_True (Callback_Value_Matches);
 
       --  The GIR allows a null callback, and GtkAda forwards it as null for
       --  both the C callback and user data. The runtime currently rejects it.

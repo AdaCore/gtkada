@@ -384,16 +384,18 @@ package body Gdk.Clipboard is
    function Read_Value_Finish
       (Self   : not null access Gdk_Clipboard_Record;
        Result : Glib.G_Async_Result;
-       Error  : out Glib.Error.GError) return Glib.Values.GValue
+       Error  : out Glib.Error.GError)
+       return Glib.Values.GValue_Const_Access
    is
       function Internal
          (Self      : System.Address;
           Result    : Glib.G_Async_Result;
-          Acc_Error : access Glib.Error.GError) return Glib.Values.GValue;
+          Acc_Error : access Glib.Error.GError)
+          return Glib.Values.GValue_Const_Access;
       pragma Import (C, Internal, "gdk_clipboard_read_value_finish");
       Acc_Error  : aliased Glib.Error.GError;
-      Return_Obj : Glib.Values.GValue;
-      Tmp_Return : Glib.Values.GValue;
+      Return_Obj : Glib.Values.GValue_Const_Access;
+      Tmp_Return : Glib.Values.GValue_Const_Access;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;

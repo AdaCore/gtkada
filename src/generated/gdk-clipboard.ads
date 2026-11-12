@@ -225,9 +225,11 @@ package Gdk.Clipboard is
    function Read_Value_Finish
       (Self   : not null access Gdk_Clipboard_Record;
        Result : Glib.G_Async_Result;
-       Error  : out Glib.Error.GError) return Glib.Values.GValue;
+       Error  : out Glib.Error.GError)
+       return Glib.Values.GValue_Const_Access;
    --  Finishes an asynchronous clipboard read.
    --  See [methodGdk.Clipboard.read_value_async].
+   --  The returned value is borrowed; do not unset or free it.
    --  @param Result a `GAsyncResult`
    --  @param Error the return location for a recoverable error
    --  @return a `GValue` containing the result.

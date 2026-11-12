@@ -270,6 +270,15 @@ extend = true
 text   = "@return The item displayed"
 ```
 
+For a borrowed `const GValue*` return, use
+`return = "Glib.Values.GValue_Const_Access"`, as in `GdkClipboard.toml` and
+`GdkDrop.toml`. `GValue` itself is a record, so using it as the imported
+return type would select the wrong C calling convention. The named
+access-to-constant type also avoids the accessibility check that a local
+anonymous access variable would trigger when an error wrapper returns it.
+The caller must respect the borrowed value's lifetime and must not unset
+or free it.
+
 ### `[[method.parameter]]` — per-parameter overrides
 
 Repeat as needed *inside* a method/function/callback/virtual_method

@@ -33,7 +33,7 @@ procedure Main is
 
    type Pending_Operation is
      (Read_Stream, Read_Text, Read_Texture, Read_Value_Started,
-      Store_Contents);
+      Store_Contents, Read_Value_Finished);
 
    Display   : Gdk.Gdk_Display;
    Clipboard : Gdk_Clipboard;
@@ -65,6 +65,32 @@ procedure Main is
    procedure Test_Value_And_Texture_Reads with Convention => C;
    procedure Test_Store with Convention => C;
    procedure Test_Content_And_Signals with Convention => C;
+   procedure Test_Read_Value_Finish with Convention => C;
+
+   --  Accept both today's record return and the corrected borrowed pointer
+   --  profile, so this runtime reproducer survives the binding correction.
+   procedure Check_Read_Value (Value : Glib.Values.GValue);
+   procedure Check_Read_Value (Value : access constant Glib.Values.GValue);
+
+   procedure Check_Read_Value (Value : Glib.Values.GValue) is
+   begin
+      Glib.Test.Assert_True
+        (Async_Error = null, "Read_Value_Finish must succeed for local text");
+      Glib.Test.Assert_True
+        (Glib.Values.Type_Of (Value) = Glib.GType_String,
+         "Read_Value_Finish must return a string GValue");
+      Glib.Test.Assert_Cmpstr_Eq
+        (Glib.Values.Get_String (Value), "read-value-finish text");
+   end Check_Read_Value;
+
+   procedure Check_Read_Value (Value : access constant Glib.Values.GValue) is
+   begin
+      Glib.Test.Assert_True
+        (Value /= null, "Read_Value_Finish must return a non-null GValue");
+      --  GIR promises transfer-none: inspect the borrowed value before the
+      --  async callback returns, without Unset or freeing its storage.
+      Check_Read_Value (Value.all);
+   end Check_Read_Value;
 
    procedure On_Clipboard_Changed
      (Self : access Gdk_Clipboard_Record'Class);
@@ -101,11 +127,16 @@ procedure Main is
             Texture_Result := Clipboard.Read_Texture_Finish
               (Res, Async_Error);
          when Read_Value_Started =>
-            --  The callback is observable; its paired finish binding currently
-            --  fails GDK's task validation, so this case checks completion only.
+            --  This case checks completion only; the separate
+            --  read-value-finish case checks the paired finish binding.
             null;
          when Store_Contents =>
             Store_Result := Clipboard.Store_Finish (Res, Async_Error);
+         when Read_Value_Finished =>
+            --  gdk-clipboard.read-value-finish-gvalue-return-pointer:
+            --  the by-value C import shifts the arguments and makes GDK
+            --  reject this valid result with its g_task_is_valid assertion.
+            Check_Read_Value (Clipboard.Read_Value_Finish (Res, Async_Error));
       end case;
       Done := True;
    end On_Async_Ready;
@@ -233,7 +264,7 @@ procedure Main is
       Clipboard.Set_Text ("value text");
 
       --  Read_Value_Async completes and calls back for a local text value.
-      --  Read_Value_Finish is excluded because it triggers a GDK task assertion.
+      --  The separate read-value-finish case checks the paired finish method.
       Pending := Read_Value_Started;
       Done := False;
       Async_Error := null;
@@ -367,6 +398,24 @@ procedure Main is
         (Rejected, "Read_Async must reject a null callback before calling GDK");
    end Test_Null_Read_Async_Callback;
 
+   --  Complete a real local string read with its matching finish method.
+   --  Unlike a profile-only check, this exercises the C return convention for
+   --  gdk-clipboard.read-value-finish-gvalue-return-pointer at runtime.
+   procedure Test_Read_Value_Finish is
+   begin
+      Clipboard.Set_Text ("read-value-finish text");
+      Pending := Read_Value_Finished;
+      Done := False;
+      Source_Matches := False;
+      Async_Error := null;
+      --  Nested callbacks use GNAT's Unrestricted_Access, as in the other
+      --  cases; Wait_For_Async keeps this scope alive until completion.
+      Clipboard.Read_Value_Async
+        (Glib.GType_String, Glib.Gint (Glib.Main.Priority_Default), null,
+         On_Async_Ready'Unrestricted_Access);
+      Wait_For_Async;
+   end Test_Read_Value_Finish;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
@@ -390,5 +439,8 @@ begin
    Glib.Test.Add_Func
      ("/gdk-clipboard/null-read-async-callback",
       Test_Null_Read_Async_Callback'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk-clipboard/read-value-finish",
+      Test_Read_Value_Finish'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;
