@@ -1,9 +1,28 @@
 <schemalist>
+  <enum id="org.gtkada.test.mode">
+    <value nick="first" value="1"/>
+    <value nick="second" value="2"/>
+  </enum>
+  <flags id="org.gtkada.test.features">
+    <value nick="one" value="1"/>
+    <value nick="two" value="2"/>
+    <value nick="four" value="4"/>
+  </flags>
   <schema id="org.gtkada.test" path="/org/gtkada/test/">
     <key name="enabled" type="b"><default>true</default><summary>Enabled</summary><description>Enable the test feature.</description></key>
     <key name="name" type="s"><default>'Ada'</default></key>
     <key name="count" type="i"><range min="0" max="10"/><default>3</default></key>
     <key name="words" type="as"><default>['Ada', 'GTK']</default></key>
+    <key name="measure" type="d"><default>1.25</default></key>
+    <key name="signed" type="x"><default>-1234567890123</default></key>
+    <key name="unsigned" type="u"><default>17</default></key>
+    <key name="large-unsigned" type="t"><default>1234567890123</default></key>
+    <key name="mode" enum="org.gtkada.test.mode"><default>'first'</default></key>
+    <key name="features" flags="org.gtkada.test.features"><default>['one', 'two']</default></key>
+    <child name="child" schema="org.gtkada.test.child"/>
+  </schema>
+  <schema id="org.gtkada.test.child">
+    <key name="note" type="s"><default>'child default'</default></key>
   </schema>
   <schema id="org.gtkada.relocatable">
     <key name="enabled" type="b"><default>false</default></key>

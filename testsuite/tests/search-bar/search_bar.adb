@@ -2,8 +2,11 @@
 --  a check of the bar's own properties and of Connect_Entry.
 
 with Ada.Command_Line;
+with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
 with Glib.Test;        use Glib.Test;
+with Gtk.Accessible;   use Gtk.Accessible;
+with Gtk.Atcontext;
 with Gtk.Button;       use Gtk.Button;
 with Gtk.Main;
 with Gtk.Search_Bar;   use Gtk.Search_Bar;
@@ -12,10 +15,13 @@ with Gtk.Widget;       use Gtk.Widget;
 
 procedure Search_Bar is
 
+   use type Gtk.Atcontext.Gtk_Atcontext;
+
    procedure Test_Capture_Widget_Destroy with Convention => C;
    procedure Test_Capture_Widget_Unset with Convention => C;
    procedure Test_Properties with Convention => C;
    procedure Test_Connect_Entry with Convention => C;
+   procedure Test_Accessibility with Convention => C;
 
    ---------------------------------
    -- Test_Capture_Widget_Destroy --
@@ -99,6 +105,61 @@ procedure Search_Bar is
       Bar.Connect_Entry (+Entry_Widget);
    end Test_Connect_Entry;
 
+   -------------------------
+   -- Test_Accessibility --
+   -------------------------
+
+   procedure Test_Accessibility is
+      Bar : Gtk_Search_Bar;
+      Entry_Widget : Gtk_Search_Entry;
+      First : Gtk_Accessible;
+      Context : Gtk.Atcontext.Gtk_Atcontext;
+      X, Y, Width, Height : Gint;
+   begin
+      --  Use the procedure constructor as well as the function constructor
+      --  covered by the basic search-bar cases.
+      Gtk.Search_Bar.Gtk_New (Bar);
+      Ref_Sink (Bar);
+      Entry_Widget := Gtk_Search_Entry_New;
+      Ref_Sink (Entry_Widget);
+      Bar.Set_Child (Entry_Widget);
+
+      --  GtkSearchBar has the documented search role. Detached widgets have
+      --  no accessible parent, sibling, platform bounds, or AT context.
+      Assert_True (Bar.Get_Accessible_Role = Accessible_Role_Search);
+      Assert_True (Bar.Get_Accessible_Parent = Null_Gtk_Accessible);
+      Assert_True
+        (Bar.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+      First := Bar.Get_First_Accessible_Child;
+      Assert_True (First /= Null_Gtk_Accessible);
+      Assert_True (First = Bar.Get_First_Accessible_Child);
+      Assert_Cmpstr_Eq (Bar.Get_Accessible_Id, "");
+      Context := Bar.Get_At_Context;
+      Assert_True (Context = null);
+      Assert_False (Bar.Get_Bounds (X, Y, Width, Height));
+      Assert_False
+        (Bar.Get_Platform_State (Accessible_Platform_State_Focused));
+
+      --  These inherited mutations are safe on a detached widget. A null
+      --  accessible parent and sibling leave its accessible tree unchanged.
+      Bar.Announce
+        ("search bar test", Accessible_Announcement_Priority_Low);
+      Bar.Reset_Property (Accessible_Property_Label);
+      Bar.Reset_Relation (Accessible_Relation_Labelled_By);
+      Bar.Reset_State (Accessible_State_Busy);
+      Bar.Set_Accessible_Parent
+        (Null_Gtk_Accessible, Null_Gtk_Accessible);
+      Assert_True (Bar.Get_Accessible_Parent = Null_Gtk_Accessible);
+      Bar.Update_Next_Accessible_Sibling (Null_Gtk_Accessible);
+      Assert_True
+        (Bar.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+      Bar.Update_Platform_State (Accessible_Platform_State_Focusable);
+      Assert_True (Bar.Get_Accessible_Role = Accessible_Role_Search);
+
+      Unref (Bar);
+      Unref (Entry_Widget);
+   end Test_Accessibility;
+
 begin
    Glib.Test.Init;
 
@@ -116,6 +177,8 @@ begin
      ("/searchbar/properties", Test_Properties'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/searchbar/connect-entry", Test_Connect_Entry'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/searchbar/accessibility", Test_Accessibility'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

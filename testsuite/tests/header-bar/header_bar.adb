@@ -3,9 +3,12 @@
 --  and the bar in the role it exists for, a Gtk_Window's titlebar.
 
 with Ada.Command_Line;
+with Glib;          use Glib;
 with Glib.Main;      use Glib.Main;
 with Glib.Object;    use Glib.Object;
 with Glib.Test;      use Glib.Test;
+with Gtk.Accessible; use Gtk.Accessible;
+with Gtk.Atcontext;
 with Gtk.Button;     use Gtk.Button;
 with Gtk.Header_Bar; use Gtk.Header_Bar;
 with Gtk.Label;      use Gtk.Label;
@@ -22,9 +25,14 @@ procedure Header_Bar is
    function Stop return Boolean;
 
    procedure Test_Properties with Convention => C;
+   procedure Test_Constructor with Convention => C;
    procedure Test_Title_Widget with Convention => C;
    procedure Test_Packing with Convention => C;
    procedure Test_Titlebar with Convention => C;
+   procedure Test_Accessibility with Convention => C;
+
+   use type Gtk.Atcontext.Gtk_Atcontext;
+   use type Gtk.Accessible.Gtk_Accessible;
 
    ----------
    -- Stop --
@@ -70,6 +78,21 @@ procedure Header_Bar is
 
       Unref (Bar);
    end Test_Properties;
+
+   ---------------------
+   -- Test_Constructor --
+   ---------------------
+
+   procedure Test_Constructor is
+      Bar : Gtk_Header_Bar;
+   begin
+      --  Exercise the output-parameter constructor as well as the function
+      --  constructor used by the other cases.
+      Gtk_New (Bar);
+      Ref_Sink (Bar);
+      Assert_True (Bar.Get_Accessible_Role = Accessible_Role_Group);
+      Unref (Bar);
+   end Test_Constructor;
 
    -----------------------
    -- Test_Title_Widget --
@@ -177,6 +200,49 @@ procedure Header_Bar is
       Window.Destroy;
    end Test_Titlebar;
 
+   ------------------------
+   -- Test_Accessibility --
+   ------------------------
+
+   procedure Test_Accessibility is
+      Bar : constant Gtk_Header_Bar := Gtk_Header_Bar_New;
+      First : Gtk_Accessible;
+      X, Y, Width, Height : Gint;
+   begin
+      Ref_Sink (Bar);
+
+      --  GtkHeaderBar has the documented group role. Before it is rooted,
+      --  it has no accessible parent, sibling, AT context, or screen bounds.
+      Assert_True (Bar.Get_Accessible_Role = Accessible_Role_Group);
+      Assert_Cmpstr_Eq (Bar.Get_Accessible_Id, "");
+      Assert_True (Bar.Get_Accessible_Parent = Null_Gtk_Accessible);
+      Assert_True
+        (Bar.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+      First := Bar.Get_First_Accessible_Child;
+      Assert_True (First = Bar.Get_First_Accessible_Child);
+      Assert_True (Bar.Get_At_Context = null);
+      Assert_False (Bar.Get_Bounds (X, Y, Width, Height));
+      Assert_False
+        (Bar.Get_Platform_State (Accessible_Platform_State_Focused));
+
+      --  These inherited methods are safe on an unrooted widget. The null
+      --  tree updates leave its accessible parent and sibling unchanged.
+      Bar.Announce ("header bar accessibility test",
+                    Accessible_Announcement_Priority_Low);
+      Bar.Reset_Property (Accessible_Property_Label);
+      Bar.Reset_Relation (Accessible_Relation_Labelled_By);
+      Bar.Reset_State (Accessible_State_Busy);
+      Bar.Set_Accessible_Parent
+        (Null_Gtk_Accessible, Null_Gtk_Accessible);
+      Assert_True (Bar.Get_Accessible_Parent = Null_Gtk_Accessible);
+      Bar.Update_Next_Accessible_Sibling (Null_Gtk_Accessible);
+      Assert_True
+        (Bar.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+      Bar.Update_Platform_State (Accessible_Platform_State_Focusable);
+
+      Unref (Bar);
+   end Test_Accessibility;
+
 begin
    Glib.Test.Init;
 
@@ -186,11 +252,15 @@ begin
    Glib.Test.Add_Func
      ("/headerbar/properties", Test_Properties'Unrestricted_Access);
    Glib.Test.Add_Func
+     ("/headerbar/constructor", Test_Constructor'Unrestricted_Access);
+   Glib.Test.Add_Func
      ("/headerbar/title-widget", Test_Title_Widget'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/headerbar/packing", Test_Packing'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/headerbar/titlebar", Test_Titlebar'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/headerbar/accessibility", Test_Accessibility'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

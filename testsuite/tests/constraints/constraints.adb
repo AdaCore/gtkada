@@ -61,6 +61,86 @@ procedure Constraints is
       Layout.Allocate (Box, 400, 200, -1);
    end Allocate;
 
+   --  The function constructor must return an initialized layout manager.
+   procedure Test_Function_Constructor with
+     Convention => C;
+   procedure Test_Function_Constructor is
+      Layout : constant Gtk_Constraint_Layout := Gtk_Constraint_Layout_New;
+   begin
+      --  Is_Created confirms the returned Ada handle wraps a GTK object.
+      Assert_True (Layout /= null and then Layout.Is_Created);
+      Layout.Unref;
+   end Test_Function_Constructor;
+
+   --  Exercise the function-form guide constructor, which has a separate
+   --  initialization path from Gtk_New.
+   procedure Test_Guide_Function_Constructor with
+     Convention => C;
+   procedure Test_Guide_Function_Constructor is
+      Guide : constant Gtk_Constraint_Guide := Gtk_Constraint_Guide_New;
+   begin
+      --  The returned handle must wrap a live GTK object and accept guide data.
+      Assert_True (Guide /= null and then Guide.Is_Created);
+      Guide.Set_Name ("function-created");
+      Assert_Cmpstr_Eq (Guide.Get_Name, "function-created");
+      Guide.Unref;
+   end Test_Guide_Function_Constructor;
+
+   --  The procedure constructors must allocate Ada handles as well as wrap
+   --  the native constraints, and preserve the values passed to Initialize.
+   procedure Test_Procedure_Constructors with
+     Convention => C;
+   procedure Test_Procedure_Constructors is
+      A, B : Gtk_Button;
+      C    : Gtk_Constraint;
+   begin
+      Gtk_New (A, "target");
+      Gtk_New (B, "source");
+      --  Standalone widgets keep their floating reference until sunk here.
+      A.Ref_Sink;
+      B.Ref_Sink;
+
+      --  The interface's unary plus is an identity operation, distinct from
+      --  the concrete widget conversion used by the constraint constructors.
+      declare
+         Target : constant Gtk_Constraint_Target := Gtk.Button."+" (A);
+         Copy   : constant Gtk_Constraint_Target :=
+           Gtk.Constraint_Target."+" (Target);
+      begin
+         Assert_True (Copy = Target);
+      end;
+
+      --  Check the relation constructor's arguments through the public API.
+      Gtk_New
+        (C, +A, Constraint_Attribute_Width, Constraint_Relation_Le, +B,
+         Constraint_Attribute_Height, 1.5, 6.0, Required);
+      Assert_True (C /= null and then C.Is_Created);
+      Assert_False (C.Is_Constant);
+      Assert_True (C.Get_Target = +A and C.Get_Source = +B);
+      Assert_True (C.Get_Target_Attribute = Constraint_Attribute_Width);
+      Assert_True (C.Get_Source_Attribute = Constraint_Attribute_Height);
+      Assert_True (C.Get_Relation = Constraint_Relation_Le);
+      Assert_Cmpfloat_Eq (C.Get_Multiplier, 1.5);
+      Assert_Cmpfloat_Eq (C.Get_Constant, 6.0);
+      Assert_True (C.Get_Strength = Required);
+      C.Unref;
+
+      --  The constant form has no source; check its target and fixed value.
+      Gtk_New_Constant
+        (C, +A, Constraint_Attribute_Height, Constraint_Relation_Ge, 24.0,
+         Required);
+      Assert_True (C /= null and then C.Is_Created);
+      Assert_True (C.Is_Constant);
+      Assert_True (C.Get_Target = +A);
+      Assert_True (C.Get_Target_Attribute = Constraint_Attribute_Height);
+      Assert_True (C.Get_Relation = Constraint_Relation_Ge);
+      Assert_Cmpfloat_Eq (C.Get_Constant, 24.0);
+      Assert_True (C.Get_Strength = Required);
+      C.Unref;
+      A.Unref;
+      B.Unref;
+   end Test_Procedure_Constructors;
+
    procedure Test_Objects with
      Convention => C;
    procedure Test_Objects is
@@ -321,6 +401,15 @@ procedure Constraints is
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
+   Add_Func
+     ("/constraints/function-constructor",
+      Test_Function_Constructor'Unrestricted_Access);
+   Add_Func
+     ("/constraints/guide-function-constructor",
+      Test_Guide_Function_Constructor'Unrestricted_Access);
+   Add_Func
+     ("/constraints/procedure-constructors",
+      Test_Procedure_Constructors'Unrestricted_Access);
    Add_Func ("/constraints/objects", Test_Objects'Unrestricted_Access);
    Add_Func ("/constraints/vfl", Test_VFL'Unrestricted_Access);
    Add_Func

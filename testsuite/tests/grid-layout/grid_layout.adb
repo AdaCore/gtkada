@@ -38,6 +38,7 @@ procedure Grid_Layout is
    procedure Test_Homogeneous with Convention => C;
    procedure Test_Simple_Layout with Convention => C;
    procedure Test_Layout_Child with Convention => C;
+   procedure Test_Properties with Convention => C;
 
    ----------------
    -- Grid_Child --
@@ -456,8 +457,10 @@ procedure Grid_Layout is
    -- Test_Layout_Child --
    -----------------------
 
-   --  Check that a layout child points back at the widget it lays out and at
-   --  the layout manager that created it.
+   --  Check that the manager reports its owning widget and request mode, and
+   --  that its layout child points back at the widget and manager. Changing
+   --  the child's measured sizes and notifying the manager must also make a
+   --  later measurement see the updated values.
 
    procedure Test_Layout_Child is
       Window : Gtk_Window;
@@ -465,6 +468,8 @@ procedure Grid_Layout is
       Layout : Gtk_Grid_Layout;
       Child  : Gizmo_Widget;
       LC     : Gtk_Grid_Layout_Child;
+      Min_Size, Nat_Size : Gint;
+      Min_Base, Nat_Base : Gint;
    begin
       Window := Gtk_Window_New;
       Gtk_New (Parent);
@@ -477,15 +482,97 @@ procedure Grid_Layout is
       Child.Set_Sizes (10, 10, 20, 20);
       Child.Set_Parent (Parent);
 
+      --  The layout manager is installed on Parent and supplies its request
+      --  mode to that widget.
+      Assert_True (Layout.Get_Widget = Gtk_Widget (Parent));
+      Assert_True (Layout.Get_Request_Mode = Parent.Get_Request_Mode);
+
       LC := Grid_Child (Layout, Child);
 
       Assert_True (LC.Get_Child_Widget = Gtk_Widget (Child));
       Assert_True (LC.Get_Layout_Manager = Gtk_Layout_Manager (Layout));
 
+      --  Layout_Changed queues a fresh size negotiation after policy changes.
+      Layout.Measure
+        (Parent, Orientation_Horizontal, -1,
+         Min_Size, Nat_Size, Min_Base, Nat_Base);
+      Assert_Cmpint_Eq (Min_Size, 10);
+      Assert_Cmpint_Eq (Nat_Size, 20);
+
+      --  Invalidate the child's cached measure, then tell the manager its
+      --  layout policy needs a fresh size negotiation too.
+      Child.Set_Sizes (30, 30, 40, 40);
+      Child.Queue_Resize;
+      Layout.Layout_Changed;
+      Layout.Measure
+        (Parent, Orientation_Horizontal, -1,
+         Min_Size, Nat_Size, Min_Base, Nat_Base);
+      Assert_Cmpint_Eq (Min_Size, 30);
+      Assert_Cmpint_Eq (Nat_Size, 40);
+
       Child.Unparent;
 
       Window.Destroy;
    end Test_Layout_Child;
+
+   ---------------------
+   -- Test_Properties --
+   ---------------------
+
+   --  Round-trip the grid's spacing, homogeneity, baseline settings, and
+   --  child placement properties. This exercises the direct GtkGridLayout
+   --  accessors in addition to the layout behavior covered by the C port.
+
+   procedure Test_Properties is
+      Window : Gtk_Window;
+      Parent : Gizmo_Widget;
+      Layout : Gtk_Grid_Layout;
+      Child  : Gizmo_Widget;
+      LC     : Gtk_Grid_Layout_Child;
+   begin
+      Window := Gtk_Window_New;
+      Gtk_New (Parent);
+      Window.Set_Child (Parent);
+
+      --  Exercise Gtk_New separately from Gtk_Grid_Layout_New.
+      Gtk_New (Layout);
+      Parent.Set_Layout_Manager (Layout);
+
+      Layout.Set_Baseline_Row (2);
+      Assert_Cmpint_Eq (Layout.Get_Baseline_Row, 2);
+
+      Layout.Set_Column_Homogeneous (True);
+      Assert_True (Layout.Get_Column_Homogeneous);
+      Layout.Set_Column_Spacing (7);
+      Assert_Cmpuint_Eq (Layout.Get_Column_Spacing, 7);
+
+      Layout.Set_Row_Homogeneous (True);
+      Assert_True (Layout.Get_Row_Homogeneous);
+      Layout.Set_Row_Spacing (9);
+      Assert_Cmpuint_Eq (Layout.Get_Row_Spacing, 9);
+
+      Layout.Set_Row_Baseline_Position (1, Baseline_Position_Top);
+      Assert_True
+        (Layout.Get_Row_Baseline_Position (1) = Baseline_Position_Top);
+
+      --  Layout-child properties belong to the child created for an attached
+      --  widget, so parent a real child before retrieving it.
+      Gtk_New (Child);
+      Child.Set_Parent (Parent);
+      LC := Grid_Child (Layout, Child);
+
+      LC.Set_Column (3);
+      Assert_Cmpint_Eq (LC.Get_Column, 3);
+      LC.Set_Column_Span (2);
+      Assert_Cmpint_Eq (LC.Get_Column_Span, 2);
+      LC.Set_Row (4);
+      Assert_Cmpint_Eq (LC.Get_Row, 4);
+      LC.Set_Row_Span (3);
+      Assert_Cmpint_Eq (LC.Get_Row_Span, 3);
+
+      Child.Unparent;
+      Window.Destroy;
+   end Test_Properties;
 
 begin
    Glib.Test.Init;
@@ -506,6 +593,8 @@ begin
      ("/grid-layout/simple", Test_Simple_Layout'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/grid-layout/layout-child", Test_Layout_Child'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/grid-layout/properties", Test_Properties'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

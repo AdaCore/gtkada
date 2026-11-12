@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Small local image fixture for Gtk.Picture resource loading tests. -->
+<gresources>
+  <gresource prefix="/org/gtkada/coverage/gtk-picture">
+    <file alias="picture.png">picture.png</file>
+  </gresource>
+</gresources>

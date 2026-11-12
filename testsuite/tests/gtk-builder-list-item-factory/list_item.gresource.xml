@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Resource fixture for the GtkBuilderListItemFactory resource constructors. -->
+<gresources>
+  <gresource prefix="/org/gtkada/coverage/builder-list-item-factory">
+    <file alias="list_item.ui">list_item.ui</file>
+  </gresource>
+</gresources>

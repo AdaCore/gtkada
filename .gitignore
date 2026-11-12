@@ -6,6 +6,10 @@
 *.exe
 # e3-testsuite results directory
 /out/
+# Coverage: gnatcov runtime, traces and report (see "Coverage" in dev_guide.md)
+/obj/gnatcov-rts/
+/gnatcov_traces/
+/gnatcov_report/
 *.o
 *.orig
 *.pyc

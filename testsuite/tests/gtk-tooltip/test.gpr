@@ -1,0 +1,13 @@
+--  Build the focused Gtk.Tooltip coverage test.
+with "gtkada.gpr";
+project Test is
+   for Main use ("tooltip.adb");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+
+   --  XWarpPointer puts the Xvfb pointer inside the mapped widget so GTK emits
+   --  query-tooltip without relying on user input.
+   package Linker is
+      for Switches ("tooltip.adb") use ("-lX11");
+   end Linker;
+end Test;

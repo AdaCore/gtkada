@@ -1,0 +1,2 @@
+# The registered GType is the only GdkDrop surface constructible without a live drag.
+title: "gdk-drop"

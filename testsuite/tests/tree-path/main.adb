@@ -30,6 +30,9 @@ procedure Main is
    procedure Test_Navigation
    with Convention => C;
 
+   procedure Test_Procedure_Constructors
+   with Convention => C;
+
    -----------------
    -- Test_Append --
    -----------------
@@ -131,6 +134,34 @@ procedure Main is
       Path_Free (P);
    end Test_First;
 
+   -------------------------------
+   -- Test_Procedure_Constructors --
+   -------------------------------
+
+   --  The out-parameter constructor overloads share the same C API as the
+   --  functions above; also check the defined empty-path indices result.
+   procedure Test_Procedure_Constructors is
+      P   : Gtk_Tree_Path;
+      Idx : constant Gint_Array := (4, 7);
+   begin
+      Gtk_New (P);
+      Assert_Cmpint_Eq (Get_Depth (P), 0);
+      Assert_Cmpint_Eq (Get_Indices (P)'Length, 0);
+      Path_Free (P);
+
+      Gtk_New (P, "4:7");
+      Assert_Cmpstr_Eq (To_String (P), "4:7");
+      Path_Free (P);
+
+      Gtk_New_First (P);
+      Assert_Cmpstr_Eq (To_String (P), "0");
+      Path_Free (P);
+
+      Gtk_New_From_Indicesv (P, Idx, Idx'Length);
+      Assert_Cmpstr_Eq (To_String (P), "4:7");
+      Path_Free (P);
+   end Test_Procedure_Constructors;
+
    ---------------------
    -- Test_Navigation --
    ---------------------
@@ -207,6 +238,9 @@ begin
      ("/tree-path/from-indices", Test_From_Indices'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/tree-path/first", Test_First'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/tree-path/procedure-constructors",
+      Test_Procedure_Constructors'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/tree-path/navigation", Test_Navigation'Unrestricted_Access);
 

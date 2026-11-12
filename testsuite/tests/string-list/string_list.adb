@@ -1,6 +1,7 @@
 --  Unit test for Gtk.String_List and Gtk.String_Object.
 --
---  GTK has no stringlist.c to port, so this is written from scratch.
+--  Test_String_Object ports test_string_object from
+--  testsuite/c_tests/stringlist.c; the list cases are written from scratch.
 --
 --  The Take case is a regression test: gtk_string_list_take is
 --  transfer-ownership='full' on its string, so the binding must hand its
@@ -30,6 +31,7 @@ procedure String_List is
    procedure Test_Splice with Convention => C;
    procedure Test_Take with Convention => C;
    procedure Test_Items with Convention => C;
+   procedure Test_String_Object with Convention => C;
 
    -----------------
    -- New_Strings --
@@ -143,6 +145,25 @@ procedure String_List is
       Unref (List);
    end Test_Items;
 
+   ------------------------
+   -- Test_String_Object --
+   ------------------------
+
+   procedure Test_String_Object is
+      Obj      : Gtk_String_Object;
+      Returned : constant Gtk_String_Object :=
+        Gtk_String_Object_New ("Hello");
+   begin
+      --  Port the C check that the function constructor preserves its text.
+      Assert_Cmpstr_Eq (Returned.Get_String, "Hello");
+      Unref (Returned);
+
+      --  Also cover Gtk_New, whose out parameter follows a separate path.
+      Gtk_New (Obj, "Goodbye");
+      Assert_Cmpstr_Eq (Obj.Get_String, "Goodbye");
+      Unref (Obj);
+   end Test_String_Object;
+
 begin
    Glib.Test.Init;
 
@@ -154,6 +175,8 @@ begin
    Glib.Test.Add_Func ("/stringlist/splice", Test_Splice'Unrestricted_Access);
    Glib.Test.Add_Func ("/stringlist/take", Test_Take'Unrestricted_Access);
    Glib.Test.Add_Func ("/stringlist/items", Test_Items'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/stringlist/string-object", Test_String_Object'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

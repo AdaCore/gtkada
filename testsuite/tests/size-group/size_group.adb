@@ -1,7 +1,6 @@
---  Exercises Gtk.Size_Group. GTK's own testsuite has no sizegroup.c, so this
---  is not a port: it checks the mode accessors (both through the subprograms
---  and through Mode_Property), the widget list returned by Get_Widgets, and
---  that grouping widgets makes them request the same width.
+--  Exercises Gtk.Size_Group. The widget-list checks follow the relevant
+--  assertions in testsuite/c_tests/builder.c:test_sizegroup; this test also
+--  checks both constructor forms, mode accessors and requested widget sizes.
 
 with Glib;             use Glib;
 with Glib.Test;        use Glib.Test;
@@ -21,6 +20,9 @@ procedure Size_Group is
    with Convention => C;
 
    procedure Test_Requested_Size
+   with Convention => C;
+
+   procedure Test_Procedure_Constructor
    with Convention => C;
 
    ---------------
@@ -116,6 +118,19 @@ procedure Size_Group is
       Group.Unref;
    end Test_Requested_Size;
 
+   ----------------------------------
+   -- Test_Procedure_Constructor --
+   ----------------------------------
+
+   --  Gtk_New must allocate and initialize an object with the requested mode.
+   procedure Test_Procedure_Constructor is
+      Group : Gtk_Size_Group;
+   begin
+      Gtk_New (Group, Vertical);
+      Assert_True (Group.Get_Mode = Vertical);
+      Group.Unref;
+   end Test_Procedure_Constructor;
+
 begin
    Glib.Test.Init;
 
@@ -127,6 +142,9 @@ begin
      ("/size-group/widgets", Test_Widgets'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/size-group/requested-size", Test_Requested_Size'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/size-group/procedure-constructor",
+      Test_Procedure_Constructor'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

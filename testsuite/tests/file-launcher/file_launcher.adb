@@ -1,3 +1,6 @@
+--  Gtk.File_Launcher tests for property access, both constructors, and
+--  asynchronous error/optional-callback paths that do not launch an app.
+
 with Ada.Command_Line;
 with Glib;               use Glib;
 with Glib.Error;
@@ -38,7 +41,16 @@ procedure File_Launcher is
       Launcher : Gtk_File_Launcher;
       File : constant Glib.GFile.Gfile :=
         Glib.GFile.New_For_Path ("/tmp/gtkada-launch.txt");
+      Function_Launcher : constant Gtk_File_Launcher :=
+        Gtk_File_Launcher_New (File);
    begin
+      --  Check the function constructor before releasing our GFile reference.
+      Assert_Cmpstr_Eq
+        (Glib.GFile.Get_Path (Function_Launcher.Get_File),
+         "/tmp/gtkada-launch.txt");
+      Function_Launcher.Unref;
+
+      --  Gtk_New takes its own reference, so the caller can release File.
       Gtk_New (Launcher, File);
       Unref (Glib.Types.To_Object (Glib.Types.GType_Interface (File)));
       Assert_Cmpstr_Eq
@@ -56,6 +68,23 @@ procedure File_Launcher is
       Launcher.Unref;
    end Test_Properties;
 
+   --  Passing a null callback is supported by the async API. A null GFile
+   --  makes both operations fail without opening an application or file
+   --  manager, so this exercises the no-callback wrappers safely.
+   procedure Test_Optional_Callbacks with Convention => C;
+   procedure Test_Optional_Callbacks is
+      Launcher : Gtk_File_Launcher;
+   begin
+      Gtk_New (Launcher, Glib.GFile.Null_Gfile);
+      Launcher.Launch (null, null, null);
+      Launcher.Open_Containing_Folder (null, null, null);
+
+      --  The operations leave the launcher's configured file unchanged.
+      Assert_True (Launcher.Get_File = Glib.GFile.Null_Gfile);
+      Launcher.Unref;
+   end Test_Optional_Callbacks;
+
+   --  The callback forms report a recoverable error for a missing file.
    procedure Test_Errors is
       Launcher : Gtk_File_Launcher;
       Dispatched : Boolean;
@@ -84,6 +113,9 @@ begin
    Glib.Test.Init;
    Gtk.Main.Init;
    Add_Func ("/file-launcher/properties", Test_Properties'Unrestricted_Access);
+   Add_Func
+     ("/file-launcher/optional-callbacks",
+      Test_Optional_Callbacks'Unrestricted_Access);
    Add_Func ("/file-launcher/errors", Test_Errors'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end File_Launcher;

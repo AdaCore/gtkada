@@ -196,14 +196,25 @@ force:
 # Coverage support #
 ####################
 
+# Statement coverage of the library by the testsuite, with GNATcoverage
+# ("gnatcov" must be on the PATH). To produce a report:
+#
+#    make coverage-test; make coverage-report
+#
+# then open gnatcov_report/html/index.html. The ";" lets the report be
+# made even when some tests fail. See "Coverage" in dev_guide.md.
+
 # Local gnatcov RTS
 obj/gnatcov-rts:
 # Create a local gnatcov RTS - do not do this in the gnatcov install prefix
 	gnatcov setup --prefix=$$(pwd)/obj/gnatcov-rts
 	rm -rf .objs/gtkada/static/
 
-# Instrumented sources
-.objs/gtkada/static/gtkada-gnatcov-instr: obj/gnatcov-rts
+# Instrumented sources. Always re-instrument, so that edits to the sources
+# are not hidden behind stale instrumented copies: gnatcov leaves the
+# copies of unchanged sources alone, so this is cheap and recompiles
+# nothing.
+.objs/gtkada/static/gtkada-gnatcov-instr: obj/gnatcov-rts force
 	@echo "====== Building $(@F) libraries ====="
 	gnatcov instrument -XLIBRARY_TYPE=static -Pgtkada.gpr \
 		--level=stmt \
@@ -225,7 +236,8 @@ coverage-test: coverage-build
 
 coverage-report:
 # Create a report from the traces; use the HTML and Cobertura formats for
-# the report, and place it in a local directory.
+# the report, and place it in a local directory. Summarize the Cobertura
+# report as a plain-text table of the source files.
 	export GNATCOV_TRACE_FILE=$$(pwd)/gnatcov_traces/ && \
 	gnatcov coverage -P gtkada.gpr \
 	    --level=stmt \
@@ -233,3 +245,6 @@ coverage-report:
 		--annotate=html,cobertura \
 		--output-dir gnatcov_report/ \
 		gnatcov_traces/
+	${PYTHON} testsuite/coverage_summary.py > gnatcov_report/summary.txt
+	@echo "Coverage report: $$(pwd)/gnatcov_report/html/index.html"
+	@echo "Per-file summary: $$(pwd)/gnatcov_report/summary.txt"

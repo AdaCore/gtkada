@@ -14,14 +14,19 @@
 with Ada.Command_Line;
 
 with Glib;            use Glib;
+with Glib.Object;
 with Glib.Properties;
 with Glib.Test;       use Glib.Test;
+with Glib.Values;
 
 with Gtk.Main;
 with Gtk.Text_Buffer; use Gtk.Text_Buffer;
 with Gtk.Text_Iter;   use Gtk.Text_Iter;
+with Gtk.Text_Mark;
 with Gtk.Text_Tag;    use Gtk.Text_Tag;
 with Gtk.Text_Tag_Table;
+with Gtkada.Types;
+with Pango.Language;
 
 procedure Main is
 
@@ -35,6 +40,18 @@ procedure Main is
      Character'Val (16#C3#) & Character'Val (16#A0#);
    A_Combining_Grave : constant UTF8_String :=
      'a' & Character'Val (16#CC#) & Character'Val (16#80#);
+
+   --  The simple predicate finds "b"; the data-aware predicate finds the
+   --  first character at or above its supplied code point.
+   function Is_B (Ch : Gunichar) return Boolean is
+     (Ch = Character'Pos ('b'));
+
+   function At_Least
+     (Ch : Gunichar; Threshold : Gunichar) return Boolean is
+     (Ch >= Threshold);
+
+   package Search_With_Threshold is new Forward_Find_Char_User_Data
+     (Gunichar);
 
    procedure Check_Found_Forward
      (Haystack        : UTF8_String;
@@ -177,6 +194,12 @@ procedure Main is
    with Convention => C;
 
    procedure Test_Invisible_Text
+   with Convention => C;
+
+   procedure Test_Movement_Overloads
+   with Convention => C;
+
+   procedure Test_Accessors_And_Predicates
    with Convention => C;
 
    -----------------------
@@ -885,6 +908,252 @@ procedure Main is
       Assert_Cmpstr_Eq (Get_Visible_Text (Iter, The_End), "one  four");
    end Test_Invisible_Text;
 
+   --------------------------------
+   -- Test_Movement_Overloads --
+   --------------------------------
+
+   --  Exercise the count-based and visible movement wrappers on ordinary
+   --  text, where visible and logical positions coincide.
+   procedure Test_Movement_Overloads is
+      Buffer : Gtk_Text_Buffer;
+      Iter   : Gtk_Text_Iter;
+      Moved  : Boolean;
+   begin
+      Gtk_New (Buffer);
+      Buffer.Set_Text ("one two" & LF & "three four" & LF & "last");
+
+      --  Character movement reports whether it reached a readable position.
+      Buffer.Get_Start_Iter (Iter);
+      Forward_Chars (Iter, 3, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 3);
+      Backward_Chars (Iter, 2, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 1);
+      Backward_Char (Iter, Moved);
+      Assert_True (Moved);
+      Assert_True (Is_Start (Iter));
+      Backward_Char (Iter, Moved);
+      Assert_False (Moved);
+
+      --  Count-based cursor movement also handles combining positions.
+      Forward_Cursor_Positions (Iter, 2, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 2);
+      Backward_Cursor_Positions (Iter, 1, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 1);
+
+      --  Line-count overloads preserve the relative line position.
+      Buffer.Get_Start_Iter (Iter);
+      Forward_Lines (Iter, 2, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Line (Iter), 2);
+      Backward_Lines (Iter, 1, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Line (Iter), 1);
+
+      --  With no hidden ranges, visible line motion follows the same lines.
+      Buffer.Get_Start_Iter (Iter);
+      Forward_Visible_Line (Iter, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Line (Iter), 1);
+      Backward_Visible_Line (Iter, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Line (Iter), 0);
+      Forward_Visible_Lines (Iter, 2, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Line (Iter), 2);
+      Backward_Visible_Lines (Iter, 1, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Line (Iter), 1);
+
+      --  Visible cursor positions advance and retreat across ordinary text.
+      Buffer.Get_Start_Iter (Iter);
+      Forward_Visible_Cursor_Position (Iter, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 1);
+      Forward_Visible_Cursor_Positions (Iter, 2, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 3);
+      Backward_Visible_Cursor_Position (Iter, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 2);
+      Backward_Visible_Cursor_Positions (Iter, 1, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 1);
+
+      --  Batched word movement lands on the second word boundary.
+      Buffer.Get_Start_Iter (Iter);
+      Forward_Word_Ends (Iter, 2, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 7);
+      Buffer.Get_End_Iter (Iter);
+      Backward_Word_Starts (Iter, 1, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 19);
+
+      --  Visible word batches have the same result when all text is visible.
+      Buffer.Get_Start_Iter (Iter);
+      Forward_Visible_Word_Ends (Iter, 2, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 7);
+      Buffer.Get_End_Iter (Iter);
+      Backward_Visible_Word_Start (Iter, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 19);
+      Buffer.Get_End_Iter (Iter);
+      Backward_Visible_Word_Starts (Iter, 1, Moved);
+      Assert_True (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 19);
+
+      --  Sentence batches report movement and stop at sentence boundaries.
+      Buffer.Set_Text ("Hello. Bye.");
+      Buffer.Get_Start_Iter (Iter);
+      Forward_Sentence_Ends (Iter, 2, Moved);
+      --  Reaching the end iterator returns False even though the iterator
+      --  advanced through both sentence ends.
+      Assert_False (Moved);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 11);
+      Backward_Sentence_Starts (Iter, 2, Moved);
+      Assert_True (Moved);
+      Assert_True (Is_Start (Iter));
+   end Test_Movement_Overloads;
+
+   ----------------------------------------
+   -- Test_Accessors_And_Predicates --
+   ----------------------------------------
+
+   --  Cover iterator-only accessors, tag metadata, and both callback forms.
+   procedure Test_Accessors_And_Predicates is
+      Buffer      : Gtk_Text_Buffer;
+      Iter        : aliased Gtk_Text_Iter;
+      Start       : Gtk_Text_Iter;
+      The_End     : Gtk_Text_Iter;
+      Match       : Gtk_Text_Iter;
+      Tag         : Gtk_Text_Tag;
+      Found       : Boolean;
+      Value       : Glib.Values.GValue;
+      Copied      : Gtk_Text_Iter;
+   begin
+      Gtk_New (Buffer);
+      Buffer.Set_Text ("abcdef");
+      Tag := Buffer.Create_Tag ("marked");
+      Buffer.Get_Iter_At_Offset (Start, 1);
+      Buffer.Get_Iter_At_Offset (The_End, 3);
+      Buffer.Apply_Tag (Tag, Start, The_End);
+      Buffer.Get_Iter_At_Offset (Iter, 2);
+
+      --  The ASCII convenience overload returns the character at the iter.
+      Buffer.Get_Start_Iter (Start);
+      Assert_True (Get_Char (Start) = 'a');
+
+      --  Raw C strings returned by Get_Slice belong to the caller and use
+      --  GtkAda's g_free wrapper; the Ada overload frees its own result.
+      Buffer.Get_Bounds (Start, The_End);
+      Assert_Cmpstr_Eq (Get_Slice (Start, The_End), "abcdef");
+      declare
+         Raw_Slice : Gtkada.Types.Chars_Ptr := Gtk.Text_Iter.Get_Slice
+           (Start, The_End);
+      begin
+         Assert_Cmpstr_Eq (Gtkada.Types.Value (Raw_Slice), "abcdef");
+         Gtkada.Types.g_free (Raw_Slice);
+      end;
+      Assert_Cmpstr_Eq (Get_Visible_Slice (Start, The_End), "abcdef");
+
+      --  The language comes from Pango's process locale, so check that it is
+      --  represented by a nonempty language tag rather than a fixed locale.
+      Assert_True (Pango.Language.To_String (Get_Language (Iter))'Length > 0);
+
+      --  The mark and tag lists contain one item at their known positions.
+      declare
+         use Glib.Object.Object_List;
+         Marks : GSlist := Get_Marks (Iter);
+      begin
+         Assert_Cmpuint_Eq (Length (Marks), 0);
+         Free (Marks);
+      end;
+      declare
+         Mark : Gtk.Text_Mark.Gtk_Text_Mark;
+      begin
+         Mark := Buffer.Create_Mark ("point", Iter);
+         declare
+            use Glib.Object.Object_List;
+            Marks : GSlist := Get_Marks (Iter);
+         begin
+            Assert_Cmpuint_Eq (Length (Marks), 1);
+            Free (Marks);
+         end;
+      end;
+
+      Buffer.Get_Start_Iter (Iter);
+      Assert_True (Starts_Line (Iter));
+      Buffer.Get_Iter_At_Offset (Start, 1);
+      Buffer.Get_Iter_At_Offset (The_End, 3);
+      Buffer.Get_Iter_At_Offset (Iter, 2);
+      Assert_True (In_Range (Iter, Start, The_End));
+      Buffer.Get_Iter_At_Offset (Iter, 3);
+      Assert_False (In_Range (Iter, Start, The_End));
+      Buffer.Get_End_Iter (Iter);
+      Assert_True (Ends_Line (Iter));
+
+      --  With no editability tag, the caller-supplied default is returned.
+      Buffer.Get_Iter_At_Offset (Iter, 2);
+      Assert_True (Can_Insert (Iter, Default_Editability => True));
+      Assert_False (Can_Insert (Iter, Default_Editability => False));
+      Assert_True (Editable (Iter, Default_Setting => True));
+      Assert_False (Editable (Iter, Default_Setting => False));
+
+      --  Search callbacks are invoked for characters until "b" is found.
+      Buffer.Get_Start_Iter (Iter);
+      Found := Forward_Find_Char (Iter, Is_B'Unrestricted_Access);
+      Assert_True (Found);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 1);
+      Buffer.Get_End_Iter (Iter);
+      Found := Backward_Find_Char (Iter, Is_B'Unrestricted_Access);
+      Assert_True (Found);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 1);
+
+      --  The generic callback receives its user data through GtkAda's closure.
+      Buffer.Get_Start_Iter (Iter);
+      Found := Search_With_Threshold.Forward_Find_Char
+        (Iter, At_Least'Unrestricted_Access, Character'Pos ('d'));
+      Assert_True (Found);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 3);
+
+      --  The tag begins at offset 1 and ends at offset 3.  Check both the
+      --  directional tag lists and backward navigation to the end toggle.
+      Buffer.Get_Iter_At_Offset (Iter, 1);
+      Assert_True (Starts_Tag (Iter, Tag));
+      Assert_True (Has_Tag (Iter, Tag));
+      declare
+         use Gtk.Text_Tag.Text_Tag_List;
+         Toggled : GSlist := Get_Toggled_Tags (Iter, Toggled_On => True);
+      begin
+         Assert_Cmpuint_Eq (Length (Toggled), 1);
+         Free (Toggled);
+      end;
+      Buffer.Get_Iter_At_Offset (Iter, 3);
+      declare
+         use Gtk.Text_Tag.Text_Tag_List;
+         Toggled : GSlist := Get_Toggled_Tags (Iter, Toggled_On => False);
+      begin
+         Assert_Cmpuint_Eq (Length (Toggled), 1);
+         Free (Toggled);
+      end;
+      Buffer.Get_End_Iter (Iter);
+      Backward_To_Tag_Toggle (Iter, Tag, Found);
+      Assert_True (Found);
+      Assert_Cmpint_Eq (Get_Offset (Iter), 3);
+
+      --  Get_Text_Iter copies the iterator stored as a pointer in a GValue.
+      Glib.Values.Init (Value, GType_Pointer);
+      Glib.Values.Set_Address (Value, Iter'Address);
+      Get_Text_Iter (Value, Copied);
+      Assert_True (Equal (Iter, Copied));
+      Glib.Values.Unset (Value);
+   end Test_Accessors_And_Predicates;
+
 begin
    Glib.Test.Init;
 
@@ -922,6 +1191,12 @@ begin
    Glib.Test.Add_Func
      ("/text-iter/invisible-text",
       Test_Invisible_Text'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/text-iter/movement-overloads",
+      Test_Movement_Overloads'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/text-iter/accessors-and-predicates",
+      Test_Accessors_And_Predicates'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

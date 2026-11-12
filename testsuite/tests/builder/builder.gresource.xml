@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Package the inert UI fixture so resource-based Builder APIs can be tested. -->
+<gresources>
+  <gresource prefix="/org/gtkada/test/builder">
+    <file>empty.ui</file>
+  </gresource>
+</gresources>

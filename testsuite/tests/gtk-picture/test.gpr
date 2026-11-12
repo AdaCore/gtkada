@@ -1,0 +1,7 @@
+--  Project for the Gtk.Picture binding tests.
+with "gtkada.gpr";
+project Test is
+   for Main use ("main.adb");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+end Test;

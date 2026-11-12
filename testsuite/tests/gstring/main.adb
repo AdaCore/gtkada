@@ -12,8 +12,10 @@
 
 with Ada.Command_Line;
 with Ada.Unchecked_Conversion;
+with System;
 
 with Glib;          use Glib;
+with Glib.Bytes;    use Glib.Bytes;
 with Glib.Test;     use Glib.Test;
 with Glib.String;   use Glib.String;
 with Gtkada.Types;  use Gtkada.Types;
@@ -43,6 +45,7 @@ procedure Main is
    end Str_Of;
 
    procedure Test_New with Convention => C;
+   procedure Test_Out_Constructors with Convention => C;
    procedure Test_New_Len with Convention => C;
    procedure Test_New_Take with Convention => C;
    procedure Test_Sized_New with Convention => C;
@@ -59,6 +62,9 @@ procedure Main is
    procedure Test_Erase with Convention => C;
    procedure Test_Hash with Convention => C;
    procedure Test_Append_Uri_Escaped with Convention => C;
+   procedure Test_Replace with Convention => C;
+   procedure Test_Free_To_Bytes with Convention => C;
+   procedure Test_Wrapper_Free with Convention => C;
 
    --------------
    -- Test_New --
@@ -72,6 +78,43 @@ procedure Main is
       Assert_Cmpstr_Eq (Str_Of (G), S);
       Assert_Cmpstr_Eq (Free (G, Free_Segment => True), "");
    end Test_New;
+
+   --------------------------
+   -- Test_Out_Constructors --
+   --------------------------
+
+   --  Exercise the procedure forms separately from the returning constructors.
+   --  Empty and nonempty values cover both input-allocation paths.
+   procedure Test_Out_Constructors is
+      G : Gstring;
+   begin
+      G_New (G, "procedure");
+      Assert_Cmpstr_Eq (Str_Of (G), "procedure");
+      Assert_Cmpstr_Eq (Free (G, Free_Segment => True), "");
+
+      G_New (G);
+      Assert_Cmpint_Eq (Gint (G.Len), 0);
+      Assert_Cmpstr_Eq (Free (G, Free_Segment => True), "");
+
+      --  The length constructor copies precisely the requested prefix.
+      G_New_Len (G, "length suffix", 6);
+      Assert_Cmpstr_Eq (Str_Of (G), "length");
+      Assert_Cmpstr_Eq (Free (G, Free_Segment => True), "");
+
+      --  The take constructor transfers the copied buffer to GLib.
+      G_New_Take (G, "owned");
+      Assert_Cmpstr_Eq (Str_Of (G), "owned");
+      Assert_Cmpstr_Eq (Free (G, Free_Segment => True), "");
+
+      G_New_Take (G);
+      Assert_Cmpint_Eq (Gint (G.Len), 0);
+      Assert_Cmpstr_Eq (Free (G, Free_Segment => True), "");
+
+      --  The sized form reserves capacity while starting with an empty value.
+      G_Sized_New (G, 64);
+      Assert_Cmpint_Eq (Gint (G.Len), 0);
+      Assert_Cmpstr_Eq (Free (G, Free_Segment => True), "");
+   end Test_Out_Constructors;
 
    ------------------
    -- Test_New_Len --
@@ -282,10 +325,77 @@ procedure Main is
       Assert_Cmpstr_Eq (Str_Of (G), "a%20b");
    end Test_Append_Uri_Escaped;
 
+   ------------------
+   -- Test_Replace --
+   ------------------
+
+   --  Check both a bounded replacement and the zero-means-unlimited form.
+   procedure Test_Replace is
+      G : Gstring := Gstring_New ("one fish two fish");
+   begin
+      Assert_Cmpuint_Eq (Replace (G, "fish", "cat", 1), 1);
+      Assert_Cmpstr_Eq (Str_Of (G), "one cat two fish");
+      Assert_Cmpuint_Eq (Replace (G, "fish", "cat", 0), 1);
+      Assert_Cmpstr_Eq (Str_Of (G), "one cat two cat");
+      Assert_Cmpstr_Eq (Free (G, Free_Segment => True), "");
+   end Test_Replace;
+
+   -----------------------
+   -- Test_Free_To_Bytes --
+   -----------------------
+
+   --  Free_To_Bytes consumes the GString and keeps its exact bytes in GBytes.
+   procedure Test_Free_To_Bytes is
+      subtype Five_Chars is String (1 .. 5);
+      type Five_Chars_Access is access all Five_Chars;
+      function To_Five_Chars is new Ada.Unchecked_Conversion
+        (System.Address, Five_Chars_Access);
+
+      G      : constant Gstring := Gstring_New ("bytes");
+      Bytes  : constant Gbytes := Free_To_Bytes (G);
+      Region : constant System.Address :=
+        Get_Region (Bytes, Element_Size => 1, Offset => 0, N_Elements => 5);
+   begin
+      Assert_Cmpuint_Eq (Guint (Get_Size (Bytes)), 5);
+      Assert_Cmpstr_Eq (To_Five_Chars (Region).all, "bytes");
+      Unref (Bytes);
+   end Test_Free_To_Bytes;
+
+   -----------------------
+   -- Test_Wrapper_Free --
+   -----------------------
+
+   --  From_Object_Free expects its temporary record wrapper to use g_free.
+   procedure Test_Wrapper_Free is
+      type Record_Access is access all Gstring_Record;
+      function To_Record_Access is new Ada.Unchecked_Conversion
+        (System.Address, Record_Access);
+      function G_Malloc (Size : Gsize) return System.Address;
+      pragma Import (C, G_Malloc, "g_malloc");
+
+      Original : constant Gstring := Gstring_New ("wrapper");
+      Wrapper_Bytes : constant Gsize :=
+        Gsize ((Gstring_Record'Size + System.Storage_Unit - 1)
+               / System.Storage_Unit);
+      Wrapper : constant Record_Access :=
+        To_Record_Access (G_Malloc (Wrapper_Bytes));
+      Result : Gstring_Record;
+   begin
+      --  Copy only the record fields into GLib-allocated wrapper storage.
+      Wrapper.all := Original.all;
+      Result := From_Object_Free (Wrapper);
+      Assert_Cmpuint_Eq (Guint (Result.Len), 7);
+      Assert_Cmpuint_Eq (Guint (Result.Allocated_Len),
+                         Guint (Original.Allocated_Len));
+      Assert_Cmpstr_Eq (Free (Original, Free_Segment => True), "");
+   end Test_Wrapper_Free;
+
 begin
    Glib.Test.Init;
 
    Glib.Test.Add_Func ("/gstring/new", Test_New'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gstring/out-constructors", Test_Out_Constructors'Unrestricted_Access);
    Glib.Test.Add_Func ("/gstring/new-len", Test_New_Len'Unrestricted_Access);
    Glib.Test.Add_Func ("/gstring/new-take", Test_New_Take'Unrestricted_Access);
    Glib.Test.Add_Func ("/gstring/sized-new", Test_Sized_New'Unrestricted_Access);
@@ -302,6 +412,9 @@ begin
    Glib.Test.Add_Func ("/gstring/erase", Test_Erase'Unrestricted_Access);
    Glib.Test.Add_Func ("/gstring/hash", Test_Hash'Unrestricted_Access);
    Glib.Test.Add_Func ("/gstring/append-uri-escaped", Test_Append_Uri_Escaped'Unrestricted_Access);
+   Glib.Test.Add_Func ("/gstring/replace", Test_Replace'Unrestricted_Access);
+   Glib.Test.Add_Func ("/gstring/free-to-bytes", Test_Free_To_Bytes'Unrestricted_Access);
+   Glib.Test.Add_Func ("/gstring/wrapper-free", Test_Wrapper_Free'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;
