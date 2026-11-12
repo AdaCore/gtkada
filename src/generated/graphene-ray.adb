@@ -36,10 +36,10 @@ package body Graphene.Ray is
    is
       function Internal
          (Self : access Graphene_Ray_T;
-          B    : access Graphene_Ray_T) return Glib.Gboolean;
+          B    : access Graphene_Ray_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_ray_equal");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal;
 
    --------------------
@@ -52,10 +52,11 @@ package body Graphene.Ray is
    is
       function Internal
          (Self : access Graphene_Ray_T;
-          B    : access Graphene.Box.Graphene_Box_T) return Glib.Gboolean;
+          B    : access Graphene.Box.Graphene_Box_T)
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_ray_intersects_box");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Intersects_Box;
 
    -----------------------
@@ -70,10 +71,10 @@ package body Graphene.Ray is
       function Internal
          (Self : access Graphene_Ray_T;
           S    : access Graphene.Sphere.Graphene_Sphere_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_ray_intersects_sphere");
    begin
-      return Internal (Self, S) /= 0;
+      return Boolean (Internal (Self, S));
    end Intersects_Sphere;
 
    -------------------------
@@ -88,10 +89,10 @@ package body Graphene.Ray is
       function Internal
          (Self : access Graphene_Ray_T;
           T    : access Graphene.Triangle.Graphene_Triangle_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_ray_intersects_triangle");
    begin
-      return Internal (Self, T) /= 0;
+      return Boolean (Internal (Self, T));
    end Intersects_Triangle;
 
    ----------------------

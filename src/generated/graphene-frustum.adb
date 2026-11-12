@@ -23,6 +23,7 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Interfaces.C;
 
 package body Graphene.Frustum is
 
@@ -38,10 +39,10 @@ package body Graphene.Frustum is
       function Internal
          (Self  : access Graphene_Frustum_T;
           Point : access Graphene.Point3d.Graphene_Point3D_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_frustum_contains_point");
    begin
-      return Internal (Self, Point) /= 0;
+      return Boolean (Internal (Self, Point));
    end Contains_Point;
 
    -----------
@@ -54,10 +55,10 @@ package body Graphene.Frustum is
    is
       function Internal
          (Self : access Graphene_Frustum_T;
-          B    : access Graphene_Frustum_T) return Glib.Gboolean;
+          B    : access Graphene_Frustum_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_frustum_equal");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal;
 
    --------------------
@@ -70,10 +71,11 @@ package body Graphene.Frustum is
    is
       function Internal
          (Self : access Graphene_Frustum_T;
-          Box  : access Graphene.Box.Graphene_Box_T) return Glib.Gboolean;
+          Box  : access Graphene.Box.Graphene_Box_T)
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_frustum_intersects_box");
    begin
-      return Internal (Self, Box) /= 0;
+      return Boolean (Internal (Self, Box));
    end Intersects_Box;
 
    -----------------------
@@ -88,10 +90,10 @@ package body Graphene.Frustum is
       function Internal
          (Self   : access Graphene_Frustum_T;
           Sphere : access Graphene.Sphere.Graphene_Sphere_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_frustum_intersects_sphere");
    begin
-      return Internal (Self, Sphere) /= 0;
+      return Boolean (Internal (Self, Sphere));
    end Intersects_Sphere;
 
    ----------------------

@@ -126,6 +126,93 @@ procedure Main is
       Check_Float (Copy_Max.Z, 5.0);
    end Test_Copy_And_Free;
 
+   --  Regression cases for graphene-box.bool-return-abi: these predicates
+   --  return C _Bool, whose false result must remain False in Ada even when
+   --  the unused upper return-register bits are nonzero.
+   procedure Init_Cube
+     (Box : not null access Graphene_Box_T; Min, Max : C_float)
+   is
+      --  Init copies these coordinates. Aliased locals and 'Access supply
+      --  the pointer parameters used by the GtkAda binding.
+      Min_Point : aliased Graphene.Point3d.Graphene_Point3D_T :=
+        (Min, Min, Min);
+      Max_Point : aliased Graphene.Point3d.Graphene_Point3D_T :=
+        (Max, Max, Max);
+      Ignored : access Graphene_Box_T;
+   begin
+      Ignored := Graphene.Box.Init
+        (Box, Min_Point'Access, Max_Point'Access);
+   end Init_Cube;
+
+   procedure Test_Contains_Box with Convention => C;
+   procedure Test_Contains_Box is
+      Outer_Box, Inner_Box, Separate_Box : aliased Graphene_Box_T;
+   begin
+      Init_Cube (Outer_Box'Access, 0.0, 4.0);
+      Init_Cube (Inner_Box'Access, 1.0, 2.0);
+      Init_Cube (Separate_Box'Access, 8.0, 9.0);
+      Assert_True
+        (Contains_Box (Outer_Box'Access, Inner_Box'Access),
+         "Contains_Box must return True for an enclosed box");
+      Assert_False
+        (Contains_Box (Outer_Box'Access, Separate_Box'Access),
+         "Contains_Box must return False for a disjoint box");
+   end Test_Contains_Box;
+
+   procedure Test_Contains_Point with Convention => C;
+   procedure Test_Contains_Point is
+      Box : aliased Graphene_Box_T;
+      Inside : aliased Graphene.Point3d.Graphene_Point3D_T := (1.0, 1.0, 1.0);
+      Outside : aliased Graphene.Point3d.Graphene_Point3D_T := (8.0, 1.0, 1.0);
+   begin
+      Init_Cube (Box'Access, 0.0, 4.0);
+      Assert_True
+        (Contains_Point (Box'Access, Inside'Access),
+         "Contains_Point must return True for an interior point");
+      Assert_False
+        (Contains_Point (Box'Access, Outside'Access),
+         "Contains_Point must return False for an exterior point");
+   end Test_Contains_Point;
+
+   procedure Test_Equal with Convention => C;
+   procedure Test_Equal is
+      Box, Same_Box, Different_Box : aliased Graphene_Box_T;
+   begin
+      Init_Cube (Box'Access, 0.0, 4.0);
+      Init_Cube (Same_Box'Access, 0.0, 4.0);
+      Init_Cube (Different_Box'Access, 8.0, 9.0);
+      Assert_True
+        (Equal (Box'Access, Same_Box'Access),
+         "Equal must return True for boxes with identical bounds");
+      Assert_False
+        (Equal (Box'Access, Different_Box'Access),
+         "Equal must return False for boxes with different bounds");
+   end Test_Equal;
+
+   procedure Test_Intersection with Convention => C;
+   procedure Test_Intersection is
+      Box, Inner_Box, Separate_Box, Result_Box : aliased Graphene_Box_T;
+      Result_Min, Result_Max : aliased Graphene.Point3d.Graphene_Point3D_T;
+   begin
+      Init_Cube (Box'Access, 0.0, 4.0);
+      Init_Cube (Inner_Box'Access, 1.0, 2.0);
+      Init_Cube (Separate_Box'Access, 8.0, 9.0);
+      Assert_True
+        (Intersection (Box'Access, Inner_Box'Access, Result_Box'Access),
+         "Intersection must return True for overlapping boxes");
+      Get_Min (Result_Box'Access, Result_Min'Access);
+      Get_Max (Result_Box'Access, Result_Max'Access);
+      Check_Float (Result_Min.X, 1.0);
+      Check_Float (Result_Min.Y, 1.0);
+      Check_Float (Result_Min.Z, 1.0);
+      Check_Float (Result_Max.X, 2.0);
+      Check_Float (Result_Max.Y, 2.0);
+      Check_Float (Result_Max.Z, 2.0);
+      Assert_False
+        (Intersection (Box'Access, Separate_Box'Access, Result_Box'Access),
+         "Intersection must return False for disjoint boxes");
+   end Test_Intersection;
+
 begin
    Glib.Test.Init;
    Add_Func
@@ -134,5 +221,17 @@ begin
    Add_Func
      ("/graphene/box/copy-free",
       Test_Copy_And_Free'Unrestricted_Access);
+   Add_Func
+     ("/graphene/box/contains-box-bool-return",
+      Test_Contains_Box'Unrestricted_Access);
+   Add_Func
+     ("/graphene/box/contains-point-bool-return",
+      Test_Contains_Point'Unrestricted_Access);
+   Add_Func
+     ("/graphene/box/equal-bool-return",
+      Test_Equal'Unrestricted_Access);
+   Add_Func
+     ("/graphene/box/intersection-bool-return",
+      Test_Intersection'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

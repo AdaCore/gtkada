@@ -34,6 +34,13 @@ concatenated `tmp.ada` into one spec and one body per Ada package. The
 companion C file holds the small amount of glue needed to wire Ada
 virtual-method handlers into the GObject vtables.
 
+The C type determines the imported ABI even when GIR gives two types the
+same introspection name. In particular, `gboolean` and `_Bool` both expose
+Ada `Boolean`, but the former uses `Glib.Gboolean` (a C `int`) and the
+latter uses `Interfaces.C.C_bool` (C99 `_Bool`) in C profiles.
+Keep that distinction in type mappings and overrides: reading a `_Bool`
+result as an integer can mistake unspecified upper register bits for true.
+
 ## Enabling a type for binding
 
 The set of types that participate in code generation lives in

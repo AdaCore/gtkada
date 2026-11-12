@@ -46,10 +46,10 @@ package body Graphene.Matrix is
           Rotate      : access Graphene.Quaternion.Graphene_Quaternion_T;
           Shear       : access Graphene.Vec3.Graphene_Vec3_T;
           Perspective : access Graphene.Vec4.Graphene_Vec4_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_decompose");
    begin
-      return Internal (Self, Translate, Scale, Rotate, Shear, Perspective) /= 0;
+      return Boolean (Internal (Self, Translate, Scale, Rotate, Shear, Perspective));
    end Decompose;
 
    -----------
@@ -62,10 +62,10 @@ package body Graphene.Matrix is
    is
       function Internal
          (Self : access Graphene_Matrix_T;
-          B    : access Graphene_Matrix_T) return Glib.Gboolean;
+          B    : access Graphene_Matrix_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_equal");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal;
 
    ----------------
@@ -78,10 +78,10 @@ package body Graphene.Matrix is
    is
       function Internal
          (Self : access Graphene_Matrix_T;
-          B    : access Graphene_Matrix_T) return Glib.Gboolean;
+          B    : access Graphene_Matrix_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_equal_fast");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal_Fast;
 
    -------------
@@ -94,10 +94,10 @@ package body Graphene.Matrix is
    is
       function Internal
          (Self : access Graphene_Matrix_T;
-          Res  : access Graphene_Matrix_T) return Glib.Gboolean;
+          Res  : access Graphene_Matrix_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_inverse");
    begin
-      return Internal (Self, Res) /= 0;
+      return Boolean (Internal (Self, Res));
    end Inverse;
 
    -----------
@@ -106,10 +106,10 @@ package body Graphene.Matrix is
 
    function Is_2D (Self : not null access Graphene_Matrix_T) return Boolean is
       function Internal
-         (Self : access Graphene_Matrix_T) return Glib.Gboolean;
+         (Self : access Graphene_Matrix_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_is_2d");
    begin
-      return Internal (Self) /= 0;
+      return Boolean (Internal (Self));
    end Is_2D;
 
    -------------------------
@@ -120,10 +120,10 @@ package body Graphene.Matrix is
       (Self : not null access Graphene_Matrix_T) return Boolean
    is
       function Internal
-         (Self : access Graphene_Matrix_T) return Glib.Gboolean;
+         (Self : access Graphene_Matrix_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_is_backface_visible");
    begin
-      return Internal (Self) /= 0;
+      return Boolean (Internal (Self));
    end Is_Backface_Visible;
 
    -----------------
@@ -134,10 +134,10 @@ package body Graphene.Matrix is
       (Self : not null access Graphene_Matrix_T) return Boolean
    is
       function Internal
-         (Self : access Graphene_Matrix_T) return Glib.Gboolean;
+         (Self : access Graphene_Matrix_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_is_identity");
    begin
-      return Internal (Self) /= 0;
+      return Boolean (Internal (Self));
    end Is_Identity;
 
    -----------------
@@ -148,10 +148,10 @@ package body Graphene.Matrix is
       (Self : not null access Graphene_Matrix_T) return Boolean
    is
       function Internal
-         (Self : access Graphene_Matrix_T) return Glib.Gboolean;
+         (Self : access Graphene_Matrix_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_is_singular");
    begin
-      return Internal (Self) /= 0;
+      return Boolean (Internal (Self));
    end Is_Singular;
 
    ----------
@@ -166,10 +166,10 @@ package body Graphene.Matrix is
       function Internal
          (Self    : access Graphene_Matrix_T;
           B       : access Graphene_Matrix_T;
-          Epsilon : Interfaces.C.C_float) return Glib.Gboolean;
+          Epsilon : Interfaces.C.C_float) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_near");
    begin
-      return Internal (Self, B, Epsilon) /= 0;
+      return Boolean (Internal (Self, B, Epsilon));
    end Near;
 
    -----------
@@ -192,7 +192,7 @@ package body Graphene.Matrix is
           Acc_Xy  : access Gdouble;
           Acc_Yy  : access Gdouble;
           Acc_X_0 : access Gdouble;
-          Acc_Y_0 : access Gdouble) return Glib.Gboolean;
+          Acc_Y_0 : access Gdouble) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_to_2d");
       Acc_Xx     : aliased Gdouble;
       Acc_Yx     : aliased Gdouble;
@@ -200,7 +200,7 @@ package body Graphene.Matrix is
       Acc_Yy     : aliased Gdouble;
       Acc_X_0    : aliased Gdouble;
       Acc_Y_0    : aliased Gdouble;
-      Tmp_Return : Glib.Gboolean;
+      Tmp_Return : Interfaces.C.C_bool;
    begin
       Tmp_Return := Internal (Self, Acc_Xx'Access, Acc_Yx'Access, Acc_Xy'Access, Acc_Yy'Access, Acc_X_0'Access, Acc_Y_0'Access);
       Xx := Acc_Xx;
@@ -209,7 +209,7 @@ package body Graphene.Matrix is
       Yy := Acc_Yy;
       X_0 := Acc_X_0;
       Y_0 := Acc_Y_0;
-      return Tmp_Return /= 0;
+      return Boolean (Tmp_Return);
    end To_2D;
 
    -----------------------
@@ -228,10 +228,10 @@ package body Graphene.Matrix is
           P      : access Graphene.Point.Graphene_Point_T;
           Bounds : access Graphene.Rect.Graphene_Rect_T;
           Res    : access Graphene.Point.Graphene_Point_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_matrix_untransform_point");
    begin
-      return Internal (Self, P, Bounds, Res) /= 0;
+      return Boolean (Internal (Self, P, Bounds, Res));
    end Untransform_Point;
 
    ----------------------

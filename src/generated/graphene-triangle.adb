@@ -38,10 +38,10 @@ package body Graphene.Triangle is
       function Internal
          (Self : access Graphene_Triangle_T;
           P    : access Graphene.Point3d.Graphene_Point3D_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_triangle_contains_point");
    begin
-      return Internal (Self, P) /= 0;
+      return Boolean (Internal (Self, P));
    end Contains_Point;
 
    -----------
@@ -54,10 +54,10 @@ package body Graphene.Triangle is
    is
       function Internal
          (Self : access Graphene_Triangle_T;
-          B    : access Graphene_Triangle_T) return Glib.Gboolean;
+          B    : access Graphene_Triangle_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_triangle_equal");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal;
 
    --------------------
@@ -72,10 +72,11 @@ package body Graphene.Triangle is
       function Internal
          (Self : access Graphene_Triangle_T;
           P    : access Graphene.Point3d.Graphene_Point3D_T;
-          Res  : access Graphene.Vec2.Graphene_Vec2_T) return Glib.Gboolean;
+          Res  : access Graphene.Vec2.Graphene_Vec2_T)
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_triangle_get_barycoords");
    begin
-      return Internal (Self, P, Res) /= 0;
+      return Boolean (Internal (Self, P, Res));
    end Get_Barycoords;
 
    ------------
@@ -96,10 +97,11 @@ package body Graphene.Triangle is
           Uv_A : access Graphene.Vec2.Graphene_Vec2_T;
           Uv_B : access Graphene.Vec2.Graphene_Vec2_T;
           Uv_C : access Graphene.Vec2.Graphene_Vec2_T;
-          Res  : access Graphene.Vec2.Graphene_Vec2_T) return Glib.Gboolean;
+          Res  : access Graphene.Vec2.Graphene_Vec2_T)
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_triangle_get_uv");
    begin
-      return Internal (Self, P, Uv_A, Uv_B, Uv_C, Res) /= 0;
+      return Boolean (Internal (Self, P, Uv_A, Uv_B, Uv_C, Res));
    end Get_Uv;
 
    ----------------------

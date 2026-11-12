@@ -550,6 +550,26 @@ class RecordFieldCustomType(CType):
         pass
 
 
+class CBoolean(CType):
+    """C99 _Bool, distinct from GLib's int-sized gboolean."""
+
+    def __init__(self):
+        super().__init__("Boolean", "Glib.Properties.Property_Boolean")
+        self.cparam = "Interfaces.C.C_bool"
+
+    def convert_from_c(self) -> ConvertedValue:
+        return super().convert_from_c()._replace(
+            conversion="Boolean (%(var)s)",
+            out_conversion="Boolean (%(var)s)",
+        )
+
+    def convert_to_c(self) -> str:
+        return self.cparam + " (%(var)s)"
+
+    def convert_from_c_add_with(self, pkg: Package, specs: bool = False):
+        pkg.add_with("Interfaces.C", specs=specs, do_use=False)
+
+
 class Enum(CType):
 
     def __init__(self, ada: str, property: Optional[str] = None):

@@ -2,7 +2,7 @@
 bindings.
 """
 
-from adaformat import naming, Enum, Proxy, Record, GObject, Tagged, List, Callback
+from adaformat import naming, CBoolean, Enum, Proxy, Record, GObject, Tagged, List, Callback
 
 # General packages that don't depend on others and must be processed first
 
@@ -834,7 +834,7 @@ naming.type_exceptions = {
     # Stack allocated opaque union, bound by hand with its C size/alignment.
     "GskPathPoint": Record("Gsk.Path_Point.Gsk_Path_Point"),
     "gboolean": Enum("Boolean", "Glib.Properties.Property_Boolean"),
-    "_Bool": Enum("Boolean", "Glib.Properties.Property_Boolean"),
+    "_Bool": CBoolean(),
     "gdouble": Proxy("Gdouble", "Glib.Properties.Property_Double"),
     "double": Proxy("Gdouble", "Glib.Properties.Property_Double"),
     "gshort": Proxy("Gshort", "Glib.Properties.Property_Int"),
