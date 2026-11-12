@@ -15,6 +15,18 @@ name = "digits"
 default = "0"
 
 [[method]]
+id = "gtk_spin_button_set_adjustment"
+
+[[method.parameter]]
+name = "adjustment"
+# GTK accepts NULL to reset the adjustment, but the GIR omits nullability.
+allow_none = "1"
+
+[method.doc]
+extend = true
+text = "If Adjustment is null, a new adjustment with zero-valued bounds and value is used."
+
+[[method]]
 id = "::input"
 [[method.parameter]]
 name = "new_value"

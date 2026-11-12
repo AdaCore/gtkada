@@ -288,8 +288,10 @@ package Gtk.Spin_Button is
 
    procedure Set_Adjustment
       (Self       : not null access Gtk_Spin_Button_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Replaces the `GtkAdjustment` associated with Spin_Button.
+   --  If Adjustment is null, a new adjustment with zero-valued bounds and
+   --  value is used.
    --  @param Adjustment a `GtkAdjustment` to replace the existing adjustment
 
    function Get_Climb_Rate

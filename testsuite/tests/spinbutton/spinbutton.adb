@@ -278,17 +278,45 @@ procedure Spinbutton is
       Unref (Spin);
    end Test_Adjustment_Changed;
 
-   --  Port the nullable Configure check from the C test. The Set_Adjustment
-   --  NULL check is omitted because GtkAda declares that argument not null.
+   --  Port both NULL checks from the C test. Regression for
+   --  gtk-spin_button.set-adjustment-nullable: Configure preserves the current
+   --  adjustment, while Set_Adjustment must replace it with a zero-valued one.
    procedure Test_Adjustment_Null is
       Spin : constant Gtk_Spin_Button :=
         Gtk_Spin_Button_New_With_Range (0.0, 10.0, 1.0);
       Before : Gtk_Adjustment;
+      Adj : Gtk_Adjustment;
+      --  A nullable GtkAda object access value represents GTK's NULL argument.
+      Null_Adjustment : Gtk_Adjustment := null;
    begin
       Ref_Sink (Spin);
       Before := Spin.Get_Adjustment;
       Spin.Configure (null, 1.0, 0);
       Assert_True (Before.Get_Object = Spin.Get_Adjustment.Get_Object);
+      --  Give the old adjustment nonzero bounds and value so preserving it
+      --  cannot accidentally satisfy the reset checks below.
+      Before.Configure (5.0, 1.0, 10.0, 1.0, 1.0, 0.0);
+      begin
+         Spin.Set_Adjustment (Null_Adjustment);
+      exception
+         when Constraint_Error =>
+            --  Report the binding's null-exclusion check as a clear failure.
+            --  Return after cleanup so --keep-going can run the other cases.
+            Unref (Spin);
+            Assert_True
+              (False, "gtk-spin_button.set-adjustment-nullable: " &
+                 "Set_Adjustment must accept a null adjustment");
+            return;
+      end;
+      --  Get_Adjustment returns a borrowed object owned by the spin button;
+      --  it must be non-null even when Set_Adjustment was passed null.
+      Adj := Spin.Get_Adjustment;
+      Assert_True (Adj /= null, "Set_Adjustment (null) must create an adjustment");
+      if Adj /= null then
+         Assert_Cmpfloat_Eq (Adj.Get_Lower, 0.0);
+         Assert_Cmpfloat_Eq (Adj.Get_Value, 0.0);
+         Assert_Cmpfloat_Eq (Adj.Get_Upper, 0.0);
+      end if;
       Unref (Spin);
    end Test_Adjustment_Null;
 
