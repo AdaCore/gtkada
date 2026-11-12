@@ -5,16 +5,22 @@ with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Test;       use Glib.Test;
+with Gtk.Accessible;  use Gtk.Accessible;
+with Gtk.Atcontext;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Main;
 with Gtk.Progress_Bar; use Gtk.Progress_Bar;
 with Pango.Layout;     use Pango.Layout;
 
 procedure Progress_Bar is
+   use type Gtk.Accessible.Gtk_Accessible;
+   use type Gtk.Atcontext.Gtk_Atcontext;
+
    procedure Test_Defaults with Convention => C;
    procedure Test_Properties with Convention => C;
    procedure Test_Text with Convention => C;
    procedure Test_Pulse with Convention => C;
+   procedure Test_Accessibility with Convention => C;
 
    procedure Test_Defaults is
       Bar : Gtk_Progress_Bar;
@@ -88,6 +94,60 @@ procedure Progress_Bar is
       Unref (Bar);
    end Test_Pulse;
 
+   --  A detached progress bar has no display bounds, accessibility context,
+   --  parent, children, or following sibling. Its inherited accessibility
+   --  methods still accept updates and valid enum values without a screen
+   --  reader or a realized window.
+   procedure Test_Accessibility is
+      Bar : constant Gtk_Progress_Bar := Gtk_Progress_Bar_New;
+      Parent : Gtk_Accessible;
+      Child  : Gtk_Accessible;
+      Next   : Gtk_Accessible;
+      X, Y, Width, Height : Gint;
+   begin
+      Ref_Sink (Bar);
+      Assert_True (Bar.Get_Accessible_Role = Accessible_Role_Progress_Bar);
+      Assert_Cmpstr_Eq (Bar.Get_Accessible_Id, "");
+      Assert_True (Bar.Get_At_Context = null);
+      Assert_False (Bar.Get_Bounds (X, Y, Width, Height));
+
+      Parent := Bar.Get_Accessible_Parent;
+      Child := Bar.Get_First_Accessible_Child;
+      Next := Bar.Get_Next_Accessible_Sibling;
+      Assert_True (Parent = Null_Gtk_Accessible);
+      --  GtkProgressBar exposes its internal progress indicator as an
+      --  accessible child even before the widget is rooted.
+      Assert_True (Child /= Null_Gtk_Accessible);
+      Assert_True (Next = Null_Gtk_Accessible);
+      Assert_False
+        (Bar.Get_Platform_State (Accessible_Platform_State_Focused));
+
+      --  The platform state reflects the widget's focusability when the
+      --  corresponding accessibility state is updated.
+      Bar.Set_Focusable (True);
+      Bar.Update_Platform_State (Accessible_Platform_State_Focusable);
+      Assert_True
+        (Bar.Get_Platform_State (Accessible_Platform_State_Focusable));
+
+      --  Valid accessibility values exercise each reset path while preserving
+      --  the progress bar's fixed role.
+      Bar.Reset_Property (Accessible_Property_Label);
+      Bar.Reset_Relation (Accessible_Relation_Labelled_By);
+      Bar.Reset_State (Accessible_State_Busy);
+      Assert_True (Bar.Get_Accessible_Role = Accessible_Role_Progress_Bar);
+
+      --  A detached widget has no accessible tree endpoints to install.
+      Bar.Set_Accessible_Parent (Null_Gtk_Accessible, Null_Gtk_Accessible);
+      Assert_True (Bar.Get_Accessible_Parent = Null_Gtk_Accessible);
+      Bar.Update_Next_Accessible_Sibling (Null_Gtk_Accessible);
+      Assert_True (Bar.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+
+      --  Announcements may be ignored by the headless accessibility backend.
+      Bar.Announce
+        ("progress bar accessibility test", Accessible_Announcement_Priority_Low);
+      Unref (Bar);
+   end Test_Accessibility;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
@@ -95,5 +155,7 @@ begin
    Add_Func ("/progress-bar/properties", Test_Properties'Unrestricted_Access);
    Add_Func ("/progress-bar/text", Test_Text'Unrestricted_Access);
    Add_Func ("/progress-bar/pulse", Test_Pulse'Unrestricted_Access);
+   Add_Func
+     ("/progress-bar/accessibility", Test_Accessibility'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Progress_Bar;

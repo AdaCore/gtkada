@@ -8,6 +8,8 @@ with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
 with Glib.Properties;
 with Glib.Test;        use Glib.Test;
+with Gtk.Accessible;   use Gtk.Accessible;
+with Gtk.Atcontext;
 with Gtk.Aspect_Frame; use Gtk.Aspect_Frame;
 with Gtk.Label;        use Gtk.Label;
 with Gtk.Main;
@@ -16,9 +18,12 @@ with Interfaces.C;     use Interfaces.C;
 
 procedure Aspect_Frame is
 
+   use type Gtk.Atcontext.Gtk_Atcontext;
+
    procedure Test_New with Convention => C;
    procedure Test_Accessors with Convention => C;
    procedure Test_Child with Convention => C;
+   procedure Test_Accessibility with Convention => C;
 
    procedure Test_New is
       F : constant Gtk_Aspect_Frame :=
@@ -66,6 +71,45 @@ procedure Aspect_Frame is
       Assert_True (F.Get_Child = null);
    end Test_Child;
 
+   --  Check inherited accessibility getters and mutations on an unrooted
+   --  aspect frame, where no screen coordinates or AT context are available.
+   procedure Test_Accessibility is
+      F : constant Gtk_Aspect_Frame :=
+        Gtk_Aspect_Frame_New (0.5, 0.5, 1.0, False);
+      Child : constant Gtk_Label := Gtk_Label_New ("accessible child");
+      X, Y, Width, Height : Gint;
+   begin
+      Ref_Sink (F);
+      F.Set_Child (Child);
+
+      --  GtkAspectFrame uses the generic accessible role and exposes its
+      --  child in the accessible tree; a detached widget has no parent.
+      Assert_True (F.Get_Accessible_Role = Accessible_Role_Generic);
+      Assert_Cmpstr_Eq (F.Get_Accessible_Id, "");
+      Assert_True (F.Get_First_Accessible_Child /= Null_Gtk_Accessible);
+      Assert_True (F.Get_Accessible_Parent = Null_Gtk_Accessible);
+      Assert_True (F.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+      Assert_True (F.Get_At_Context = null);
+      Assert_False (F.Get_Bounds (X, Y, Width, Height));
+      Assert_False
+        (F.Get_Platform_State (Accessible_Platform_State_Focused));
+
+      --  These accessibility notifications are safe without a screen reader.
+      --  Null links keep the detached widget out of a synthetic accessible tree.
+      F.Announce ("aspect frame test", Accessible_Announcement_Priority_Low);
+      F.Reset_Property (Accessible_Property_Label);
+      F.Reset_Relation (Accessible_Relation_Labelled_By);
+      F.Reset_State (Accessible_State_Busy);
+      F.Update_Platform_State (Accessible_Platform_State_Focusable);
+      F.Set_Accessible_Parent (Null_Gtk_Accessible, Null_Gtk_Accessible);
+      Assert_True (F.Get_Accessible_Parent = Null_Gtk_Accessible);
+      F.Update_Next_Accessible_Sibling (Null_Gtk_Accessible);
+      Assert_True (F.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+      Assert_True (F.Get_Accessible_Role = Accessible_Role_Generic);
+
+      Unref (F);
+   end Test_Accessibility;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
@@ -74,6 +118,8 @@ begin
    Glib.Test.Add_Func
      ("/aspectframe/accessors", Test_Accessors'Unrestricted_Access);
    Glib.Test.Add_Func ("/aspectframe/child", Test_Child'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/aspectframe/accessibility", Test_Accessibility'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Aspect_Frame;

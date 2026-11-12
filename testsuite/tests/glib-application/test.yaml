@@ -1,0 +1,2 @@
+#  The GApplication binding tests run through the coverage-aware driver.
+title: "glib-application"

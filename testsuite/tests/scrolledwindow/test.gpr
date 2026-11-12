@@ -1,0 +1,7 @@
+--  Test project for the Gtk.ScrolledWindow binding.
+with "gtkada.gpr";
+project Test is
+   for Main use ("scrolledwindow.adb");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+end Test;

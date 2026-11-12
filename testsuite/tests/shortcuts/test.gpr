@@ -1,0 +1,7 @@
+--  Project for the focused Gtk.Named_Action binding test.
+with "gtkada.gpr";
+project Test is
+   for Main use ("shortcuts.adb");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+end Test;

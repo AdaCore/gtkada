@@ -1,0 +1,7 @@
+with "gtkada.gpr";
+
+project Test is
+   for Main use ("tree_list_row.adb");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+end Test;

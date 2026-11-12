@@ -28,6 +28,7 @@ procedure File_Dialog is
 
    procedure On_Open
      (Source : access GObject_Record'Class; Result : G_Async_Result);
+   procedure Test_Constructor with Convention => C;
    procedure Test_Properties with Convention => C;
    procedure Test_Cancel with Convention => C;
 
@@ -66,6 +67,15 @@ procedure File_Dialog is
       Glib.Error.Error_Free (Error);
       Done := True;
    end On_Open;
+
+   --  Check that the function-style constructor creates a usable dialog and
+   --  that its optional title starts unset (exposed as an empty Ada string).
+   procedure Test_Constructor is
+      Dialog : constant Gtk_File_Dialog := Gtk_File_Dialog_New;
+   begin
+      Assert_Cmpstr_Eq (Dialog.Get_Title, "");
+      Dialog.Unref;
+   end Test_Constructor;
 
    procedure Test_Properties is
       Dialog : Gtk_File_Dialog;
@@ -163,6 +173,7 @@ procedure File_Dialog is
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
+   Add_Func ("/file-dialog/constructor", Test_Constructor'Unrestricted_Access);
    Add_Func ("/file-dialog/properties", Test_Properties'Unrestricted_Access);
    Add_Func ("/file-dialog/cancel", Test_Cancel'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

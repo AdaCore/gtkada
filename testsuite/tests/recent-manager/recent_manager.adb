@@ -1,9 +1,15 @@
 --  Based on GTK's recentmanager.c, with metadata and ownership checks.
+--  Exercises Gtk.Recent_Manager's constructors, metadata, list conversion,
+--  mutations, Add_Item, and changed callbacks.  The GTK cases are ported from
+--  testsuite/c_tests/recentmanager.c; constructor and slot cases cover the
+--  additional Ada binding paths.
+with Ada.Exceptions;
 with Ada.Command_Line;
 with Ada.Directories;
 with Ada.Environment_Variables;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Text_IO;
 with GNAT.Strings; use GNAT.Strings;
 with GNAT.OS_Lib;
 with Glib;               use Glib;
@@ -18,11 +24,19 @@ with Glib.Object;        use Glib.Object;
 with Glib.Types;
 with Glib.Test;          use Glib.Test;
 with Gtk.Main;
+with Gtk.Settings;        use Gtk.Settings;
+with Gtkada.Bindings;
 with Gtk.Recent_Info;    use Gtk.Recent_Info;
 with Gtk.Recent_Manager; use Gtk.Recent_Manager;
 
 procedure Recent_Manager is
+   --  Ported coverage follows GTK's testsuite/c_tests/recentmanager.c,
+   --  especially recent_manager_add, recent_manager_get_default, and
+   --  recent_manager_add_many.  The extra constructor and signal cases
+   --  exercise GtkAda-specific wrapper paths.
    Uri : constant String := "file:///tmp/gtkada-recent-binding-test.txt";
+   Remote_Uri : constant String :=
+     "https://gtkada.invalid/recent-info-exists-test";
    App : constant String := "gtkada-recent-test";
    Data_Dir : constant String := Ada.Directories.Current_Directory
      & "/recent-data-" & Integer'Image
@@ -45,13 +59,41 @@ procedure Recent_Manager is
    procedure Test_Metadata with Convention => C;
    procedure Test_Mutations with Convention => C;
    procedure Test_Changed with Convention => C;
+   procedure Test_Constructors with Convention => C;
    Changed : Boolean := False;
+   Slot_Changed : Boolean := False;
+   Raise_Callbacks : Boolean := False;
+   Exception_Count : Natural := 0;
 
    procedure On_Changed (Self : access Gtk_Recent_Manager_Record'Class) is
       pragma Unreferenced (Self);
    begin
       Changed := True;
+      if Raise_Callbacks then
+         raise Program_Error with "recent-manager callback test";
+      end if;
    end On_Changed;
+
+   --  The slot overload passes the supplied GObject to this callback.
+   procedure On_Changed_Slot
+     (Self : access Glib.Object.GObject_Record'Class)
+   is
+   begin
+      Slot_Changed := Self /= null;
+      if Raise_Callbacks then
+         raise Program_Error with "recent-manager slot callback test";
+      end if;
+   end On_Changed_Slot;
+
+   --  Exceptions raised by signal callbacks are delivered here by the
+   --  marshallers instead of unwinding through GTK's C signal machinery.
+   procedure Record_Callback_Exception
+     (Occurrence : Ada.Exceptions.Exception_Occurrence)
+   is
+      pragma Unreferenced (Occurrence);
+   begin
+      Exception_Count := Exception_Count + 1;
+   end Record_Callback_Exception;
 
    function Add (Manager : Gtk_Recent_Manager; Resource : String)
       return Boolean is
@@ -62,11 +104,49 @@ procedure Recent_Manager is
          Is_Private => False);
    end Add;
 
+   procedure Test_Constructors is
+      By_Procedure : Gtk_Recent_Manager;
+      By_Function : Gtk_Recent_Manager;
+      Manager : Gtk_Recent_Manager;
+      Sample_Path : constant String := Data_Dir & "/add-item.txt";
+      Sample_URI : constant String := "file://" & Sample_Path;
+   begin
+      --  GTK's C test enables this setting before creating its manager.
+      Set_Property (Gtk.Settings.Get_Default,
+                    Gtk_Recent_Files_Enabled_Property, True);
+
+      --  The out-parameter and function constructors both create a usable
+      --  manager.  Reinitializing the first checks Initialize's idempotence.
+      Gtk.Recent_Manager.Gtk_New (By_Procedure);
+      Assert_True (By_Procedure /= null);
+      Gtk.Recent_Manager.Initialize (By_Procedure);
+      Assert_True (By_Procedure /= null);
+      By_Function := Gtk_Recent_Manager_New;
+      Assert_True (By_Function /= null);
+      Manager := Get_Default;
+      Assert_True (Manager /= null);
+
+      declare
+         File : Ada.Text_IO.File_Type;
+      begin
+         Ada.Text_IO.Create (File, Ada.Text_IO.Out_File, Sample_Path);
+         Ada.Text_IO.Put_Line (File, "recent item test content");
+         Ada.Text_IO.Close (File);
+      end;
+
+      --  Add_Item gathers metadata from a real local file.  In this test
+      --  environment it reports success but does not make the URI queryable.
+      Assert_True (Manager.Add_Item (Sample_URI));
+      Unref (By_Function);
+      Unref (By_Procedure);
+      Ada.Directories.Delete_File (Sample_Path);
+   end Test_Constructors;
+
 
    procedure Test_Metadata is
       Manager : constant Gtk_Recent_Manager := Get_Default;
       Error : GError;
-      Info, Retained : Gtk_Recent_Info;
+      Info, Retained, Remote_Info : Gtk_Recent_Info;
       Added, Stamp, Visited : Gdate_Time;
       Count : Gint;
       Uses : Guint;
@@ -99,6 +179,8 @@ procedure Recent_Manager is
       Info := Manager.Lookup_Item (Uri, Error);
       Assert_True (Error = null);
       Assert_True (Info /= Null_Gtk_Recent_Info);
+      --  Age is returned as elapsed days and cannot be negative.
+      Assert_Cmpint_Ge (Info.Get_Age, 0);
       Assert_Cmpstr_Eq (Info.Get_Uri, Uri);
       Assert_Cmpstr_Eq (Info.Get_Display_Name, "Test document");
       Assert_Cmpstr_Eq (Info.Get_Description, "Metadata");
@@ -144,6 +226,19 @@ procedure Recent_Manager is
       Assert_True (Stamp /= Null_Gdate_Time);
       Assert_True (Visited /= Null_Gdate_Time);
       Assert_True (Added.To_Unix > 0);
+      --  A remote URI is never probed as a local file by Exists; this checks
+      --  its false result without network access or a host-file dependency.
+      Assert_True
+        (Manager.Add_Full
+           (Remote_Uri, Mime_Type => "text/plain", App_Name => App,
+            App_Exec => "gtkada-recent-test %u", Groups => (1 .. 0 => null),
+            Is_Private => False));
+      Remote_Info := Manager.Lookup_Item (Remote_Uri, Error);
+      Assert_True (Error = null);
+      Assert_False (Remote_Info.Exists);
+      Unref (Remote_Info);
+      Assert_True (Manager.Remove_Item (Remote_Uri, Error));
+      Assert_True (Error = null);
       --  Keep a timestamp across manager mutation by taking our own ref.
       Added := Added.Ref;
       Retained := Info.Ref;
@@ -178,6 +273,16 @@ procedure Recent_Manager is
       Assert_True (Error = null);
       Other := Manager.Lookup_Item (Uri, Error);
       Assert_True (Info.Match (Other));
+      --  Append converts the Ada info handle back to the address stored by
+      --  GList; Get_Data then verifies the reverse conversion preserves it.
+      declare
+         Converted : Gtk_Recent_Info_List.Glist :=
+           Gtk_Recent_Info_List.Null_List;
+      begin
+         Gtk_Recent_Info_List.Append (Converted, Info);
+         Assert_True (Gtk_Recent_Info_List.Get_Data (Converted) = Info);
+         Gtk_Recent_Info_List.Free (Converted);
+      end;
       declare
          Groups : constant String_List := Info.Get_Groups;
       begin
@@ -210,6 +315,26 @@ procedure Recent_Manager is
       Assert_True (Manager.Move_Item (Uri, Error => Error));
       Assert_True (Error = null);
       Assert_False (Manager.Has_Item (Uri));
+
+      --  A nonempty group exercises allocation and cleanup of the C string
+      --  vector.  GTK's group parsing has an upstream pointer quirk, so check
+      --  the documented add and lookup results without relying on group data.
+      declare
+         Group_Uri : constant String :=
+           "file:///tmp/gtkada-recent-group-vector-test.txt";
+         Groups : GNAT.Strings.String_List :=
+           (1 => new String'("gtkada-tests"));
+      begin
+         Assert_True
+           (Manager.Add_Full
+              (Group_Uri, Mime_Type => "text/plain", App_Name => App,
+               App_Exec => "gtkada-recent-test %u", Groups => Groups,
+               Is_Private => False));
+         GNAT.Strings.Free (Groups (Groups'First));
+         Assert_True (Manager.Has_Item (Group_Uri));
+         Assert_True (Manager.Remove_Item (Group_Uri, Error));
+         Assert_True (Error = null);
+      end;
       Unref (Manager);
    end Test_Mutations;
 
@@ -220,14 +345,27 @@ procedure Recent_Manager is
       Error : GError;
    begin
       Manager.On_Changed (On_Changed'Unrestricted_Access);
-      Assert_True (Add (Manager, Uri));
+      --  The second overload supplies a slot object as a GObject argument.
+      Manager.On_Changed
+        (On_Changed_Slot'Unrestricted_Access, Manager.all'Access);
+      --  Count exceptions from both callbacks to verify that each marshaller
+      --  catches the Ada exception and reports it through Gtkada's hook.
+      Gtkada.Bindings.Set_On_Exception
+        (Record_Callback_Exception'Unrestricted_Access);
+      Raise_Callbacks := True;
+      Exception_Count := 0;
       Changed := False;
+      Slot_Changed := False;
+      Assert_True (Add (Manager, Uri));
       for Attempt in 1 .. 300 loop
          Dispatched := Main_Context_Iteration (null, False);
-         exit when Changed;
+         exit when Changed and then Slot_Changed;
          delay 0.01;
       end loop;
       Assert_True (Changed);
+      Assert_True (Slot_Changed);
+      Assert_Cmpuint_Eq (Guint (Exception_Count), 2);
+      Raise_Callbacks := False;
       Count := Manager.Purge_Items (Error);
       Assert_True (Error = null);
       Assert_Cmpint_Eq (Count, 1);
@@ -242,6 +380,7 @@ begin
    Ada.Environment_Variables.Set ("XDG_DATA_HOME", Data_Dir);
    Glib.Test.Init;
    Gtk.Main.Init;
+   Add_Func ("/recent-manager/constructors", Test_Constructors'Unrestricted_Access);
    Add_Func ("/recent-manager/metadata", Test_Metadata'Unrestricted_Access);
    Add_Func ("/recent-manager/mutations", Test_Mutations'Unrestricted_Access);
    Add_Func ("/recent-manager/changed", Test_Changed'Unrestricted_Access);

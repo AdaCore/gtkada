@@ -11,6 +11,7 @@
 with Ada.Command_Line;
 with Ada.Streams;
 with Ada.Streams.Stream_IO;
+with Ada.Unchecked_Conversion;
 with System;
 
 with GNAT.Strings; use GNAT.Strings;
@@ -166,6 +167,15 @@ procedure Main is
    with Convention => C;
 
    procedure Test_Enumerate_Children_Nonexistent_Path
+   with Convention => C;
+
+   procedure Test_Has_Children
+   with Convention => C;
+
+   procedure Test_Ref
+   with Convention => C;
+
+   procedure Test_From_Object_Free
    with Convention => C;
 
    ----------------------------
@@ -666,6 +676,79 @@ procedure Main is
       Unref (Resource);
    end Test_Enumerate_Children_Nonexistent_Path;
 
+   -----------------------
+   -- Test_Has_Children --
+   -----------------------
+
+   procedure Test_Has_Children is
+      Load_E   : Glib.Error.GError := null;
+      Resource : Gresource := Load ("sample.gresource", Load_E);
+      use type Glib.Error.GError;
+   begin
+      Assert_True (Load_E = null);
+      --  A directory has children, while a file and a missing path do not.
+      Assert_True (Has_Children (Resource, "/org/gtkada/test"));
+      Assert_False
+        (Has_Children (Resource, "/org/gtkada/test/alpha.txt"));
+      Assert_False
+        (Has_Children (Resource, "/org/gtkada/test/not-there"));
+      Unref (Resource);
+   end Test_Has_Children;
+
+   ---------------
+   -- Test_Ref --
+   ---------------
+
+   procedure Test_Ref is
+      Load_E     : Glib.Error.GError := null;
+      Resource   : Gresource := Load ("sample.gresource", Load_E);
+      Reference  : Gresource;
+      use type Glib.Error.GError;
+   begin
+      Assert_True (Load_E = null);
+      --  Ref owns a second reference, so it remains usable after Resource is
+      --  unreferenced below.
+      Reference := Ref (Resource);
+      Assert_True (Has_Children (Reference, "/org/gtkada/test"));
+      Unref (Resource);
+      Assert_True (Has_Children (Reference, "/org/gtkada/test"));
+      Unref (Reference);
+   end Test_Ref;
+
+   -------------------------------
+   -- Test_From_Object_Free --
+   -------------------------------
+
+   procedure Test_From_Object_Free is
+      Load_E   : Glib.Error.GError := null;
+      Resource : Gresource := Load ("sample.gresource", Load_E);
+      Converted : Gresource;
+      use type Glib.Error.GError;
+   begin
+      Assert_True (Load_E = null);
+
+      declare
+         --  From_Object_Free takes ownership of a wrapper allocated by GLib.
+         type Gresource_Access is access all Gresource;
+         function To_Gresource_Access is new Ada.Unchecked_Conversion
+           (System.Address, Gresource_Access);
+         function G_Malloc (Size : Gsize) return System.Address;
+         pragma Import (C, G_Malloc, "g_malloc");
+
+         Wrapper : constant Gresource_Access := To_Gresource_Access
+           (G_Malloc (Gsize (Gresource'Size / System.Storage_Unit)));
+      begin
+         --  Move the single resource reference into the C-allocated wrapper;
+         --  the conversion frees that wrapper but returns the resource handle.
+         Wrapper.all := Resource;
+         Resource.Set_Object (System.Null_Address);
+         Converted := From_Object_Free (Wrapper);
+      end;
+
+      Assert_True (Has_Children (Converted, "/org/gtkada/test"));
+      Unref (Converted);
+   end Test_From_Object_Free;
+
 begin
    Glib.Test.Init;
 
@@ -712,6 +795,16 @@ begin
    Glib.Test.Add_Func
      ("/gresource/get-info-nonexistent-path",
       Test_Get_Info_Nonexistent_Path'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gresource/enumerate-children-nonexistent-path",
+      Test_Enumerate_Children_Nonexistent_Path'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gresource/has-children", Test_Has_Children'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gresource/ref", Test_Ref'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gresource/from-object-free",
+      Test_From_Object_Free'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

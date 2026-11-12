@@ -1,0 +1,2 @@
+/*  This rule lets the Ada test confirm that the resource was parsed. */
+resource-style { color: rgb(1, 2, 3); }

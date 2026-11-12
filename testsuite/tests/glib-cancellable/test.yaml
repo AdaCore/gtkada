@@ -1,0 +1,2 @@
+# Ada coverage tests for Glib.Cancellable lifecycle and callback behavior.
+title: "Glib.Cancellable"

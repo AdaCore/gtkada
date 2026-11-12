@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  A self-contained stylesheet fixture for Load_From_Resource. -->
+<gresources>
+  <gresource prefix="/org/gtkada/css-provider">
+    <file>provider.css</file>
+  </gresource>
+</gresources>

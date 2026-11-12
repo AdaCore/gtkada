@@ -9,6 +9,9 @@ with Glib.Object;       use Glib.Object;
 with Glib.Test;         use Glib.Test;
 with Glib.Types;
 with Gtk.Button;        use Gtk.Button;
+with Gtk.Accessible;    use Gtk.Accessible;
+with Gtk.Atcontext;
+use type Gtk.Atcontext.Gtk_Atcontext;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Label;         use Gtk.Label;
 with Gtk.Main;
@@ -22,6 +25,7 @@ with Gtk.Widget;        use Gtk.Widget;
 procedure Stack is
 
    procedure Test_Add with Convention => C;
+   procedure Test_Constructor with Convention => C;
    procedure Test_Page_Properties with Convention => C;
    procedure Test_Visible_Child with Convention => C;
    procedure Test_Transitions with Convention => C;
@@ -29,6 +33,7 @@ procedure Stack is
    procedure Test_Remove with Convention => C;
    procedure Test_Switcher_Stack with Convention => C;
    procedure Test_Sidebar_Stack with Convention => C;
+   procedure Test_Accessibility with Convention => C;
 
    function N_Pages (Self : not null access Gtk_Stack_Record'Class)
       return Guint;
@@ -50,6 +55,41 @@ procedure Stack is
       Unref (Glib.Types.To_Object (Glib.Types.GType_Interface (Model)));
       return Count;
    end N_Pages;
+
+   ---------------------
+   -- Test_Constructor --
+   ---------------------
+
+   --  Check the procedure constructor as well as the function form used by
+   --  the rest of this test file.
+   procedure Test_Constructor is
+      Stack : Gtk_Stack;
+      Sidebar : Gtk_Stack_Sidebar;
+      Switcher : Gtk_Stack_Switcher;
+   begin
+      Gtk_New (Stack);
+      Assert_True (Stack /= null);
+      Assert_True (Stack.Get_Visible_Child = null);
+
+      --  Exercise the procedure form of GtkStackSidebar's constructor too.
+      Gtk_New (Sidebar);
+      Assert_True (Sidebar /= null);
+      Assert_True (Sidebar.Get_Stack = null);
+
+      --  Exercise GtkStackSwitcher's procedure constructor as well as the
+      --  function constructor used in the stack-controller test.
+      Gtk_New (Switcher);
+      Assert_True (Switcher /= null);
+      Assert_True (Switcher.Get_Stack = null);
+
+      --  Gtk_New returns a floating widget reference, like Gtk_Stack_New.
+      Ref_Sink (Stack);
+      Ref_Sink (Sidebar);
+      Ref_Sink (Switcher);
+      Unref (Stack);
+      Unref (Sidebar);
+      Unref (Switcher);
+   end Test_Constructor;
 
    --------------
    -- Test_Add --
@@ -171,6 +211,9 @@ procedure Stack is
       Stack : constant Gtk_Stack := Gtk_Stack_New;
    begin
       Ref_Sink (Stack);
+
+      --  An empty stack cannot be partway through a page transition.
+      Assert_False (Stack.Get_Transition_Running);
 
       Assert_True (Stack.Get_Transition_Type = Stack_Transition_Type_None);
       Stack.Set_Transition_Type (Stack_Transition_Type_Crossfade);
@@ -324,12 +367,183 @@ procedure Stack is
       Unref (Stack);
    end Test_Sidebar_Stack;
 
+   -------------------------
+   -- Test_Accessibility --
+   -------------------------
+
+   --  A detached stack has deterministic accessible metadata and no screen
+   --  geometry or AT context, so these assertions do not need a real window.
+   procedure Test_Accessibility is
+      Stack  : constant Gtk_Stack := Gtk_Stack_New;
+      Child  : constant Gtk_Label := Gtk_Label_New ("accessible page");
+      Sidebar : constant Gtk_Stack_Sidebar := Gtk_Stack_Sidebar_New;
+      Switcher : constant Gtk_Stack_Switcher := Gtk_Stack_Switcher_New;
+      Page   : Gtk_Stack_Page;
+      Parent : Gtk_Accessible;
+      Next   : Gtk_Accessible;
+      First  : Gtk_Accessible;
+      Context : Gtk.Atcontext.Gtk_Atcontext;
+      X, Y, Width, Height : Gint;
+   begin
+      Ref_Sink (Stack);
+      Ref_Sink (Child);
+      Ref_Sink (Sidebar);
+      Ref_Sink (Switcher);
+      Page := Stack.Add_Child (Child);
+      Assert_True (Page /= null);
+
+      --  GtkStack is exposed as an accessible group and has an unnamed ID
+      --  until an application assigns one.
+      Assert_True (Stack.Get_Accessible_Role = Accessible_Role_Group);
+      Assert_Cmpstr_Eq (Stack.Get_Accessible_Id, "");
+      Parent := Stack.Get_Accessible_Parent;
+      Assert_True (Parent = Null_Gtk_Accessible);
+      Next := Stack.Get_Next_Accessible_Sibling;
+      Assert_True (Next = Null_Gtk_Accessible);
+      First := Stack.Get_First_Accessible_Child;
+      Assert_True (First /= Null_Gtk_Accessible);
+
+      --  Before the widget is rooted, it has no accessibility backend data.
+      Context := Stack.Get_At_Context;
+      Assert_True (Context = null);
+      Assert_False (Stack.Get_Bounds (X, Y, Width, Height));
+      Assert_False
+        (Stack.Get_Platform_State (Accessible_Platform_State_Focused));
+
+      --  These inherited updates accept valid enum values. Null tree updates
+      --  keep this detached stack without an accessible parent or sibling.
+      Stack.Announce ("stack test", Accessible_Announcement_Priority_Low);
+      Stack.Reset_Property (Accessible_Property_Label);
+      Stack.Reset_Relation (Accessible_Relation_Labelled_By);
+      Stack.Reset_State (Accessible_State_Busy);
+      Stack.Update_Platform_State (Accessible_Platform_State_Focusable);
+      Stack.Set_Accessible_Parent
+        (Null_Gtk_Accessible, Null_Gtk_Accessible);
+      Assert_True (Stack.Get_Accessible_Parent = Null_Gtk_Accessible);
+      Stack.Update_Next_Accessible_Sibling (Null_Gtk_Accessible);
+      Assert_True (Stack.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+
+      --  GtkStackPage also implements GtkAccessible. With one page, its
+      --  accessible parent and child are the stack and its page widget.
+      Assert_Cmpstr_Eq (Page.Get_Accessible_Id, "");
+      Assert_True (Page.Get_Accessible_Role /= Accessible_Role_None);
+      Parent := Page.Get_Accessible_Parent;
+      Assert_True (Parent = +Stack);
+      Next := Page.Get_Next_Accessible_Sibling;
+      Assert_True (Next = Null_Gtk_Accessible);
+      First := Page.Get_First_Accessible_Child;
+      Assert_True (First = +Child);
+
+      --  The page is not rooted in a window, so it has no accessibility
+      --  backend context, screen bounds, or focused platform state.
+      Context := Page.Get_At_Context;
+      Assert_True (Context = null);
+      Assert_False (Page.Get_Bounds (X, Y, Width, Height));
+      Assert_False
+        (Page.Get_Platform_State (Accessible_Platform_State_Focused));
+
+      --  Exercise the inherited accessibility operations on the page itself.
+      Page.Announce ("page test", Accessible_Announcement_Priority_Low);
+      Page.Reset_Property (Accessible_Property_Label);
+      Page.Reset_Relation (Accessible_Relation_Labelled_By);
+      Page.Reset_State (Accessible_State_Busy);
+      Page.Update_Platform_State (Accessible_Platform_State_Focusable);
+      Page.Set_Accessible_Parent
+        (Null_Gtk_Accessible, Null_Gtk_Accessible);
+      --  The owning stack continues to manage the page's accessible parent.
+      Assert_True (Page.Get_Accessible_Parent = +Stack);
+      Page.Update_Next_Accessible_Sibling (Null_Gtk_Accessible);
+      Assert_True (Page.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+
+      --  GtkStackSidebar exposes the same GtkAccessible interface. Connecting
+      --  it to a one-page stack creates a stable accessible child without
+      --  rooting either widget in a window.
+      Sidebar.Set_Stack (Stack);
+      Assert_True (Sidebar.Get_Stack = Stack);
+      Assert_True (Sidebar.Get_Accessible_Role /= Accessible_Role_None);
+      Assert_Cmpstr_Eq (Sidebar.Get_Accessible_Id, "");
+      Parent := Sidebar.Get_Accessible_Parent;
+      Assert_True (Parent = Null_Gtk_Accessible);
+      Next := Sidebar.Get_Next_Accessible_Sibling;
+      Assert_True (Next = Null_Gtk_Accessible);
+      First := Sidebar.Get_First_Accessible_Child;
+      Assert_True (First /= Null_Gtk_Accessible);
+
+      --  An unrooted sidebar has neither an AT context nor screen geometry.
+      Context := Sidebar.Get_At_Context;
+      Assert_True (Context = null);
+      Assert_False (Sidebar.Get_Bounds (X, Y, Width, Height));
+      Assert_False
+        (Sidebar.Get_Platform_State (Accessible_Platform_State_Focused));
+
+      --  Exercise inherited accessibility operations and verify that null
+      --  tree updates leave the detached sidebar without parent or sibling.
+      Sidebar.Announce
+        ("sidebar test", Accessible_Announcement_Priority_Low);
+      Sidebar.Reset_Property (Accessible_Property_Label);
+      Sidebar.Reset_Relation (Accessible_Relation_Labelled_By);
+      Sidebar.Reset_State (Accessible_State_Busy);
+      Sidebar.Update_Platform_State (Accessible_Platform_State_Focusable);
+      Sidebar.Set_Accessible_Parent
+        (Null_Gtk_Accessible, Null_Gtk_Accessible);
+      Assert_True (Sidebar.Get_Accessible_Parent = Null_Gtk_Accessible);
+      Sidebar.Update_Next_Accessible_Sibling (Null_Gtk_Accessible);
+      Assert_True
+        (Sidebar.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+
+      --  StackSwitcher also implements GtkAccessible. Its tab-list role and
+      --  generated accessible child are available with this detached stack.
+      Switcher.Set_Stack (Stack);
+      Assert_True (Switcher.Get_Stack = Stack);
+      Assert_True
+        (Switcher.Get_Accessible_Role = Accessible_Role_Tab_List);
+      Assert_Cmpstr_Eq (Switcher.Get_Accessible_Id, "");
+      Parent := Switcher.Get_Accessible_Parent;
+      Assert_True (Parent = Null_Gtk_Accessible);
+      Next := Switcher.Get_Next_Accessible_Sibling;
+      Assert_True (Next = Null_Gtk_Accessible);
+      First := Switcher.Get_First_Accessible_Child;
+      Assert_True (First /= Null_Gtk_Accessible);
+
+      --  Without a root widget there is no AT context, screen bounds, or
+      --  focused platform state for the switcher.
+      Context := Switcher.Get_At_Context;
+      Assert_True (Context = null);
+      Assert_False (Switcher.Get_Bounds (X, Y, Width, Height));
+      Assert_False
+        (Switcher.Get_Platform_State (Accessible_Platform_State_Focused));
+
+      --  Exercise inherited accessible mutations and verify the null tree
+      --  updates leave the switcher without an explicit parent or sibling.
+      Switcher.Announce
+        ("switcher test", Accessible_Announcement_Priority_Low);
+      Switcher.Reset_Property (Accessible_Property_Label);
+      Switcher.Reset_Relation (Accessible_Relation_Labelled_By);
+      Switcher.Reset_State (Accessible_State_Busy);
+      Switcher.Update_Platform_State (Accessible_Platform_State_Focusable);
+      Switcher.Set_Accessible_Parent
+        (Null_Gtk_Accessible, Null_Gtk_Accessible);
+      Assert_True
+        (Switcher.Get_Accessible_Parent = Null_Gtk_Accessible);
+      Switcher.Update_Next_Accessible_Sibling (Null_Gtk_Accessible);
+      Assert_True
+        (Switcher.Get_Next_Accessible_Sibling = Null_Gtk_Accessible);
+
+      Stack.Remove (Child);
+      Unref (Child);
+      Unref (Switcher);
+      Unref (Sidebar);
+      Unref (Stack);
+   end Test_Accessibility;
+
 begin
    Glib.Test.Init;
 
    --  Widgets cannot be created until GTK is initialized.
    Gtk.Main.Init;
 
+   Glib.Test.Add_Func
+     ("/stack/constructor", Test_Constructor'Unrestricted_Access);
    Glib.Test.Add_Func ("/stack/add", Test_Add'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/stack/page-properties", Test_Page_Properties'Unrestricted_Access);
@@ -344,6 +558,8 @@ begin
      ("/stackswitcher/stack", Test_Switcher_Stack'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/stacksidebar/stack", Test_Sidebar_Stack'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/stack/accessibility", Test_Accessibility'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

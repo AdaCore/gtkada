@@ -7,8 +7,10 @@ with Ada.Text_IO;
 
 with Glib;             use Glib;
 with Glib.Bytes;       use Glib.Bytes;
+with Glib.Error;
 with Glib.GFile;       use Glib.GFile;
 with Glib.Object;      use Glib.Object;
+with Glib.Resource;    use Glib.Resource;
 with Glib.Test;        use Glib.Test;
 with Glib.Types;
 
@@ -36,6 +38,8 @@ procedure Css_Provider is
    procedure Test_Load_From_Bytes with Convention => C;
    procedure Test_Load_From_Path with Convention => C;
    procedure Test_Load_From_File with Convention => C;
+   procedure Test_Load_From_Resource with Convention => C;
+   procedure Test_Load_Named with Convention => C;
 
    --------------
    -- To_Bytes --
@@ -149,6 +153,48 @@ procedure Css_Provider is
       Release (File);
    end Test_Load_From_File;
 
+   ---------------------------------
+   -- Test_Load_From_Resource --
+   ---------------------------------
+
+   procedure Test_Load_From_Resource is
+      use type Glib.Error.GError;
+
+      Error    : Glib.Error.GError;
+      Resource : Gresource := Load ("provider.gresource", Error);
+      Provider : constant Gtk_Css_Provider := Gtk_Css_Provider_New;
+   begin
+      --  Register a local test bundle so the resource lookup is deterministic.
+      Assert_True (Error = null);
+      Assert_True (Resource /= Null_Gresource);
+      Register (Resource);
+
+      --  The resource CSS names a selector that can be checked after parsing.
+      Provider.Load_From_Resource ("/org/gtkada/css-provider/provider.css");
+      Assert_True (Contains (Provider.To_String, "resource-style"));
+
+      Unregister (Resource);
+      Unref (Resource);
+      Unref (Provider);
+   end Test_Load_From_Resource;
+
+   ---------------------
+   -- Test_Load_Named --
+   ---------------------
+
+   procedure Test_Load_Named is
+      Provider : constant Gtk_Css_Provider := Gtk_Css_Provider_New;
+   begin
+      --  GTK's theme-validate C test loads Adwaita in its default and dark
+      --  variants; check that each documented theme load produces CSS.
+      Provider.Load_Named ("Adwaita");
+      Assert_True (Provider.To_String'Length > 0);
+
+      Provider.Load_Named ("Adwaita", "dark");
+      Assert_True (Provider.To_String'Length > 0);
+      Unref (Provider);
+   end Test_Load_Named;
+
 begin
    declare
       File : Ada.Text_IO.File_Type;
@@ -176,6 +222,12 @@ begin
    Glib.Test.Add_Func
      ("/css-provider/load-from-file",
       Test_Load_From_File'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/css-provider/load-from-resource",
+      Test_Load_From_Resource'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/css-provider/load-named",
+      Test_Load_Named'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
    Ada.Directories.Delete_File (Css_Path);

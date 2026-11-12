@@ -1,0 +1,6 @@
+<!-- Resource fixture used to exercise Gsk.GLShader's resource constructors. -->
+<gresources>
+  <gresource prefix="/org/gtkada/coverage/gsk-glshader">
+    <file alias="shader.glsl">shader.glsl</file>
+  </gresource>
+</gresources>

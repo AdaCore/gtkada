@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gtkada/coverage/gtk-image">
+    <file alias="image.png">image.png</file>
+  </gresource>
+</gresources>
