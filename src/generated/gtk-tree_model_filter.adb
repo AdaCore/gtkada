@@ -450,14 +450,10 @@ package body Gtk.Tree_Model_Filter is
    procedure Set_Modify_Func
       (Self  : not null access Gtk_Tree_Model_Filter_Record;
        Types : GType_Array;
-       Func  : Gtk_Tree_Model_Filter_Modify_Func)
+       Func  : not null Gtk_Tree_Model_Filter_Modify_Func)
    is
    begin
-      if Func = null then
-         C_Gtk_Tree_Model_Filter_Set_Modify_Func (Get_Object (Self), Types'Length, Types, System.Null_Address, System.Null_Address, System.Null_Address);
-      else
-         C_Gtk_Tree_Model_Filter_Set_Modify_Func (Get_Object (Self), Types'Length, Types, Internal_Gtk_Tree_Model_Filter_Modify_Func'Address, To_Address (Func), System.Null_Address);
-      end if;
+      C_Gtk_Tree_Model_Filter_Set_Modify_Func (Get_Object (Self), Types'Length, Types, Internal_Gtk_Tree_Model_Filter_Modify_Func'Address, To_Address (Func), System.Null_Address);
    end Set_Modify_Func;
 
    package body Set_Modify_Func_User_Data is
@@ -516,17 +512,13 @@ package body Gtk.Tree_Model_Filter is
       procedure Set_Modify_Func
          (Self  : not null access Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter_Record'Class;
           Types : GType_Array;
-          Func  : Gtk_Tree_Model_Filter_Modify_Func;
+          Func  : not null Gtk_Tree_Model_Filter_Modify_Func;
           Data  : User_Data_Type)
       is
          D : System.Address;
       begin
-         if Func = null then
-            C_Gtk_Tree_Model_Filter_Set_Modify_Func (Get_Object (Self), Types'Length, Types, System.Null_Address, System.Null_Address, Users.Free_Data'Address);
-         else
-            D := Users.Build (To_Address (Func), Data);
-            C_Gtk_Tree_Model_Filter_Set_Modify_Func (Get_Object (Self), Types'Length, Types, Internal_Cb'Address, D, Users.Free_Data'Address);
-         end if;
+         D := Users.Build (To_Address (Func), Data);
+         C_Gtk_Tree_Model_Filter_Set_Modify_Func (Get_Object (Self), Types'Length, Types, Internal_Cb'Address, D, Users.Free_Data'Address);
       end Set_Modify_Func;
 
    end Set_Modify_Func_User_Data;
@@ -551,14 +543,10 @@ package body Gtk.Tree_Model_Filter is
 
    procedure Set_Visible_Func
       (Self : not null access Gtk_Tree_Model_Filter_Record;
-       Func : Gtk_Tree_Model_Filter_Visible_Func)
+       Func : not null Gtk_Tree_Model_Filter_Visible_Func)
    is
    begin
-      if Func = null then
-         C_Gtk_Tree_Model_Filter_Set_Visible_Func (Get_Object (Self), System.Null_Address, System.Null_Address, System.Null_Address);
-      else
-         C_Gtk_Tree_Model_Filter_Set_Visible_Func (Get_Object (Self), Internal_Gtk_Tree_Model_Filter_Visible_Func'Address, To_Address (Func), System.Null_Address);
-      end if;
+      C_Gtk_Tree_Model_Filter_Set_Visible_Func (Get_Object (Self), Internal_Gtk_Tree_Model_Filter_Visible_Func'Address, To_Address (Func), System.Null_Address);
    end Set_Visible_Func;
 
    package body Set_Visible_Func_User_Data is
@@ -608,17 +596,13 @@ package body Gtk.Tree_Model_Filter is
 
       procedure Set_Visible_Func
          (Self : not null access Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter_Record'Class;
-          Func : Gtk_Tree_Model_Filter_Visible_Func;
+          Func : not null Gtk_Tree_Model_Filter_Visible_Func;
           Data : User_Data_Type)
       is
          D : System.Address;
       begin
-         if Func = null then
-            C_Gtk_Tree_Model_Filter_Set_Visible_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
-         else
-            D := Users.Build (To_Address (Func), Data);
-            C_Gtk_Tree_Model_Filter_Set_Visible_Func (Get_Object (Self), Internal_Cb'Address, D, Users.Free_Data'Address);
-         end if;
+         D := Users.Build (To_Address (Func), Data);
+         C_Gtk_Tree_Model_Filter_Set_Visible_Func (Get_Object (Self), Internal_Cb'Address, D, Users.Free_Data'Address);
       end Set_Visible_Func;
 
    end Set_Visible_Func_User_Data;
