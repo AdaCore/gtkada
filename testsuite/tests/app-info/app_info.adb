@@ -43,6 +43,7 @@ procedure App_Info is
    procedure Test_Catalogue with Convention => C;
    procedure Test_Launch_Errors with Convention => C;
    procedure Test_Async with Convention => C;
+   procedure Test_Async_User_Data_Lifetime with Convention => C;
 
    procedure Release (App : in out Glib.App_Info.Gapp_Info);
    procedure Release_List (Apps : in out App_Info_List.Glist);
@@ -471,6 +472,114 @@ procedure App_Info is
       Unref (Glib.Object.GObject (Cancellable));
    end Test_Async;
 
+   -----------------------------------
+   -- Test_Async_User_Data_Lifetime --
+   -----------------------------------
+
+   procedure Test_Async_User_Data_Lifetime is
+      --  Regression for glib-app_info.async-callback-data-freed: the GIR's
+      --  scope="async" requires callback data to survive until completion.
+      --  A Destroy hook observes premature freeing deterministically, before
+      --  iterating the context could dereference the freed closure and crash.
+      type Operation is (Lookup_Type, Lookup_Scheme, Launch_Uri);
+      type Payload is record
+         Kind  : Operation;
+         Value : Natural;
+      end record;
+      Token : constant Natural := 16#C0FFEE#;
+      Callbacks : array (Operation) of Natural := (others => 0);
+      Destroys  : array (Operation) of Natural := (others => 0);
+
+      procedure Destroy (Data : in out Payload) is
+      begin
+         Destroys (Data.Kind) := Destroys (Data.Kind) + 1;
+      end Destroy;
+
+      --  GtkAda's generic wrappers copy the payload and call Destroy when
+      --  releasing that copy. All three must retain it through the callback.
+      package Type_With_Data is new
+        Glib.App_Info.Get_Default_For_Type_Async_User_Data (Payload, Destroy);
+      package Scheme_With_Data is new
+        Glib.App_Info.Get_Default_For_Uri_Scheme_Async_User_Data
+          (Payload, Destroy);
+      package Launch_With_Data is new
+        Glib.App_Info.Launch_Default_For_Uri_Async_User_Data (Payload, Destroy);
+
+      procedure On_Ready
+        (Source_Object : access Glib.Object.GObject_Record'Class;
+         Res           : Glib.G_Async_Result;
+         Data          : Payload)
+      is
+      begin
+         Assert_True
+           (Data.Value = Token, "async callback must receive intact user data");
+         Assert_True
+           (Destroys (Data.Kind) = 0,
+            "async user data must remain alive throughout the callback");
+         Callbacks (Data.Kind) := Callbacks (Data.Kind) + 1;
+
+         --  Reuse the finish/error checks of the ordinary async cases. Each
+         --  finish consumes its result and decrements Pending_Async.
+         case Data.Kind is
+            when Lookup_Type =>
+               On_Type_Ready (Source_Object, Res);
+            when Lookup_Scheme =>
+               On_Scheme_Ready (Source_Object, Res);
+            when Launch_Uri =>
+               On_Default_Uri_Launch_Ready (Source_Object, Res);
+         end case;
+         Assert_True
+           (Destroys (Data.Kind) = 0,
+            "async user data must survive until the callback returns");
+      end On_Ready;
+
+      Cancellable : Glib.Cancellable.Gcancellable;
+   begin
+      --  Pre-cancellation avoids launching a desktop handler or chooser;
+      --  even cancelled GIO requests must deliver their callback later.
+      Glib.Cancellable.G_New (Cancellable);
+      Glib.Cancellable.Cancel (Cancellable);
+      Pending_Async := 3;
+
+      --  Unrestricted_Access is the testsuite idiom for nested callbacks;
+      --  this procedure stays active until all callbacks have completed.
+      Type_With_Data.Get_Default_For_Type_Async
+        (Test_Content_Type, False, Cancellable,
+         On_Ready'Unrestricted_Access, (Lookup_Type, Token));
+      Scheme_With_Data.Get_Default_For_Uri_Scheme_Async
+        ("gtkada-coverage-no-handler", Cancellable,
+         On_Ready'Unrestricted_Access, (Lookup_Scheme, Token));
+      Launch_With_Data.Launch_Default_For_Uri_Async
+        ("gtkada-coverage-handler:test", null, Cancellable,
+         On_Ready'Unrestricted_Access, (Launch_Uri, Token));
+
+      --  No main-context iteration has occurred, so neither callbacks nor
+      --  their user-data destruction may have happened yet.
+      for Kind in Operation loop
+         Assert_Cmpuint_Eq (Guint (Callbacks (Kind)), 0);
+         Assert_True
+           (Destroys (Kind) = 0,
+            "async user data destroyed before completion: " & Kind'Image);
+      end loop;
+
+      --  Assert_True can record failure and return. Do not dispatch callbacks
+      --  with freed state after reporting the lifetime violation above.
+      if (for some Kind in Operation => Destroys (Kind) /= 0) then
+         Unref (Glib.Object.GObject (Cancellable));
+         return;
+      end if;
+
+      Wait_For_Async;
+      for Kind in Operation loop
+         Assert_Cmpuint_Eq (Guint (Callbacks (Kind)), 1);
+         Assert_True
+           (Destroys (Kind) = 1,
+            "async user data must be destroyed exactly once after completion: "
+            & Kind'Image);
+      end loop;
+      Unref (Glib.Object.GObject (Cancellable));
+   end Test_Async_User_Data_Lifetime;
+
 begin
    Glib.Test.Init;
    Add_Func ("/app-info/model", Test_Model'Unrestricted_Access);
@@ -479,5 +588,8 @@ begin
    Add_Func ("/app-info/catalogue", Test_Catalogue'Unrestricted_Access);
    Add_Func ("/app-info/launch-errors", Test_Launch_Errors'Unrestricted_Access);
    Add_Func ("/app-info/async", Test_Async'Unrestricted_Access);
+   Add_Func
+     ("/app-info/async-user-data-lifetime",
+      Test_Async_User_Data_Lifetime'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Run);
 end App_Info;

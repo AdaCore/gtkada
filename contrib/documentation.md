@@ -336,6 +336,13 @@ function). An explicit `allow-none="0"` in the GIR or a per-method
 `Constraint_Error` before calling C. Nullable callbacks retain the
 branch that forwards a null callback and user-data pointer to C.
 
+Generic user-data wrappers follow the callback's GIR scope. With no C
+destroy-notify hook, a `scope="call"` closure is released after the C call,
+while a `scope="async"` closure remains alive until the completion callback
+returns. Cancellation still delivers that completion callback. If C provides
+a destroy-notify hook, that hook releases the closure instead. Passing a null
+callback creates no closure and does not call the generic's `Destroy` hook.
+
 ### Recovering a varargs subprogram
 
 The generator drops any subprogram with a `...` parameter: Ada has no
