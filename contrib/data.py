@@ -16,6 +16,7 @@ enums = (
     "graphene_simd4f_t",
     "graphene_simd4x4f_t",
     "GEnums",
+    "GDBusTypes",
 )
 
 # List of interfaces to bind. These are processed before the widgets themselves
@@ -67,8 +68,8 @@ interfaces = (
     # interface package with no concrete subprograms.
     "--Gio.AsyncResult",  # Bound manually as Glib.G_Async_Result
     "--Gio.Converter",  # Not tested yet, from Gio
-    "--Gio.DBusInterface",  # Not tested yet, from Gio
-    "--Gio.DBusObject",  # Not tested yet, from Gio
+    "Gio.DBusInterface",
+    "Gio.DBusObject",
     "--Gio.DBusObjectManager",  # Not tested yet, from Gio
     "--Gio.DesktopAppInfoLookup",  # Not tested yet, from Gio
     "Gio.Drive",
@@ -814,6 +815,7 @@ naming.exceptions = {
     "Use": "GUse",
     "Uri": "URI",
     "In": "Gtk_In",
+    "Interface": "Iface",
     # Regular renamings
     "Gtk_Imcontext": "Gtk_IM_Context",
     "Gtk_Imcontext_Simple": "Gtk_IM_Context_Simple",

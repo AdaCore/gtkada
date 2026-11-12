@@ -691,7 +691,9 @@ the two packages the other one already withs, and give the *other* one a
 | Key       | Type   | Meaning                                          | Default |
 |-----------|--------|--------------------------------------------------|---------|
 | `text`    | string | Code to insert.                                  |         |
-| `private` | bool   | Append to the private part rather than visible. | `false` |
+| `private` | bool   | Append to the private part rather than visible.  | `false` |
+| `before`  | string | Optional. Type name before which this one should be placed |         |
+| `format`  | bool   | Format the code                                  | `true`  |
 
 ### `[[extra.type]]` — map a C type to an Ada type
 

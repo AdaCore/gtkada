@@ -432,6 +432,8 @@ class GtkAdaPackage(object):
             elem.text = spec.get("text", "")
             if spec.get("private", False):
                 elem.set("private", "True")
+            elem.set("before", spec.get("before", None))
+            elem.set("format", spec.get("format", True))
             elements.append(elem)
 
         for type_entry in extra_dict.get("type", []):
