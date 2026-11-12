@@ -10,6 +10,7 @@ with Glib.Simple_Action;  use Glib.Simple_Action;
 with Glib.Test;           use Glib.Test;
 with Ada.Exceptions;
 with Ada.Command_Line;
+with Equal_Func_Tests;
 with Gdk.Content_Provider;
 with Glib.List_Model;      use Glib.List_Model;
 with Gtk.Enums;           use Gtk.Enums;
@@ -412,8 +413,8 @@ procedure Main is
       Assert_True (Name_At (1) = "bravo");
       Assert_True (Name_At (2) = "charlie");
 
-      --  Find_With_Equal_Func is omitted: its public Equal_Func type lacks
-      --  Convention C, so it cannot represent GLib's callback safely.
+      --  Find_With_Equal_Func has its own callback ABI regression case in
+      --  Equal_Func_Tests (glib-list_store.equal-func-callback-abi).
 
       --  Sort normalizes the rows, and sorted insertion reports its index.
       Store.Sort (Compare_Action_Names'Unrestricted_Access);
@@ -914,6 +915,9 @@ begin
    Glib.Test.Add_Func
      ("/list-store/glib-list-store",
       Test_Glib_List_Store'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/list-store/find-with-equal-func",
+      Equal_Func_Tests.Test_Find_With_Equal_Func'Access);
    Glib.Test.Add_Func
      ("/gtk-list-store/model-and-values",
       Test_Model_And_Values'Unrestricted_Access);

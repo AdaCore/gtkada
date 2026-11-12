@@ -47,11 +47,12 @@ package Glib.List_Store is
    type Equal_Func is access function
      (A, B : not null access GObject_Record'Class) return Glib.Gboolean;
    --  Specifies the type of a function used to test two values for equality.
-   --  The function should return True if both values are equal and False
-   --  otherwise.
+   --  The function receives GtkAda wrappers using the Ada convention; the
+   --  binding supplies the C callback adapter. Return nonzero if both values
+   --  are equal and zero otherwise.
    --  @param A a value
    --  @param B a value to compare with
-   --  @return True if A = B; False otherwise
+   --  @return nonzero if A = B; zero otherwise
 
    type Compare_Data_Func is access function
      (A, B : not null access GObject_Record'Class) return Glib.Gint;
