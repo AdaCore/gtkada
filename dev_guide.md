@@ -93,6 +93,59 @@ Each test executable is run under a timeout, one minute by default, so that a
 wedged test fails instead of hanging the whole run. A test that genuinely needs
 longer can raise it with a `timeout:` key in its `test.yaml`.
 
+## Coverage
+
+The testsuite can measure the statement coverage of the library with
+GNATcoverage: this needs `gnatcov` on the `PATH`, on top of what the testsuite
+itself needs. From a configured checkout:
+
+```sh
+make coverage-test; make coverage-report
+```
+
+then open `gnatcov_report/html/index.html`. The `;` is deliberate:
+`coverage-test` fails when any test does, and the traces of the tests that
+did run still make a report. CI does the same for merge requests into `main`,
+publishes the HTML report to GitLab Pages, and reads the overall percentage
+from `gnatcov_report/cobertura/cobertura.xml`.
+
+What the targets do:
+
+* `coverage-build`, which `coverage-test` runs first, sets up a gnatcov
+  runtime in `obj/gnatcov-rts` (once), instruments the library's sources into
+  `.objs/gtkada/static/gtkada-gnatcov-instr`, and builds the static library
+  from them. It re-instruments every time, so that it picks up your edits;
+  sources that did not change are neither rewritten nor recompiled.
+* `coverage-test` runs the whole testsuite with `GNATCOV_TRACE_FILE` set to
+  `gnatcov_traces/`. That variable puts the testsuite in coverage mode: it
+  does not build the library itself, which would replace the instrumented
+  one, and the driver instruments each test's main and builds it against the
+  instrumented static library. Each main leaves a `.srctrace` in
+  `gnatcov_traces/` when it exits.
+* `coverage-report` turns those traces into `gnatcov_report/html/` and
+  `gnatcov_report/cobertura/`. It then runs `testsuite/coverage_summary.py`
+  on the latter to write `gnatcov_report/summary.txt`, a plain-text table of
+  every source file with its lines holding statements, how many of them are
+  covered and missed, and the percentage; the total comes last. Run the
+  script by hand to print that table for any Cobertura report.
+
+Only the Ada code is instrumented, not the C in `src/misc.c` and
+`src/misc_generated.c`: hence the "no SID file found" warnings for those two
+units.
+
+To see what some tests alone cover, run them in coverage mode yourself:
+
+```sh
+make coverage-build
+rm -rf gnatcov_traces; mkdir gnatcov_traces
+GNATCOV_TRACE_FILE=$PWD/gnatcov_traces/ python testsuite/testsuite.py label
+make coverage-report
+```
+
+The instrumented library takes the place of the regular static one in
+`.libs/gtkada/static/`; the next ordinary testsuite run rebuilds it
+uninstrumented. `make clean` removes all of the above.
+
 ## Debugging
 
 A useful trick for making warnings fatal: set `G_DEBUG=fatal-warnings`.
