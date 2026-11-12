@@ -314,6 +314,7 @@ package Gtk.List_Store is
    --  Removes the given row from the list store. After being removed, Iter is
    --  set to be the next valid row, or invalidated if it pointed to the last
    --  row in List_Store.
+   --  When no next row exists, Iter is set to Gtk.Tree_Model.Null_Iter.
    --  Deprecated since 4.10, 1
    --  @param Iter A valid `GtkTreeIter`
 

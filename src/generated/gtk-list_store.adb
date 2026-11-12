@@ -541,14 +541,17 @@ package body Gtk.List_Store is
       (Self : not null access Gtk_List_Store_Record;
        Iter : in out Gtk.Tree_Model.Gtk_Tree_Iter)
    is
-      procedure Internal
+      function Internal
          (Self : System.Address;
-          Iter : in out Gtk.Tree_Model.Gtk_Tree_Iter);
+          Iter : in out Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_list_store_remove");
       Tmp_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter := Iter;
    begin
-      Internal (Get_Object (Self), Tmp_Iter);
-      Iter := Gtk.Tree_Model.Null_Iter;
+      if Internal (Get_Object (Self), Tmp_Iter) = 0 then
+         Iter := Gtk.Tree_Model.Null_Iter;
+      else
+         Iter := Tmp_Iter;
+      end if;
    end Remove;
 
    -------------
