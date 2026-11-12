@@ -399,7 +399,7 @@ package Gtk.Tree_Model_Filter is
 
    procedure Foreach
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
-       Func       : Gtk_Tree_Model_Foreach_Func);
+       Func       : not null Gtk_Tree_Model_Foreach_Func);
    pragma Obsolescent (Foreach);
    --  Calls Func on each node in model in a depth-first fashion.
    --  If Func returns True, then the tree ceases to be walked, and
@@ -427,7 +427,7 @@ package Gtk.Tree_Model_Filter is
 
       procedure Foreach
          (Tree_Model : not null access Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter_Record'Class;
-          Func       : Gtk_Tree_Model_Foreach_Func;
+          Func       : not null Gtk_Tree_Model_Foreach_Func;
           User_Data  : User_Data_Type);
       pragma Obsolescent (Foreach);
       --  Calls Func on each node in model in a depth-first fashion.

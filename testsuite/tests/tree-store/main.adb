@@ -260,6 +260,12 @@ procedure Main is
    procedure Test_Model_Notifications
    with Convention => C;
 
+   procedure Test_Model_Foreach_Required_Callback
+   with Convention => C;
+
+   procedure Test_Model_Foreach_Data_Required_Callback
+   with Convention => C;
+
    function Visit_Row
      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
       Path  : Gtk.Tree_Model.Gtk_Tree_Path;
@@ -1677,6 +1683,51 @@ procedure Main is
       Glib.Object.Unref (Glib.Object.GObject (Store));
    end Test_Model_Notifications;
 
+   --  Regression for gtk-tree_model.required-foreach-callback: GIR requires
+   --  a non-null callback for gtk_tree_model_foreach. The Ada formal must
+   --  reject a null callback with Constraint_Error before entering GTK.
+   --  Use a callback variable so the corrected not-null formal is checked
+   --  at run time, rather than making this a compile-time rejection.
+   procedure Test_Model_Foreach_Required_Callback is
+      Store    : Gtk_Tree_Store;
+      Callback : Gtk.Tree_Model.Gtk_Tree_Model_Foreach_Func := null;
+      Rejected : Boolean := False;
+   begin
+      Gtk_New (Store, (0 => GType_Int));
+      begin
+         --  Unary + obtains the Tree_Model interface from the concrete store.
+         Gtk.Tree_Model.Foreach (+Store, Callback);
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+      Glib.Object.Unref (Glib.Object.GObject (Store));
+      Assert_True
+        (Rejected, "Tree_Model.Foreach must reject a null required callback");
+   end Test_Model_Foreach_Required_Callback;
+
+   --  The same issue, gtk-tree_model.required-foreach-callback, affects the
+   --  generic wrapper independently: user data may not replace the required
+   --  callback. Use this instance's own callback access type, and expect the
+   --  same Ada null-exclusion check before any C call or closure allocation.
+   procedure Test_Model_Foreach_Data_Required_Callback is
+      Store    : Gtk_Tree_Store;
+      Callback : Model_Foreach_With_Data.Gtk_Tree_Model_Foreach_Func := null;
+      Rejected : Boolean := False;
+   begin
+      Gtk_New (Store, (0 => GType_Int));
+      begin
+         Model_Foreach_With_Data.Foreach (+Store, Callback, 42);
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+      Glib.Object.Unref (Glib.Object.GObject (Store));
+      Assert_True
+        (Rejected,
+         "Tree_Model.Foreach_User_Data must reject a null required callback");
+   end Test_Model_Foreach_Data_Required_Callback;
+
 begin
    Glib.Test.Init;
 
@@ -1776,6 +1827,15 @@ begin
    Glib.Test.Add_Func
      ("/tree-store/model-notifications",
       Test_Model_Notifications'Unrestricted_Access);
+
+   --  Keep the required-callback regressions after the existing cases: the
+   --  defective wrappers currently reach a fatal GTK argument critical.
+   Glib.Test.Add_Func
+     ("/tree-store/model-foreach-required-callback",
+      Test_Model_Foreach_Required_Callback'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/tree-store/model-foreach-data-required-callback",
+      Test_Model_Foreach_Data_Required_Callback'Unrestricted_Access);
 
    --  Return with the exit code.
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

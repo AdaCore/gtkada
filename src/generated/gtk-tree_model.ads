@@ -309,7 +309,7 @@ package Gtk.Tree_Model is
 
    procedure Foreach
       (Tree_Model : Gtk_Tree_Model;
-       Func       : Gtk_Tree_Model_Foreach_Func);
+       Func       : not null Gtk_Tree_Model_Foreach_Func);
    pragma Obsolescent (Foreach);
    --  Calls Func on each node in model in a depth-first fashion.
    --  If Func returns True, then the tree ceases to be walked, and
@@ -337,7 +337,7 @@ package Gtk.Tree_Model is
 
       procedure Foreach
          (Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Func       : Gtk_Tree_Model_Foreach_Func;
+          Func       : not null Gtk_Tree_Model_Foreach_Func;
           User_Data  : User_Data_Type);
       pragma Obsolescent (Foreach);
       --  Calls Func on each node in model in a depth-first fashion.

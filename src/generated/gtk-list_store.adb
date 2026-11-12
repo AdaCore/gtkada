@@ -329,14 +329,10 @@ package body Gtk.List_Store is
 
    procedure Foreach
       (Tree_Model : not null access Gtk_List_Store_Record;
-       Func       : Gtk_Tree_Model_Foreach_Func)
+       Func       : not null Gtk_Tree_Model_Foreach_Func)
    is
    begin
-      if Func = null then
-         C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), System.Null_Address, System.Null_Address);
-      else
-         C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), Internal_Gtk_Tree_Model_Foreach_Func'Address, To_Address (Func));
-      end if;
+      C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), Internal_Gtk_Tree_Model_Foreach_Func'Address, To_Address (Func));
    end Foreach;
 
    package body Foreach_User_Data is
@@ -372,18 +368,14 @@ package body Gtk.List_Store is
 
       procedure Foreach
          (Tree_Model : not null access Gtk.List_Store.Gtk_List_Store_Record'Class;
-          Func       : Gtk_Tree_Model_Foreach_Func;
+          Func       : not null Gtk_Tree_Model_Foreach_Func;
           User_Data  : User_Data_Type)
       is
          D : System.Address;
       begin
-         if Func = null then
-            C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), System.Null_Address, System.Null_Address);
-         else
-            D := Users.Build (To_Address (Func), User_Data);
-            C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), Internal_Cb'Address, D);
-            Users.Free_Data (D);
-         end if;
+         D := Users.Build (To_Address (Func), User_Data);
+         C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), Internal_Cb'Address, D);
+         Users.Free_Data (D);
       end Foreach;
 
       -----------------
