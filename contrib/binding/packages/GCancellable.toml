@@ -35,6 +35,27 @@ name = "cancellable"
 ada = ""
 
 [[method]]
+id = "g_cancellable_connect"
+
+[method.doc]
+text = '''
+   Convenience function to connect to the cancelled signal, handling the
+   race with concurrent cancellation.
+
+   Callback is called at most once: before Connect returns if Self is already
+   cancelled, or when Self is cancelled in some thread.
+
+   Connect_User_Data copies Data into a private closure. Its generic Destroy
+   procedure is called exactly once when the handler is disconnected or Self
+   is finalized, or immediately after Callback returns if Self was already
+   cancelled. Use that generic procedure to release Ada data; the C destroy
+   notifier is managed by GtkAda.
+
+   Since GLib 2.40, the lock protecting Self is not held when Callback runs,
+   so Callback may itself invoke Cancel.
+'''
+
+[[method]]
 id = "g_cancellable_make_pollfd"
 bind = false
 # requires GPoll_FD

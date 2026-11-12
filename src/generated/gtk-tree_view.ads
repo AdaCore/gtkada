@@ -962,15 +962,13 @@ package Gtk.Tree_View is
 
    procedure Set_Search_Equal_Func
       (Self              : not null access Gtk_Tree_View_Record;
-       Search_Equal_Func : Gtk_Tree_View_Search_Equal_Func;
-       Search_Destroy    : Glib.G_Destroy_Notify_Address);
+       Search_Equal_Func : Gtk_Tree_View_Search_Equal_Func);
    pragma Obsolescent (Set_Search_Equal_Func);
    --  Sets the compare function for the interactive search capabilities; note
    --  that somewhat like strcmp returning 0 for equality
    --  `GtkTreeView`SearchEqualFunc returns False on matches.
    --  Deprecated since 4.10, 1
    --  @param Search_Equal_Func the compare function to use during the search
-   --  @param Search_Destroy Destroy notifier for Search_User_Data
 
    function Get_Selection
       (Self : not null access Gtk_Tree_View_Record)
@@ -1104,8 +1102,7 @@ package Gtk.Tree_View is
        Position : Glib.Gint;
        Title    : UTF8_String;
        Cell     : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Func     : Gtk_Tree_Cell_Data_Func;
-       Dnotify  : Glib.G_Destroy_Notify_Address) return Glib.Gint;
+       Func     : Gtk_Tree_Cell_Data_Func) return Glib.Gint;
    pragma Obsolescent (Insert_Column_With_Data_Func);
    --  Convenience function that inserts a new column into the `GtkTreeView`
    --  with the given cell renderer and a `GtkTreeCellDataFunc` to set cell
@@ -1119,7 +1116,6 @@ package Gtk.Tree_View is
    --  @param Title column title
    --  @param Cell cell renderer for column
    --  @param Func function to set attributes of cell renderer
-   --  @param Dnotify destroy notifier for Data
    --  @return number of columns in the tree view post-insert
 
    generic
@@ -1152,8 +1148,7 @@ package Gtk.Tree_View is
           Title    : UTF8_String;
           Cell     : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func     : Gtk_Tree_Cell_Data_Func;
-          Data     : User_Data_Type;
-          Dnotify  : Glib.G_Destroy_Notify_Address) return Glib.Gint;
+          Data     : User_Data_Type) return Glib.Gint;
       pragma Obsolescent (Insert_Column_With_Data_Func);
       --  Convenience function that inserts a new column into the
       --  `GtkTreeView` with the given cell renderer and a
@@ -1169,7 +1164,6 @@ package Gtk.Tree_View is
       --  @param Cell cell renderer for column
       --  @param Func function to set attributes of cell renderer
       --  @param Data data for Func
-      --  @param Dnotify destroy notifier for Data
       --  @return number of columns in the tree view post-insert
 
    end Insert_Column_With_Data_Func_User_Data;
@@ -1488,8 +1482,7 @@ package Gtk.Tree_View is
       procedure Set_Search_Equal_Func
          (Self              : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
           Search_Equal_Func : Gtk_Tree_View_Search_Equal_Func;
-          Search_User_Data  : User_Data_Type;
-          Search_Destroy    : Glib.G_Destroy_Notify_Address);
+          Search_User_Data  : User_Data_Type);
       pragma Obsolescent (Set_Search_Equal_Func);
       --  Sets the compare function for the interactive search capabilities;
       --  note that somewhat like strcmp returning 0 for equality
@@ -1498,7 +1491,6 @@ package Gtk.Tree_View is
       --  @param Search_Equal_Func the compare function to use during the
       --  search
       --  @param Search_User_Data user data to pass to Search_Equal_Func
-      --  @param Search_Destroy Destroy notifier for Search_User_Data
 
    end Set_Search_Equal_Func_User_Data;
 

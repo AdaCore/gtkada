@@ -16,6 +16,14 @@ package Callbacks is
    Slot_Signal_Count    : Natural := 0;
    Exception_Count      : Natural := 0;
 
+   --  Observe the generic Destroy contract for glib-cancellable.closure-destroy.
+   User_Data_Callback_Count : Natural := 0;
+   User_Data_Destroy_Count  : Natural := 0;
+   Destroyed_User_Data      : Integer := 0;
+
+   procedure On_User_Data_Callback (Data : Integer);
+   procedure Destroy_User_Data (Data : in out Integer);
+
    --  Expected objects let each marshaller verify the identity it passes.
    Expected_Cancellable : Glib.Cancellable.Gcancellable := null;
    Expected_Slot        : Glib.Cancellable.Gcancellable := null;

@@ -49,7 +49,7 @@ package body Gtk.Tree_View is
        Cell     : System.Address;
        Func     : System.Address;
        Data     : System.Address;
-       Dnotify  : Glib.G_Destroy_Notify_Address) return Glib.Gint;
+       Dnotify  : System.Address) return Glib.Gint;
    pragma Import (C, C_Gtk_Tree_View_Insert_Column_With_Data_Func, "gtk_tree_view_insert_column_with_data_func");
    pragma Obsolescent (C_Gtk_Tree_View_Insert_Column_With_Data_Func);
    --  Convenience function that inserts a new column into the `GtkTreeView`
@@ -119,7 +119,7 @@ package body Gtk.Tree_View is
       (Self              : System.Address;
        Search_Equal_Func : System.Address;
        Search_User_Data  : System.Address;
-       Search_Destroy    : Glib.G_Destroy_Notify_Address);
+       Search_Destroy    : System.Address);
    pragma Import (C, C_Gtk_Tree_View_Set_Search_Equal_Func, "gtk_tree_view_set_search_equal_func");
    pragma Obsolescent (C_Gtk_Tree_View_Set_Search_Equal_Func);
    --  Sets the compare function for the interactive search capabilities; note
@@ -1270,18 +1270,17 @@ package body Gtk.Tree_View is
        Position : Glib.Gint;
        Title    : UTF8_String;
        Cell     : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Func     : Gtk_Tree_Cell_Data_Func;
-       Dnotify  : Glib.G_Destroy_Notify_Address) return Glib.Gint
+       Func     : Gtk_Tree_Cell_Data_Func) return Glib.Gint
    is
       Tmp_Title  : Gtkada.Types.Chars_Ptr := New_String (Title);
       Tmp_Return : Glib.Gint;
    begin
       if Func = null then
-         Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Self), Position, Tmp_Title, Get_Object (Cell), System.Null_Address, System.Null_Address, Dnotify);
+         Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Self), Position, Tmp_Title, Get_Object (Cell), System.Null_Address, System.Null_Address, System.Null_Address);
          Free (Tmp_Title);
          return Tmp_Return;
       else
-         Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Self), Position, Tmp_Title, Get_Object (Cell), Internal_Gtk_Tree_Cell_Data_Func'Address, To_Address (Func), Dnotify);
+         Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Self), Position, Tmp_Title, Get_Object (Cell), Internal_Gtk_Tree_Cell_Data_Func'Address, To_Address (Func), System.Null_Address);
          Free (Tmp_Title);
          return Tmp_Return;
       end if;
@@ -1331,20 +1330,19 @@ package body Gtk.Tree_View is
           Title    : UTF8_String;
           Cell     : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func     : Gtk_Tree_Cell_Data_Func;
-          Data     : User_Data_Type;
-          Dnotify  : Glib.G_Destroy_Notify_Address) return Glib.Gint
+          Data     : User_Data_Type) return Glib.Gint
       is
          Tmp_Title  : Gtkada.Types.Chars_Ptr := New_String (Title);
          Tmp_Return : Glib.Gint;
          D          : System.Address;
       begin
          if Func = null then
-            Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Self), Position, Tmp_Title, Get_Object (Cell), System.Null_Address, System.Null_Address, Dnotify);
+            Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Self), Position, Tmp_Title, Get_Object (Cell), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
             Free (Tmp_Title);
             return Tmp_Return;
          else
             D := Users.Build (To_Address (Func), Data);
-            Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Self), Position, Tmp_Title, Get_Object (Cell), Internal_Cb'Address, D, Dnotify);
+            Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Self), Position, Tmp_Title, Get_Object (Cell), Internal_Cb'Address, D, Users.Free_Data'Address);
             Free (Tmp_Title);
             return Tmp_Return;
          end if;
@@ -2079,14 +2077,13 @@ package body Gtk.Tree_View is
 
    procedure Set_Search_Equal_Func
       (Self              : not null access Gtk_Tree_View_Record;
-       Search_Equal_Func : Gtk_Tree_View_Search_Equal_Func;
-       Search_Destroy    : Glib.G_Destroy_Notify_Address)
+       Search_Equal_Func : Gtk_Tree_View_Search_Equal_Func)
    is
    begin
       if Search_Equal_Func = null then
-         C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Search_Destroy);
+         C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Self), System.Null_Address, System.Null_Address, System.Null_Address);
       else
-         C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Self), Internal_Gtk_Tree_View_Search_Equal_Func'Address, To_Address (Search_Equal_Func), Search_Destroy);
+         C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Self), Internal_Gtk_Tree_View_Search_Equal_Func'Address, To_Address (Search_Equal_Func), System.Null_Address);
       end if;
    end Set_Search_Equal_Func;
 
@@ -2147,16 +2144,15 @@ package body Gtk.Tree_View is
       procedure Set_Search_Equal_Func
          (Self              : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
           Search_Equal_Func : Gtk_Tree_View_Search_Equal_Func;
-          Search_User_Data  : User_Data_Type;
-          Search_Destroy    : Glib.G_Destroy_Notify_Address)
+          Search_User_Data  : User_Data_Type)
       is
          D : System.Address;
       begin
          if Search_Equal_Func = null then
-            C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Search_Destroy);
+            C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
             D := Users.Build (To_Address (Search_Equal_Func), Search_User_Data);
-            C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Self), Internal_Cb'Address, D, Search_Destroy);
+            C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Self), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Search_Equal_Func;
 

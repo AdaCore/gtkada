@@ -1270,7 +1270,7 @@ class SubprogramProfile(object):
                     self.callback_param.append(p_index)
                     self.callback_scope = p.get("scope", "")
                     self.user_data_param = int(p.get("closure", "-1"))
-                    self.destroy_param = int(p.get("destroy", "-1")) - 1
+                    self.destroy_param = int(p.get("destroy", "-1"))
 
             is_allocated = (
                 gtkparam.get_caller_allocates() or p.get("caller-allocates", None)
@@ -1924,7 +1924,14 @@ end if;"""
         cb_type_name = naming.type(name=cb.type.ada, cname=cbname).ada
         funcname = base_name(cb_type_name)
 
-        destroy = profile.find_param(destroy_data_params)
+        # GIR indices identify the callback's destroy notifier regardless of
+        # its name. Fall back to naming conventions for unannotated APIs.
+        destroy_param = profile.callback_destroy()
+        destroy = (
+            destroy_param.name.lower()
+            if destroy_param is not None
+            else profile.find_param(destroy_data_params)
+        )
 
         # A generic C callback type such as GCallback has no fixed ABI.
         # Prefer a package-local GIR callback supplied by the overrides,
