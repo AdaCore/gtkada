@@ -3,6 +3,42 @@
 # ============================================================
 ada = "Gdk.Memory_Texture_Builder"
 
+# The GIR promises that NULL unsets bytes, but GTK requires bytes != NULL.
+# Gbytes is a boxed wrapper, so enforce this contract before calling C.
+[[method]]
+id = "gdk_memory_texture_builder_set_bytes"
+ada = "Gdk.Memory_Texture_Builder.Set_Bytes"
+bind = false
+
+[[extra.spec]]
+text = '''
+   procedure Set_Bytes
+      (Self  : not null access Gdk_Memory_Texture_Builder_Record;
+       Bytes : Glib.Bytes.Gbytes);
+   --  Sets the data to be shown by the texture.
+   --  The bytes must be set before calling Build.
+   --  Raises Constraint_Error if Bytes is Glib.Bytes.Null_Gbytes, leaving
+   --  the previously configured bytes unchanged.
+   --  Since: gtk+ 4.16
+   --  @param Bytes The non-null bytes the texture shows
+'''
+
+[extra]
+body = '''
+   procedure Set_Bytes
+      (Self  : not null access Gdk_Memory_Texture_Builder_Record;
+       Bytes : Glib.Bytes.Gbytes)
+   is
+      procedure Internal (Self : System.Address; Bytes : System.Address);
+      pragma Import (C, Internal, "gdk_memory_texture_builder_set_bytes");
+   begin
+      if Glib.Is_Null (Bytes) then
+         raise Constraint_Error with "Set_Bytes requires non-null bytes";
+      end if;
+      Internal (Get_Object (Self), Get_Object (Bytes));
+   end Set_Bytes;
+'''
+
 [[extra.with_body]]
 pkg = "System"
 use = false

@@ -24,6 +24,7 @@ procedure Main is
    use type Gdk.Texture.Gdk_Texture;
 
    procedure Test_Builder with Convention => C;
+   procedure Test_Null_Bytes with Convention => C;
 
    --  Check both constructor forms, scalar and object properties, and build
    --  textures from the configured bytes without using a display resource.
@@ -130,11 +131,52 @@ procedure Main is
       Gdk.Color_State.Unref (Color);
    end Test_Builder;
 
+   --  Regression for gdk-memory_texture_builder.null-bytes: the GIR and Ada
+   --  documentation promise that null unsets bytes, but GTK rejects null.
+   --  The binding must either implement that promise or reject the argument
+   --  in Ada before it reaches C and causes a fatal GLib critical.
+   procedure Test_Null_Bytes is
+      Builder : constant
+        Gdk.Memory_Texture_Builder.Gdk_Memory_Texture_Builder :=
+          Gdk.Memory_Texture_Builder.Gdk_Memory_Texture_Builder_New;
+      Pixels : constant Glib.Bytes.Gbytes :=
+        Glib.Bytes.Gbytes_New ((16#11#, 16#22#, 16#33#, 16#FF#), 4);
+      Rejected : Boolean := False;
+   begin
+      Builder.Set_Bytes (Pixels);
+      --  Gbytes is a wrapper, so use Null_Gbytes rather than Ada's null.
+      --  Only an Ada argument rejection is caught; Glib.Test keeps native
+      --  criticals fatal so forwarding this value to GTK fails the case.
+      begin
+         Builder.Set_Bytes (Glib.Bytes.Null_Gbytes);
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+
+      if Rejected then
+         Assert_True
+           (Glib.Bytes.Get_Size (Builder.Get_Bytes) = 4,
+            "Rejecting null bytes must preserve the configured bytes");
+      else
+         Assert_True
+           (Glib.Is_Null (Builder.Get_Bytes),
+            "Set_Bytes (Null_Gbytes) must unset the configured bytes");
+      end if;
+
+      --  Set_Bytes retains its own reference; release both owned references.
+      Glib.Object.Unref (Glib.Object.GObject (Builder));
+      Glib.Bytes.Unref (Pixels);
+   end Test_Null_Bytes;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
    Glib.Test.Add_Func
      ("/gdk/memory-texture-builder/properties",
       Test_Builder'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk/memory-texture-builder/null-bytes",
+      Test_Null_Bytes'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;
