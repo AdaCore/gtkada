@@ -36,6 +36,9 @@ procedure Main is
    procedure Test_Enum_Matches
    with Convention => C;
 
+   procedure Test_Regex_Error_Matches
+   with Convention => C;
+
    ------------------
    -- Test_Literal --
    ------------------
@@ -162,6 +165,32 @@ procedure Main is
       Error_Free (Variant_Error);
    end Test_Enum_Matches;
 
+   ------------------------------
+   -- Test_Regex_Error_Matches --
+   ------------------------------
+
+   procedure Test_Regex_Error_Matches is
+      --  Regression for glib-error_enums.regex-error-ordinal: GLib and
+      --  GLib-2.0.gir assign G_REGEX_ERROR_STRAY_BACKSLASH the C code 101,
+      --  although its Ada ordinal is 5. Error_New takes the C integer code,
+      --  so construct the same domain/code pair as a trailing-backslash
+      --  regex compilation error, independently of the enum conversion.
+      Error : constant GError := Error_New
+        (GRegex_Error_Domain, 101, "backslash at end of pattern");
+   begin
+      Assert_Error (Error, GRegex_Error_Domain, 101);
+      Assert_True (Error_Matches (Error, GRegex_Error_Domain, 101));
+      Assert_False (GRegex_Error_Matches (null, G_Regex_Error_Stray_Backslash));
+      Assert_False (GRegex_Error_Matches (Error, G_Regex_Error_Compile));
+
+      --  The typed helper must recognize the same C code as Error_Matches;
+      --  using the Ada ordinal instead makes this assertion fail.
+      Assert_True
+        (GRegex_Error_Matches (Error, G_Regex_Error_Stray_Backslash),
+         "GRegex_Error_Matches must match stray backslash C code 101");
+      Error_Free (Error);
+   end Test_Regex_Error_Matches;
+
 begin
    Glib.Test.Init;
 
@@ -170,6 +199,8 @@ begin
    Glib.Test.Add_Func ("/error/matches", Test_Matches'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/error/enum-matches", Test_Enum_Matches'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/error/regex-error-matches", Test_Regex_Error_Matches'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

@@ -3998,17 +3998,32 @@ end "+";"""
                 f"{err_domain} : constant GQuark := Quark_From_String ({err_string});",
                 "--  Used to identify error domain in a GError"
             ])
+            # GError codes use C representation values, which can differ
+            # from Ada enum positions (for example GRegexError's 101).
+            # Use a case expression for nondefault representations rather
+            # than Enum_Rep, which is not available in standard Ada 2012.
+            if is_default_representation:
+                error_code = f"Glib.Gint ({base}'Pos (Code))"
+            else:
+                error_code = (
+                    "(case Code is\n"
+                    + ",\n".join(
+                        f"when {name} => {value}"
+                        for name, value in sorted(members, key=lambda m: m[1])
+                    )
+                    + ")"
+                )
             err_match = [
                 f'function {base}_Matches',
                 f'   (Error : GError; Code : {base}) return Boolean',
                 f"is (Error_Matches",
                 "       (Error,",
                 f"       {err_domain},",
-                f"       Glib.Gint ({base}'Pos (Code))));",
-                '--  Convenience helper to match error codes'
+                f"       {error_code}));",
             ]
             section.add(quarkdecl)
             section.add("\n".join(err_match))
+            section.add(Code("Convenience helper to match error codes", iscomment=True))
 
         # A bitfield binds to a G_TYPE_FLAGS descendant, which GObject
         # represents as a guint rather than as a gulong: it needs the flags
