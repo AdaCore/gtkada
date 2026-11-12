@@ -25,6 +25,12 @@ procedure Main is
    function G_Malloc (Size : size_t) return System.Address;
    pragma Import (C, G_Malloc, "g_malloc");
 
+   procedure Check_Float (Actual, Expected : C_float) is
+   begin
+      Assert_Cmpfloat_With_Epsilon
+        (Glib.Gdouble (Actual), Glib.Gdouble (Expected), 0.0001);
+   end Check_Float;
+
    procedure Test_Copy_And_Free with Convention => C;
    procedure Test_Copy_And_Free is
       --  Use nonzero components so the returned origin and direction are
@@ -53,9 +59,11 @@ procedure Main is
          Assert_True (Actual_Origin.X = 2.0);
          Assert_True (Actual_Origin.Y = -1.0);
          Assert_True (Actual_Origin.Z = 4.0);
-         Assert_True (Graphene.Vec3.Get_X (Actual_Direction'Access) = 1.0);
-         Assert_True (Graphene.Vec3.Get_Y (Actual_Direction'Access) = 0.0);
-         Assert_True (Graphene.Vec3.Get_Z (Actual_Direction'Access) = 0.0);
+         --  Init normalizes the direction; SIMD implementations can round
+         --  even an axis vector, so allow a small floating-point error.
+         Check_Float (Graphene.Vec3.Get_X (Actual_Direction'Access), 1.0);
+         Check_Float (Graphene.Vec3.Get_Y (Actual_Direction'Access), 0.0);
+         Check_Float (Graphene.Vec3.Get_Z (Actual_Direction'Access), 0.0);
       end;
    end Test_Copy_And_Free;
 
