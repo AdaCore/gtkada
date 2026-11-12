@@ -57,6 +57,19 @@ return = "GAppInfoList"
 id = "g_app_info_get_recommended_for_type"
 return = "GAppInfoList"
 
+[[method]]
+id = "g_app_info_get_supported_types"
+
+[method.doc]
+text = '''
+Retrieves the list of content types that App_Info claims to support.
+If this information is not provided by the environment, returns an empty
+list. Only types exported directly by the application are included, not
+associations added with Glib.App_Info.Add_Supports_Type.
+
+The caller must free each string in the list with GNAT.Strings.Free.
+'''
+
 [[virtual_method]]
 id = "launch"
 

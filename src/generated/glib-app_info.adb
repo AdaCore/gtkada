@@ -484,7 +484,7 @@ package body Glib.App_Info is
       function Internal (Self : Gapp_Info) return chars_ptr_array_access;
       pragma Import (C, Internal, "g_app_info_get_supported_types");
    begin
-      return To_String_List (Internal (Self).all);
+      return To_String_List (Internal (Self));
    end Get_Supported_Types;
 
    ------------

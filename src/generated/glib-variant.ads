@@ -839,16 +839,16 @@ package Glib.Variant is
    function Get_Bytestring_Array
       (Self   : Gvariant;
        Length : access Gsize := null) return GNAT.Strings.String_List;
-   --  Gets the contents of an array of array of bytes Glib.Variant.Gvariant.
-   --  This call makes a shallow copy; the return result should be released
-   --  with g_free, but the individual strings must not be modified.
-   --  If Length is non-null then the number of elements in the result is
-   --  stored there. In any case, the resulting array will be null-terminated.
-   --  For an empty array, Length will be set to 0 and a pointer to a null
-   --  pointer will be returned.
+   --  Gets the contents of a GVariant array of byte strings as an Ada string
+   --  list. If Length is non-null, the number of elements is stored there. An
+   --  empty variant array returns an empty list.
+   --  GtkAda copies the strings and frees only the temporary C pointer array.
+   --  The returned strings remain valid after the variant is released. Free
+   --  each returned Ada string with GNAT.Strings.Free when it is no longer
+   --  needed.
    --  Since: gtk+ 2.26
    --  @param Length the length of the result, or null
-   --  @return an array of constant strings
+   --  @return independent Ada copies of the byte strings
 
    function Get_Child_Value (Self : Gvariant; Index : Gsize) return Gvariant;
    --  Reads a child item out of a container Glib.Variant.Gvariant instance.
@@ -954,16 +954,16 @@ package Glib.Variant is
    function Get_Objv
       (Self   : Gvariant;
        Length : access Gsize := null) return GNAT.Strings.String_List;
-   --  Gets the contents of an array of object paths Glib.Variant.Gvariant.
-   --  This call makes a shallow copy; the return result should be released
-   --  with g_free, but the individual strings must not be modified.
-   --  If Length is non-null then the number of elements in the result is
-   --  stored there. In any case, the resulting array will be null-terminated.
-   --  For an empty array, Length will be set to 0 and a pointer to a null
-   --  pointer will be returned.
+   --  Gets the contents of a GVariant array of object paths as an Ada string
+   --  list. If Length is non-null, the number of elements is stored there. An
+   --  empty variant array returns an empty list.
+   --  GtkAda copies the strings and frees only the temporary C pointer array.
+   --  The returned strings remain valid after the variant is released. Free
+   --  each returned Ada string with GNAT.Strings.Free when it is no longer
+   --  needed.
    --  Since: gtk+ 2.30
    --  @param Length the length of the result, or null
-   --  @return an array of constant strings
+   --  @return independent Ada copies of the object paths
 
    function Get_Size (Self : Gvariant) return Gsize;
    --  Determines the number of bytes that would be required to store Value
@@ -1001,16 +1001,16 @@ package Glib.Variant is
    function Get_Strv
       (Self   : Gvariant;
        Length : access Gsize := null) return GNAT.Strings.String_List;
-   --  Gets the contents of an array of strings Glib.Variant.Gvariant. This
-   --  call makes a shallow copy; the return result should be released with
-   --  g_free, but the individual strings must not be modified.
-   --  If Length is non-null then the number of elements in the result is
-   --  stored there. In any case, the resulting array will be null-terminated.
-   --  For an empty array, Length will be set to 0 and a pointer to a null
-   --  pointer will be returned.
+   --  Gets the contents of a GVariant array of strings as an Ada string list.
+   --  If Length is non-null, the number of elements is stored there. An empty
+   --  variant array returns an empty list.
+   --  GtkAda copies the strings and frees only the temporary C pointer array.
+   --  The returned strings remain valid after the variant is released. Free
+   --  each returned Ada string with GNAT.Strings.Free when it is no longer
+   --  needed.
    --  Since: gtk+ 2.24
    --  @param Length the length of the result, or null
-   --  @return an array of constant strings
+   --  @return independent Ada copies of the strings
 
    function Get_Type (Self : Gvariant) return Gvariant_Type;
    --  Determines the type of Value.

@@ -82,6 +82,10 @@ package Gtkada.Bindings is
    pragma Convention (C, chars_ptr_array_access);
    --  Suitable for a C function that returns a gchar**
 
+   procedure g_free (Str_Array : chars_ptr_array_access);
+   --  Frees only the C array, leaving its element strings untouched.
+   --  If called on a null value, simply return.
+
    procedure g_strfreev (Str_Array : chars_ptr_array_access);
    --  Thin binding to C function of the same name.  Frees a null-terminated
    --  array of strings, and the array itself.  If called on a null value,
@@ -92,10 +96,19 @@ package Gtkada.Bindings is
    --  Converts C into a String_List. Returned value must be freed by caller,
    --  as well as C. C is NULL terminated.
 
-   function To_String_List_And_Free
+   function To_String_List
      (C : chars_ptr_array_access) return GNAT.Strings.String_List;
-   --  Converts C into a String_List, and frees C.
-   --  Returned value must be freed by caller.
+   --  Copies a NULL-terminated C array, or returns an empty list if C is null.
+   --  The caller must free the returned strings. C is neither changed nor
+   --  freed, so this overload also accepts arrays borrowed from C.
+
+   function To_String_List_And_Free
+     (C : chars_ptr_array_access; Free_Elements : Boolean := True)
+      return GNAT.Strings.String_List;
+   --  Copies a NULL-terminated C array, or returns an empty list if C is null.
+   --  Frees C and, when Free_Elements is True, its element strings. Use False
+   --  for container-transfer arrays whose elements remain owned by C.
+   --  The caller must free each returned Ada string.
 
    function To_String_List
      (C : Gtkada.Types.Chars_Ptr_Array; N : Glib.Gint)
@@ -234,5 +247,6 @@ package Gtkada.Bindings is
    --  This procedure never raises an exception.
 
 private
+   pragma Import (C, g_free, "g_free");
    pragma Import (C, g_strfreev, "g_strfreev");
 end Gtkada.Bindings;

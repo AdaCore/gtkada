@@ -234,10 +234,10 @@ package Glib.App_Info is
    function Get_Supported_Types
       (Self : Gapp_Info) return GNAT.Strings.String_List;
    --  Retrieves the list of content types that App_Info claims to support. If
-   --  this information is not provided by the environment, this function will
-   --  return null. This function does not take in consideration associations
-   --  added with Glib.App_Info.Add_Supports_Type, but only those exported
-   --  directly by the application.
+   --  this information is not provided by the environment, returns an empty
+   --  list. Only types exported directly by the application are included, not
+   --  associations added with Glib.App_Info.Add_Supports_Type.
+   --  The caller must free each string in the list with GNAT.Strings.Free.
    --  Since: gtk+ 2.34
    --  @return a list of content types.
 

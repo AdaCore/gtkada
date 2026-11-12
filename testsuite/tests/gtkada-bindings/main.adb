@@ -3,6 +3,7 @@
 
 with Ada.Command_Line;
 with Ada.Exceptions;
+with GNAT.Strings;
 with Interfaces.C;
 with Interfaces.C.Strings;
 with Glib;
@@ -31,6 +32,9 @@ procedure Main is
    with Convention => C;
 
    procedure Test_Nullable_Strings
+   with Convention => C;
+
+   procedure Test_Borrowed_String_Lists
    with Convention => C;
 
    procedure Test_Array_And_Address_Conversions
@@ -104,6 +108,46 @@ procedure Main is
       C_Strings.Free (C_Ptr);
       Gtkada.Types.g_free (G_Ptr);
    end Test_Nullable_Strings;
+
+   --  Both null and empty C vectors become empty lists. Nonempty vectors
+   --  remain owned by C, and the Ada copies survive releasing that storage.
+   procedure Test_Borrowed_String_Lists is
+      function Duplicate
+        (Source : Gtkada.Types.Chars_Ptr_Array)
+         return Gtkada.Bindings.chars_ptr_array_access;
+      pragma Import (C, Duplicate, "g_strdupv");
+
+      Source : Gtkada.Types.Chars_Ptr_Array :=
+        (Gtkada.Types.New_String ("first"),
+         Gtkada.Types.New_String (""),
+         Gtkada.Types.New_String ("last"),
+         Gtkada.Types.Null_Ptr);
+      Empty_C : constant Gtkada.Bindings.chars_ptr_array_access :=
+        Duplicate ((0 => Gtkada.Types.Null_Ptr));
+      Nonempty_C : constant Gtkada.Bindings.chars_ptr_array_access :=
+        Duplicate (Source);
+      Null_List : constant GNAT.Strings.String_List :=
+        Gtkada.Bindings.To_String_List (null);
+      Empty_List : constant GNAT.Strings.String_List :=
+        Gtkada.Bindings.To_String_List (Empty_C);
+      Copied : GNAT.Strings.String_List :=
+        Gtkada.Bindings.To_String_List (Nonempty_C);
+   begin
+      Assert_True (Null_List'Length = 0);
+      Assert_True (Empty_List'Length = 0);
+      Assert_Cmpstr_Eq (Gtkada.Types.Value (Nonempty_C (0)), "first");
+      Gtkada.Bindings.g_strfreev (Empty_C);
+      Gtkada.Bindings.g_strfreev (Nonempty_C);
+      Gtkada.Types.Free (Source);
+
+      Assert_True (Copied'Length = 3);
+      Assert_Cmpstr_Eq (Copied (1).all, "first");
+      Assert_Cmpstr_Eq (Copied (2).all, "");
+      Assert_Cmpstr_Eq (Copied (3).all, "last");
+      for Item of Copied loop
+         GNAT.Strings.Free (Item);
+      end loop;
+   end Test_Borrowed_String_Lists;
 
    --  The array helper stops at its zero terminator and returns the prefix
    --  through that terminator. The address helper maps only the null value.
@@ -186,6 +230,9 @@ begin
    Glib.Test.Add_Func
      ("/gtkada-bindings/nullable-strings",
       Test_Nullable_Strings'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gtkada-bindings/borrowed-string-lists",
+      Test_Borrowed_String_Lists'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/gtkada-bindings/array-address-conversions",
       Test_Array_And_Address_Conversions'Unrestricted_Access);

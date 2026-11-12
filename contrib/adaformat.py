@@ -200,9 +200,9 @@ class CType(object):
         self.allow_none = False
         self.val_or_null = None
 
-        # If True, the value returned from C must be freed by the caller
+        # GIR ownership kind: none, container (elements remain borrowed), full.
 
-        self.transfer_ownership = False
+        self.transfer_ownership = "none"
 
     def set_ada_name(self, ada: str):
         self.ada = ada  # Fully qualified Ada type
@@ -766,7 +766,7 @@ class Fundamental(Tagged):
     """Tagged types that map C fundamental objects"""
 
     def convert_from_c(self) -> ConvertedValue:
-        if self.transfer_ownership:
+        if self.transfer_ownership != "none":
             c = "From_Object_Full_Ownership (%(var)s)"
         else:
             c = "From_Object_None_Ownership (%(var)s)"
@@ -792,7 +792,7 @@ class UTF8(CType):
     def convert_from_c(self) -> ConvertedValue:
         conv = "Gtkada.Bindings.Value_Allowing_Null (%(var)s)"
 
-        if self.transfer_ownership:
+        if self.transfer_ownership != "none":
             conv = "Gtkada.Bindings.Value_And_Free (%(var)s)"
 
         return ConvertTuple(
@@ -875,9 +875,13 @@ class UTF8_List(CType):
         # chars_ptr_array_access, we create a temporary String_List to call the
         # Ada callback, and then need to free the temporary String_List.
 
-        conv = "To_String_List (%(var)s.all)"
+        # Pass the pointer through so the helper can map NULL to an empty
+        # list, even when the GIR omits a nullable annotation.
+        conv = "To_String_List (%(var)s)"
 
-        if self.transfer_ownership:
+        if self.transfer_ownership == "container":
+            conv = "To_String_List_And_Free (%(var)s, Free_Elements => False)"
+        elif self.transfer_ownership == "full":
             conv = "To_String_List_And_Free (%(var)s)"
 
         return ConvertTuple(
@@ -928,7 +932,7 @@ class Record(CType):
 
     def convert_from_c(self) -> ConvertedValue:
         conv = "%(var)s.all"  # convert C -> Ada,
-        if self.transfer_ownership:
+        if self.transfer_ownership != "none":
             conv = "From_Object_Free (%(var)s)"
 
         tmp_c_type = "access %s" % self.ada
@@ -1251,7 +1255,7 @@ class AdaNaming(object):
         userecord=True,
         useclass=True,
         array_fixed_size=None,
-        transfer_ownership=False,
+        transfer_ownership="none",
         const=False,
     ):
         """Build an instance of CType for the corresponding cname.

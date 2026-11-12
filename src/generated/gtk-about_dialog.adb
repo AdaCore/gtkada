@@ -110,7 +110,7 @@ package body Gtk.About_Dialog is
          (Self : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_artists");
    begin
-      return To_String_List (Internal (Get_Object (Self)).all);
+      return To_String_List (Internal (Get_Object (Self)));
    end Get_Artists;
 
    -----------------
@@ -125,7 +125,7 @@ package body Gtk.About_Dialog is
          (Self : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_authors");
    begin
-      return To_String_List (Internal (Get_Object (Self)).all);
+      return To_String_List (Internal (Get_Object (Self)));
    end Get_Authors;
 
    ------------------
@@ -168,7 +168,7 @@ package body Gtk.About_Dialog is
          (Self : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_about_dialog_get_documenters");
    begin
-      return To_String_List (Internal (Get_Object (Self)).all);
+      return To_String_List (Internal (Get_Object (Self)));
    end Get_Documenters;
 
    -----------------

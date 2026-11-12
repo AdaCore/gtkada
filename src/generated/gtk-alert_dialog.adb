@@ -184,7 +184,7 @@ package body Gtk.Alert_Dialog is
          (Self : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_alert_dialog_get_buttons");
    begin
-      return To_String_List (Internal (Get_Object (Self)).all);
+      return To_String_List (Internal (Get_Object (Self)));
    end Get_Buttons;
 
    -----------------------

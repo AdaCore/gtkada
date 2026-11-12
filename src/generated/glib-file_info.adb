@@ -358,7 +358,7 @@ package body Glib.File_Info is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Attribute);
       Free (Tmp_Attribute);
-      return To_String_List (Tmp_Return.all);
+      return To_String_List (Tmp_Return);
    end Get_Attribute_Stringv;
 
    ------------------------

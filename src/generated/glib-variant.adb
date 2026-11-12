@@ -900,7 +900,7 @@ package body Glib.Variant is
           Length : access Gsize) return chars_ptr_array_access;
       pragma Import (C, Internal, "g_variant_get_bytestring_array");
    begin
-      return To_String_List_And_Free (Internal (Get_Object (Self), Length));
+      return To_String_List_And_Free (Internal (Get_Object (Self), Length), Free_Elements => False);
    end Get_Bytestring_Array;
 
    ---------------------
@@ -1017,7 +1017,7 @@ package body Glib.Variant is
           Length : access Gsize) return chars_ptr_array_access;
       pragma Import (C, Internal, "g_variant_get_objv");
    begin
-      return To_String_List_And_Free (Internal (Get_Object (Self), Length));
+      return To_String_List_And_Free (Internal (Get_Object (Self), Length), Free_Elements => False);
    end Get_Objv;
 
    --------------
@@ -1060,7 +1060,7 @@ package body Glib.Variant is
           Length : access Gsize) return chars_ptr_array_access;
       pragma Import (C, Internal, "g_variant_get_strv");
    begin
-      return To_String_List_And_Free (Internal (Get_Object (Self), Length));
+      return To_String_List_And_Free (Internal (Get_Object (Self), Length), Free_Elements => False);
    end Get_Strv;
 
    --------------

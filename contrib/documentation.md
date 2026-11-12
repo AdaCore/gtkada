@@ -278,7 +278,7 @@ GIR node is matched.
 | `ada`                | string | Override the Ada subprogram name.                                                                                                                          |
 | `bind`               | bool   | When `false`, suppress the binding for this method (or, for inherited interface methods, suppress the inherited copy).                                     |
 | `obsolescent`        | bool   | When `true`, the generated subprogram gets `pragma Obsolescent`.                                                                                            |
-| `transfer_ownership` | string | `"full"` if the return value must be freed by the caller; `"none"` if the C library owns it.                                                                |
+| `transfer_ownership` | string | `"full"` if the caller owns the return value and its elements; `"container"` if only the container must be freed; `"none"` if the C library owns it.             |
 | `return_as_param`    | string | Replace the function's return value with an `out` parameter of this name.                    |
 | `return`             | string | Override the C type of the return value. Use `"void"` to turn a function into a procedure. To override the GIR's `@return` documentation use `[method.doc]` `extend` block (see `GtkListItem.toml`). |
 default_return
@@ -565,6 +565,16 @@ name = "length"
 direction = "access"
 default = "null"
 ```
+
+Null-terminated C string arrays map to `GNAT.Strings.String_List`. A null
+array pointer becomes an empty list, even if the GIR omits its nullable
+annotation. Borrowed arrays are copied without freeing the C strings or
+array; full-transfer arrays are copied and freed. Container-transfer arrays
+are copied, then only the C pointer array is freed with `g_free`; the element
+strings stay with their C owner. This is how `Glib.Variant.Get_Strv`,
+`Get_Objv`, and `Get_Bytestring_Array` return independent Ada strings without
+invalidating the variant. In all three cases the caller must free each
+returned Ada string with `GNAT.Strings.Free`.
 
 #### Nullable instance parameters
 
