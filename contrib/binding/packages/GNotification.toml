@@ -9,6 +9,10 @@ id = "g_notification_set_body"
 [[method.parameter]]
 name = "body"
 ada = "the_body"
+# GLib rejects NULL on supported versions despite the GIR annotation.
+# Keep the default while passing empty text as a non-null C string.
+allow_none = "0"
+default = "\"\""
 
 [[enum]]
 ctype = "GNotificationPriority"

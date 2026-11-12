@@ -134,12 +134,8 @@ package body Glib.Notification is
          (Self     : System.Address;
           The_Body : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_notification_set_body");
-      Tmp_The_Body : Gtkada.Types.Chars_Ptr;
+      Tmp_The_Body : Gtkada.Types.Chars_Ptr := New_String (The_Body);
    begin
-      Tmp_The_Body :=
-        (if The_Body = ""
-         then Gtkada.Types.Null_Ptr
-         else New_String (The_Body));
       Internal (Get_Object (Self), Tmp_The_Body);
       Free (Tmp_The_Body);
    end Set_Body;
