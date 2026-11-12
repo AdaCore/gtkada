@@ -281,6 +281,15 @@ anonymous access variable would trigger when an error wrapper returns it.
 The caller must respect the borrowed value's lifetime and must not unset
 or free it.
 
+For an owned record pointer that the caller must release explicitly,
+declare a named access type with `[[extra.type]]` and select it for the
+allocator's return and the release operation's input. `GdkRGBA.toml`
+uses `Gdk_RGBA_Access` for `Copy` and `Free`, while its `Copy` body
+passes a record input through `access constant Gdk_RGBA`. This preserves
+the allocation's identity; importing the return as a record would lose
+the pointer and use the wrong C return convention. Ordinary record-valued
+accessors can keep their existing mappings.
+
 ### `[[method.parameter]]` — per-parameter overrides
 
 Repeat as needed *inside* a method/function/callback/virtual_method

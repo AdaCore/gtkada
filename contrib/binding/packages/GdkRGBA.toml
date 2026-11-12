@@ -2,6 +2,30 @@
 #   GdkRGBA
 # ============================================================
 
+# Keep the owned pointer: the default GdkRGBA* mapping is a record value.
+[[method]]
+id = "gdk_rgba_copy"
+return = "GdkRGBA_Access"
+body = '''
+      function Internal (Self : access constant Gdk_RGBA)
+         return Gdk_RGBA_Access;
+      pragma Import (C, Internal, "gdk_rgba_copy");
+      Color : aliased constant Gdk_RGBA := Self;
+   begin
+      return Internal (Color'Access);
+'''
+
+[[method]]
+id = "gdk_rgba_free"
+
+[[method.parameter]]
+name = "rgba"
+ctype = "GdkRGBA_Access"
+
+[method.doc]
+extend = true
+text = "Releases the allocation returned by Copy. The pointer is invalid after this call."
+
 # gdk_rgba_equal and gdk_rgba_hash use gconstpointer, which is not
 # (yet) bound here. The actual GIR profile is symmetric — the
 # generator just can't express it.
@@ -82,6 +106,15 @@ pkg = "Glib.Generic_Properties"
 
 [[extra.with_body]]
 pkg = "Gtkada.Bindings"
+
+[[extra.type]]
+ctype = "GdkRGBA_Access"
+ada = "Gdk.RGBA.Gdk_RGBA_Access"
+text = '''
+   type Gdk_RGBA_Access is access all Gdk_RGBA;
+   pragma Convention (C, Gdk_RGBA_Access);
+   --  An owned RGBA allocated by Copy; release it with Free.
+'''
 
 [[extra.type]]
 ctype = "array_of_Gdk_RGBA"

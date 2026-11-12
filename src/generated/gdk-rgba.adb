@@ -73,6 +73,19 @@ package body Gdk.RGBA is
    procedure Set_Value (Value : in out Glib.Values.GValue; Val : Gdk_RGBA)
    renames RGBA_Properties.Set_Value;
 
+   ----------
+   -- Copy --
+   ----------
+
+   function Copy (Self : Gdk_RGBA) return Gdk_RGBA_Access is
+      function Internal (Self : access constant Gdk_RGBA)
+         return Gdk_RGBA_Access;
+      pragma Import (C, Internal, "gdk_rgba_copy");
+      Color : aliased constant Gdk_RGBA := Self;
+   begin
+      return Internal (Color'Access);
+   end Copy;
+
    --------------
    -- Is_Clear --
    --------------

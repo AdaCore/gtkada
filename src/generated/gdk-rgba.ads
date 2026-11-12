@@ -56,6 +56,10 @@ package Gdk.RGBA is
    --  0.0) represents transparent black and (1.0, 1.0, 1.0, 1.0) is opaque
    --  white. Other values will be clamped to this range when drawing.
 
+   type Gdk_RGBA_Access is access all Gdk_RGBA;
+   pragma Convention (C, Gdk_RGBA_Access);
+   --  An owned RGBA allocated by Copy; release it with Free.
+
    type Gdk_RGBA_Array is array (Natural range <>) of Gdk_RGBA;
    pragma Convention (C, Gdk_RGBA_Array);
 
@@ -70,15 +74,16 @@ package Gdk.RGBA is
    -- Methods --
    -------------
 
-   function Copy (Self : Gdk_RGBA) return Gdk_RGBA;
-   pragma Import (C, Copy, "gdk_rgba_copy");
+   function Copy (Self : Gdk_RGBA) return Gdk_RGBA_Access;
    --  Makes a copy of a `GdkRGBA`.
    --  The result must be freed through [methodGdk.RGBA.free].
    --  @return A newly allocated `GdkRGBA`, with the same contents as Rgba
 
-   procedure Free (Self : Gdk_RGBA);
+   procedure Free (Self : Gdk_RGBA_Access);
    pragma Import (C, Free, "gdk_rgba_free");
    --  Frees a `GdkRGBA`.
+   --  Releases the allocation returned by Copy. The pointer is invalid after
+   --  this call.
 
    function Is_Clear (Self : Gdk_RGBA) return Boolean;
    --  Checks if an Rgba value is transparent.
