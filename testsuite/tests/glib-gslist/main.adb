@@ -33,6 +33,7 @@ procedure Main is
 
    use type Lists.GSlist;
    use type Glib.Gint;
+   use type Glib.Guint;
    use type System.Address;
    use type System.Storage_Elements.Integer_Address;
 
@@ -114,8 +115,53 @@ procedure Main is
       Lists.Free (List);
    end Test_List;
 
+   --  Regression for glib-gslist.concat-symbol: Concat must join both
+   --  chains, preserving their cells and data, as g_slist_concat promises.
+   procedure Test_Concat with Convention => C;
+
+   procedure Test_Concat is
+      Left   : Lists.GSlist := Lists.Null_List;
+      Right  : Lists.GSlist := Lists.Null_List;
+      Joined : Lists.GSlist;
+   begin
+      --  Use two cells in each list so appending Right as an opaque data
+      --  pointer cannot accidentally give the expected combined length.
+      Lists.Append (Left, (Value => 10));
+      Lists.Append (Left, (Value => 20));
+      Lists.Append (Right, (Value => 30));
+      Lists.Append (Right, (Value => 40));
+      Joined := Lists.Concat (Left, Right);
+
+      Assert_True (Joined = Left, "Concat must preserve the first head");
+      Assert_True
+        (Lists.Length (Joined) = 4,
+         "Concat must join both chains: expected four elements");
+      Assert_True
+        (Lists.Nth (Joined, 2) = Right,
+         "Concat must link the original second chain");
+      --  Compare opaque tokens without narrowing an unexpected address to
+      --  Gint: a broken Concat should report an assertion, not overflow.
+      Assert_True
+        (Lists.Nth_Data (Joined, 0).Value = 10,
+         "Concat must retain the first value");
+      Assert_True
+        (Lists.Nth_Data (Joined, 1).Value = 20,
+         "Concat must retain the second value");
+      Assert_True
+        (Lists.Nth_Data (Joined, 2).Value = 30,
+         "Concat must retain the third value");
+      Assert_True
+        (Lists.Nth_Data (Joined, 3).Value = 40,
+         "Concat must retain the fourth value");
+
+      --  GSlist handles alias cells. Concat transfers both chains into
+      --  Joined without copying, so free it once, not Left and Right too.
+      Lists.Free (Joined);
+   end Test_Concat;
+
 begin
    Glib.Test.Init;
    Glib.Test.Add_Func ("/glib-gslist/operations", Test_List'Unrestricted_Access);
+   Glib.Test.Add_Func ("/glib-gslist/concat", Test_Concat'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

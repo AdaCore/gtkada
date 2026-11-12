@@ -64,7 +64,7 @@ package body Glib.GSlist is
          function Internal (List1 : System.Address;
                             List2 : System.Address)
                             return System.Address;
-         pragma Import (C, Internal, "g_slist_append");
+         pragma Import (C, Internal, "g_slist_concat");
          Tmp : GSlist;
       begin
          Set_Object (Tmp, Internal (Get_Object (List1),
