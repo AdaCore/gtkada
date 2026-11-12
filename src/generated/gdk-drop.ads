@@ -145,7 +145,7 @@ package Gdk.Drop is
        The_Type    : GType;
        Io_Priority : Glib.Gint;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Callback    : Gasync_Ready_Callback);
+       Callback    : not null Gasync_Ready_Callback);
    --  Asynchronously request the drag operation's contents converted to the
    --  given Type.
    --  For local drag-and-drop operations that are available in the given

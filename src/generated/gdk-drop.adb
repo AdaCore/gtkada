@@ -197,14 +197,10 @@ package body Gdk.Drop is
        The_Type    : GType;
        Io_Priority : Glib.Gint;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Callback    : Gasync_Ready_Callback)
+       Callback    : not null Gasync_Ready_Callback)
    is
    begin
-      if Callback = null then
-         C_Gdk_Drop_Read_Value_Async (Get_Object (Self), The_Type, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
-      else
-         C_Gdk_Drop_Read_Value_Async (Get_Object (Self), The_Type, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
-      end if;
+      C_Gdk_Drop_Read_Value_Async (Get_Object (Self), The_Type, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
    end Read_Value_Async;
 
    -----------------------

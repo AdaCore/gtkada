@@ -84,22 +84,6 @@ procedure Main is
       Source : System.Address) return Glib.Gboolean;
    pragma Import (C, G_Task_Is_Valid, "g_task_is_valid");
 
-   --  GTest captures the runtime's critical diagnostic for the null callback
-   --  case, which the Gdk GIR marks nullable but the linked library rejects.
-   procedure G_Test_Expect_Message
-     (Domain : Interfaces.C.Strings.chars_ptr;
-      Level  : Interfaces.C.int;
-      Pattern : Interfaces.C.Strings.chars_ptr);
-   pragma Import (C, G_Test_Expect_Message, "g_test_expect_message");
-   procedure G_Test_Assert_Expected_Messages
-     (Domain : Interfaces.C.Strings.chars_ptr;
-      File   : Interfaces.C.Strings.chars_ptr;
-      Line   : Interfaces.C.int;
-      Func   : Interfaces.C.Strings.chars_ptr);
-   pragma Import
-     (C, G_Test_Assert_Expected_Messages,
-      "g_test_assert_expected_messages_internal");
-
    --  The callback records its source and completion for the local fixture.
    Current_Drop       : Gdk.Drop.Gdk_Drop := null;
    Callback_Source   : System.Address := System.Null_Address;
@@ -253,30 +237,29 @@ procedure Main is
       Assert_True (Callback_Source = Glib.Object.Get_Object (Stored_Drop));
       Assert_True (Callback_Task_Valid);
 
-      --  The GIR allows a null callback, and GtkAda forwards it as null for
-      --  both the C callback and user data. The runtime currently rejects it.
-      Callback_Completed := False;
+      --  Regression for gdk-drop.read-value-async-null-callback: GDK requires
+      --  a callback even though its GIR marks it nullable. GtkAda must reject
+      --  null with an Ada null-exclusion check before calling into GDK.
+      --  Use a variable, rather than a null literal, so this remains a legal
+      --  call after Callback becomes not null and tests its runtime check.
+      --  Volatile keeps the callback value a runtime input to that check.
       declare
-         Domain  : Interfaces.C.Strings.chars_ptr :=
-           Interfaces.C.Strings.New_String ("Gdk");
-         Pattern : Interfaces.C.Strings.chars_ptr :=
-           Interfaces.C.Strings.New_String
-             ("*assertion 'callback != NULL' failed*");
-         File    : Interfaces.C.Strings.chars_ptr :=
-           Interfaces.C.Strings.New_String ("main.adb");
-         Func    : Interfaces.C.Strings.chars_ptr :=
-           Interfaces.C.Strings.New_String ("Test_Accessors_And_Read");
+         Callback : Gdk.Drop.Gasync_Ready_Callback := null;
+         pragma Volatile (Callback);
+         Rejected : Boolean := False;
       begin
-         G_Test_Expect_Message (Domain, 8, Pattern);
-         Stored_Drop.Read_Value_Async (Glib.GType_String, 0, null, null);
-         G_Test_Assert_Expected_Messages
-           (Interfaces.C.Strings.Null_Ptr, File, 1, Func);
-         Interfaces.C.Strings.Free (Domain);
-         Interfaces.C.Strings.Free (Pattern);
-         Interfaces.C.Strings.Free (File);
-         Interfaces.C.Strings.Free (Func);
+         begin
+            Stored_Drop.Read_Value_Async
+              (Glib.GType_String, 0, null, Callback);
+         exception
+            when Constraint_Error =>
+               Rejected := True;
+         end;
+         --  With the defective binding the call instead reaches GDK and
+         --  emits a fatal "callback != NULL" critical under Glib.Test.
+         Assert_True
+           (Rejected, "Read_Value_Async must reject a null callback in Ada");
       end;
-      Assert_False (Callback_Completed);
 
       --  Unset every locally initialized GValue and free C strings after
       --  g_object_new_with_properties has consumed the constructor arguments.

@@ -13,6 +13,14 @@ bind = false
 # Unconstrained `UTF8_String` temp object
 
 [[method]]
+id = "gdk_drop_read_value_async"
+
+[[method.parameter]]
+name = "callback"
+allow_none = "0"
+# GDK requires a callback despite the GIR's allow-none annotation.
+
+[[method]]
 id = "gdk_drop_read_value_finish"
 return = "Glib.Values.GValue_Const_Access"
 # Returns a borrowed const GValue*, not a GValue record by value.
