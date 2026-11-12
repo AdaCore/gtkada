@@ -53,6 +53,18 @@ name = "cell_area"
 type = "Gdk.Rectangle.Gdk_Rectangle"
 # bound manually below
 
+[[method]]
+id = "::focus-changed"
+
+[method.doc]
+extend = true
+text = "The renderer is null when focus is cleared."
+
+[[method.parameter]]
+name = "renderer"
+allow_none = "1"
+# The GIR omits nullability here, but Set_Focus_Cell accepts null to clear focus.
+
 [extra]
 body = '''
 

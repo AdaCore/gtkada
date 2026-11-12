@@ -79,6 +79,8 @@ procedure Main is
    with Convention => C;
    procedure Test_Cell_Area_Context
    with Convention => C;
+   procedure Test_Focus_Changed_Null_Renderer
+   with Convention => C;
    procedure Test_Cell_Area_Box_Methods
    with Convention => C;
 
@@ -831,6 +833,47 @@ procedure Main is
            (Gtk.Cell_Area_Box.Get_Cells (Box)), 0);
    end Test_Cell_Area_Box_Methods;
 
+   --  Regression for gtk-cell_area.focus-changed-null-renderer: clearing
+   --  focus with the documented null renderer must emit focus-changed to
+   --  both typed and GObject-slot handlers, without a marshalling exception.
+   procedure Test_Focus_Changed_Null_Renderer is
+      Area : constant Gtk_Cell_Area := Gtk_Cell_Area (Gtk_Cell_Area_Box_New);
+      --  Use the specific parent view to call Gtk.Cell_Area's wrappers,
+      --  rather than dispatching to the generated Gtk.Cell_Area_Box copies.
+      Area_View : aliased Gtk_Cell_Area_Record :=
+        Gtk_Cell_Area_Record (Area.all);
+      Text : constant Gtk_Cell_Renderer_Text := Gtk_Cell_Renderer_Text_New;
+   begin
+      Gtk.Cell_Area.Pack_Start (Area_View'Access, Text, True);
+      Gtk.Cell_Area.On_Focus_Changed
+        (Area_View'Access, Cellarea_Helpers.On_Focus'Access);
+      Gtk.Cell_Area.On_Focus_Changed
+        (Area_View'Access, Cellarea_Helpers.On_Focus_Slot'Access,
+         Area_View'Access);
+      Cellarea_Helpers.Focus_Calls := 0;
+      Cellarea_Helpers.Focus_Slot_Calls := 0;
+      Cellarea_Helpers.Null_Focus_Calls := 0;
+      Cellarea_Helpers.Null_Focus_Slot_Calls := 0;
+      Gtk.Cell_Area.Set_Focus_Cell (Area_View'Access, Text);
+      Assert_True (Cellarea_Helpers.Focus_Calls = 1);
+      Assert_True (Cellarea_Helpers.Focus_Slot_Calls = 1);
+      Assert_True (Cellarea_Helpers.Null_Focus_Calls = 0);
+      Assert_True (Cellarea_Helpers.Null_Focus_Slot_Calls = 0);
+
+      --  Signal delivery is synchronous: both counters must advance before
+      --  Set_Focus_Cell returns, even though its renderer argument is null.
+      Gtk.Cell_Area.Set_Focus_Cell (Area_View'Access, null);
+      Assert_True (Gtk.Cell_Area.Get_Focus_Cell (Area_View'Access) = null);
+      Assert_True
+        (Cellarea_Helpers.Focus_Calls = 2
+         and then Cellarea_Helpers.Null_Focus_Calls = 1,
+         "focus-changed must deliver a null renderer to the typed handler");
+      Assert_True
+        (Cellarea_Helpers.Focus_Slot_Calls = 2
+         and then Cellarea_Helpers.Null_Focus_Slot_Calls = 1,
+         "focus-changed must deliver a null renderer to the slot handler");
+   end Test_Focus_Changed_Null_Renderer;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
@@ -853,5 +896,8 @@ begin
    Glib.Test.Add_Func
      ("/cellarea/box-methods",
       Test_Cell_Area_Box_Methods'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/cellarea/focus-changed-null-renderer",
+      Test_Focus_Changed_Null_Renderer'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

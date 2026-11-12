@@ -20,6 +20,9 @@ package Cellarea_Helpers is
    Apply_Slot_Calls  : Natural := 0;
    Focus_Calls       : Natural := 0;
    Focus_Slot_Calls  : Natural := 0;
+   --  Count the null renderer deliveries independently of ordinary focus.
+   Null_Focus_Calls      : Natural := 0;
+   Null_Focus_Slot_Calls : Natural := 0;
    Add_Edit_Calls    : Natural := 0;
    Add_Edit_Slot_Calls : Natural := 0;
    Remove_Edit_Calls : Natural := 0;
@@ -76,13 +79,14 @@ package Cellarea_Helpers is
    --  Focus handlers receive the renderer and current tree-path string.
    procedure On_Focus
      (Self     : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
-      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Path     : UTF8_String);
    --  The GObject form uses the same focus arguments with a generic instance.
    procedure On_Focus_Slot
      (Self     : access Glib.Object.GObject_Record'Class;
-      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Path     : UTF8_String);
+
    procedure On_Add_Edit
      (Self      : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
       Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
