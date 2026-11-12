@@ -803,7 +803,9 @@ int ada_c_gvalue_size()
 
 void ada_gvalue_set(GValue *value, void *val)
 {
-  if G_VALUE_HOLDS_CHAR (value)
+  if (val == NULL)
+    g_value_reset(value);
+  else if G_VALUE_HOLDS_CHAR (value)
     g_value_set_schar(value, *(gchar *)val);
   else if G_VALUE_HOLDS_UCHAR (value)
     g_value_set_uchar(value, *(guchar *)val);

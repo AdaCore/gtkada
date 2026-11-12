@@ -167,11 +167,14 @@ package body Gtk.Event_Controller_Legacy is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Event_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Gdk.Event.From_Object (Unchecked_To_Address (Params, 1)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gdk.Event.From_Object (Unchecked_To_Address (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gdk_Event_Boolean;
 
    ---------------------------------------------------------
@@ -189,11 +192,14 @@ package body Gtk.Event_Controller_Legacy is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Event_Controller_Legacy_Gdk_Event_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Event_Controller_Legacy := Gtk_Event_Controller_Legacy (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Gdk.Event.From_Object (Unchecked_To_Address (Params, 1)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gdk.Event.From_Object (Unchecked_To_Address (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Event_Controller_Legacy_Gdk_Event_Boolean;
 
    --------------

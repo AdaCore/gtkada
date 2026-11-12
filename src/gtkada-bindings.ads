@@ -220,7 +220,8 @@ package Gtkada.Bindings is
    pragma Import (C, Set_Value, "ada_gvalue_set");
    --  Function used internally to specify the value returned by a callback.
    --  Val will be dereferenced as appropriate, depending on the type expected
-   --  by Value.
+   --  by Value. A null Val resets Value to its type's default without changing
+   --  its type, for example False for a Boolean or zero for flags.
 
    type Exception_Handler is not null access procedure
       (Occurrence : Ada.Exceptions.Exception_Occurrence);

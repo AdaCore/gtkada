@@ -3304,11 +3304,14 @@ package body Gtk.Widget is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Boolean (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Boolean_Boolean;
 
    -----------------------------------------------------
@@ -3326,11 +3329,14 @@ package body Gtk.Widget is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gint_Gint_Boolean_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Object (Params, 4));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Object (Params, 4));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gint_Gint_Boolean_GObject_Boolean;
 
    ----------------------------------------------
@@ -3348,11 +3354,14 @@ package body Gtk.Widget is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Direction_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gtk_Direction_Type_Boolean;
 
    -------------------------------------------
@@ -3454,11 +3463,14 @@ package body Gtk.Widget is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Boolean (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Widget_Boolean_Boolean;
 
    --------------------------------------------------------
@@ -3476,11 +3488,14 @@ package body Gtk.Widget is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Object (Params, 4));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Object (Params, 4));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean;
 
    -------------------------------------------------
@@ -3498,11 +3513,14 @@ package body Gtk.Widget is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Widget_Gtk_Direction_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Widget_Gtk_Direction_Type_Boolean;
 
    ----------------------------------------------

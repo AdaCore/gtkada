@@ -631,11 +631,14 @@ package body Gtk.Link_Button is
       pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj);
+      V   : aliased Boolean;
    begin
+      V := H (Obj);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Boolean;
 
    -----------------------------------
@@ -653,11 +656,14 @@ package body Gtk.Link_Button is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Link_Button_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Link_Button := Gtk_Link_Button (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj);
+      V   : aliased Boolean;
    begin
+      V := H (Obj);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Link_Button_Boolean;
 
    ----------------------

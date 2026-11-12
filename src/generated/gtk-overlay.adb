@@ -551,11 +551,14 @@ package body Gtk.Overlay is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Widget_Gdk_Rectangle_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Unchecked_To_Gdk_Rectangle_Access (Params, 2).all);
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Unchecked_To_Gdk_Rectangle_Access (Params, 2).all);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gtk_Widget_Gdk_Rectangle_Boolean;
 
    --------------------------------------------------------
@@ -573,11 +576,14 @@ package body Gtk.Overlay is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Overlay_Gtk_Widget_Gdk_Rectangle_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Overlay := Gtk_Overlay (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Unchecked_To_Gdk_Rectangle_Access (Params, 2).all);
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Unchecked_To_Gdk_Rectangle_Access (Params, 2).all);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Overlay_Gtk_Widget_Gdk_Rectangle_Boolean;
 
    ---------------------------

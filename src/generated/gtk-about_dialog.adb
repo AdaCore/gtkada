@@ -1106,11 +1106,14 @@ package body Gtk.About_Dialog is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_UTF8_String (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_UTF8_String_Boolean;
 
    ------------------------------------------------
@@ -1128,11 +1131,14 @@ package body Gtk.About_Dialog is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_About_Dialog_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_About_Dialog := Gtk_About_Dialog (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_UTF8_String (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_About_Dialog_UTF8_String_Boolean;
 
    ----------------------

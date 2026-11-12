@@ -719,11 +719,14 @@ package body Gdk.Surface is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Address_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Address (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Address (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Address_Boolean;
 
    ------------------------------------
@@ -783,11 +786,14 @@ package body Gdk.Surface is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gdk_Surface_Address_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gdk_Surface := Gdk_Surface (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Address (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Address (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gdk_Surface_Address_Boolean;
 
    ----------------------------------------

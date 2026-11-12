@@ -1566,11 +1566,14 @@ package body Gtk.Spin_Button is
       pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj);
+      V   : aliased Boolean;
    begin
+      V := H (Obj);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Boolean;
 
    --------------------------------
@@ -1588,11 +1591,14 @@ package body Gtk.Spin_Button is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdouble_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Glib.Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1).all);
+      V   : aliased Glib.Gint;
    begin
+      V := H (Obj, Unchecked_To_Gdouble_Access (Params, 1).all);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gdouble_Gint;
 
    ----------------------------------------
@@ -1652,11 +1658,14 @@ package body Gtk.Spin_Button is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Spin_Button_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Spin_Button := Gtk_Spin_Button (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj);
+      V   : aliased Boolean;
    begin
+      V := H (Obj);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Spin_Button_Boolean;
 
    ----------------------------------------
@@ -1674,11 +1683,14 @@ package body Gtk.Spin_Button is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Spin_Button_Gdouble_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Spin_Button := Gtk_Spin_Button (Unchecked_To_Object (Params, 0));
-      V   : aliased Glib.Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1).all);
+      V   : aliased Glib.Gint;
    begin
+      V := H (Obj, Unchecked_To_Gdouble_Access (Params, 1).all);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Spin_Button_Gdouble_Gint;
 
    ------------------------------------------------

@@ -1622,11 +1622,14 @@ package body Glib.Application is
       pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj);
+      V   : aliased Boolean;
    begin
+      V := H (Obj);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Boolean;
 
    -----------------------------------------------------
@@ -1666,11 +1669,14 @@ package body Glib.Application is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gapplication_Command_Line_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Glib.Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
+      V   : aliased Glib.Gint;
    begin
+      V := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gapplication_Command_Line_Gint;
 
    ------------------------
@@ -1709,11 +1715,14 @@ package body Glib.Application is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gapplication_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gapplication := Gapplication (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj);
+      V   : aliased Boolean;
    begin
+      V := H (Obj);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gapplication_Boolean;
 
    ----------------------------------------------------------
@@ -1753,11 +1762,14 @@ package body Glib.Application is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gapplication_Gapplication_Command_Line_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gapplication := Gapplication (Unchecked_To_Object (Params, 0));
-      V   : aliased Glib.Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
+      V   : aliased Glib.Gint;
    begin
+      V := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gapplication_Gapplication_Command_Line_Gint;
 
    -----------------------------
