@@ -465,7 +465,7 @@ package Gtk.Widget is
 
    function Add_Tick_Callback
       (Widget   : not null access Gtk_Widget_Record;
-       Callback : Gtk_Tick_Callback) return Guint;
+       Callback : not null Gtk_Tick_Callback) return Guint;
    --  Queues an animation frame update and adds a callback to be called
    --  before each frame.
    --  Until the tick callback is removed, it will be called frequently
@@ -510,7 +510,7 @@ package Gtk.Widget is
 
       function Add_Tick_Callback
          (Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Callback  : Gtk_Tick_Callback;
+          Callback  : not null Gtk_Tick_Callback;
           User_Data : User_Data_Type) return Guint;
       --  Queues an animation frame update and adds a callback to be called
       --  before each frame.
