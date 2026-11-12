@@ -1280,6 +1280,19 @@ class SubprogramProfile(object):
                 gtkparam.get_transfer_ownership() or p.get("transfer-ownership", "none")
             ) == "full"
 
+            if isinstance(type, UTF8) and direction != "in" and not is_allocated:
+                # C chooses the length of a char** result. A fixed-length
+                # UTF8_String cannot receive it, even through an access value.
+                # Keep optional outputs nullable, and free owned C strings
+                # after copying them into the unbounded Ada value.
+                type = UTF8_Output()
+                type.allow_none = allow_none
+                type.transfer_ownership = ownership
+                if default == '""':
+                    default = type.null_value
+                if pkg:
+                    type.add_with(pkg)
+
             if direction == "inout":
                 c_mode = "in out"
             elif direction in ("out"):

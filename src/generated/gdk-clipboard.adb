@@ -241,7 +241,7 @@ package body Gdk.Clipboard is
    function Read_Finish
       (Self          : not null access Gdk_Clipboard_Record;
        Result        : Glib.G_Async_Result;
-       Out_Mime_Type : access UTF8_String := null;
+       Out_Mime_Type : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error         : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream
    is
@@ -253,14 +253,14 @@ package body Gdk.Clipboard is
       pragma Import (C, Internal, "gdk_clipboard_read_finish");
       Acc_Error          : aliased Glib.Error.GError;
       Return_Obj         : Glib.Input_Stream.Ginput_Stream;
-      Tmp_Out_Mime_Type  : aliased Gtkada.Types.Chars_Ptr;
+      Tmp_Out_Mime_Type  : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
       Acc_Out_Mime_Type  : constant access Gtkada.Types.Chars_Ptr := (if Out_Mime_Type /= null then Tmp_Out_Mime_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Out_Mime_Type, Acc_Error'Access);
       if Out_Mime_Type /= null then
-         Out_Mime_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Out_Mime_Type);
+         Out_Mime_Type.all := Ada.Strings.Unbounded.To_Unbounded_String (Gtkada.Bindings.Value_Allowing_Null (Tmp_Out_Mime_Type));
       end if;
       Error := Acc_Error;
       if Error = null then

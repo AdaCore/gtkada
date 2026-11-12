@@ -39,17 +39,18 @@
 --  [methodGdk.Clipboard.read_async], which provides a `GInputStream` object.
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings;         use GNAT.Strings;
-with Gdk.Content_Formats;  use Gdk.Content_Formats;
-with Gdk.Content_Provider; use Gdk.Content_Provider;
-with Gdk.Texture;          use Gdk.Texture;
-with Glib;                 use Glib;
-with Glib.Cancellable;     use Glib.Cancellable;
-with Glib.Error;           use Glib.Error;
-with Glib.Input_Stream;    use Glib.Input_Stream;
-with Glib.Object;          use Glib.Object;
-with Glib.Properties;      use Glib.Properties;
-with Glib.Values;          use Glib.Values;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with GNAT.Strings;          use GNAT.Strings;
+with Gdk.Content_Formats;   use Gdk.Content_Formats;
+with Gdk.Content_Provider;  use Gdk.Content_Provider;
+with Gdk.Texture;           use Gdk.Texture;
+with Glib;                  use Glib;
+with Glib.Cancellable;      use Glib.Cancellable;
+with Glib.Error;            use Glib.Error;
+with Glib.Input_Stream;     use Glib.Input_Stream;
+with Glib.Object;           use Glib.Object;
+with Glib.Properties;       use Glib.Properties;
+with Glib.Values;           use Glib.Values;
 
 package Gdk.Clipboard is
 
@@ -153,7 +154,7 @@ package Gdk.Clipboard is
    function Read_Finish
       (Self          : not null access Gdk_Clipboard_Record;
        Result        : Glib.G_Async_Result;
-       Out_Mime_Type : access UTF8_String := null;
+       Out_Mime_Type : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error         : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
    --  Finishes an asynchronous clipboard read.

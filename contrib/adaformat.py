@@ -332,11 +332,10 @@ class CType(object):
                     aliased=True,
                     # C need not write the temporary at all, for instance when
                     # the function returns False. Never convert a stale value.
-                    default=(
-                        "System.Null_Address"
-                        if returns.out_c_type == "System.Address"
-                        else ""
-                    ),
+                    default={
+                        "System.Address": "System.Null_Address",
+                        "Gtkada.Types.Chars_Ptr": "Gtkada.Types.Null_Ptr",
+                    }.get(returns.out_c_type, ""),
                 ),
                 Local_Var(
                     name=acc,
@@ -805,6 +804,26 @@ class UTF8(CType):
     def add_with(self, pkg: Package, specs: bool = False):
         super(UTF8, self).add_with(pkg)
         pkg.add_with("Gtkada.Types", specs=specs, might_be_unused=True)
+
+
+class UTF8_Output(UTF8):
+    """A char** output whose length is chosen by the C callee."""
+
+    def __init__(self):
+        super().__init__()
+        self.set_ada_name("Ada.Strings.Unbounded.Unbounded_String")
+        self.cparam = "Gtkada.Types.Chars_Ptr"
+        self.null_value = "Ada.Strings.Unbounded.Null_Unbounded_String"
+
+    def convert_from_c(self) -> ConvertedValue:
+        result = super().convert_from_c()
+        conv = "Ada.Strings.Unbounded.To_Unbounded_String (%s)" % result.conversion
+        return result._replace(conversion=conv, out_conversion=conv)
+
+    def convert_to_c(self) -> str:
+        return super().convert_to_c().replace(
+            "%(var)s", "Ada.Strings.Unbounded.To_String (%(var)s)"
+        )
 
 
 class SignalName(UTF8):

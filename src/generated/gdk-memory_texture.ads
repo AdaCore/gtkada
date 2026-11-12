@@ -24,17 +24,18 @@
 --  A `GdkTexture` representing image data in memory.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Paintable;      use Gdk.Paintable;
-with Gdk.Snapshot;       use Gdk.Snapshot;
-with Gdk.Texture;        use Gdk.Texture;
-with Glib;               use Glib;
-with Glib.Bytes;         use Glib.Bytes;
-with Glib.Cancellable;   use Glib.Cancellable;
-with Glib.Error;         use Glib.Error;
-with Glib.Input_Stream;  use Glib.Input_Stream;
-with Glib.Loadable_Icon; use Glib.Loadable_Icon;
-with Glib.Object;        use Glib.Object;
-with Glib.Types;         use Glib.Types;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Gdk.Paintable;         use Gdk.Paintable;
+with Gdk.Snapshot;          use Gdk.Snapshot;
+with Gdk.Texture;           use Gdk.Texture;
+with Glib;                  use Glib;
+with Glib.Bytes;            use Glib.Bytes;
+with Glib.Cancellable;      use Glib.Cancellable;
+with Glib.Error;            use Glib.Error;
+with Glib.Input_Stream;     use Glib.Input_Stream;
+with Glib.Loadable_Icon;    use Glib.Loadable_Icon;
+with Glib.Object;           use Glib.Object;
+with Glib.Types;            use Glib.Types;
 
 package Gdk.Memory_Texture is
 
@@ -178,7 +179,7 @@ package Gdk.Memory_Texture is
    function Load
       (Self        : not null access Gdk_Memory_Texture_Record;
        Size        : Glib.Gint;
-       The_Type    : access UTF8_String := null;
+       The_Type    : access Ada.Strings.Unbounded.Unbounded_String := null;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
@@ -186,7 +187,7 @@ package Gdk.Memory_Texture is
    function Load_Finish
       (Self     : not null access Gdk_Memory_Texture_Record;
        Res      : Glib.G_Async_Result;
-       The_Type : access UTF8_String := null;
+       The_Type : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error    : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
 

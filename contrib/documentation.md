@@ -450,6 +450,24 @@ name = "type"
 direction = "access"
 ```
 
+A scalar string output (`char **`, rather than an array of strings) uses
+`Ada.Strings.Unbounded.Unbounded_String`: the C callee chooses its length,
+so assigning it into a fixed-length `UTF8_String` could raise
+`Constraint_Error`. Optional string outputs keep the `access ... := null`
+profile. Supply an aliased unbounded string and its `'Access` to receive
+one, for example:
+
+```ada
+   Content_Type : aliased Ada.Strings.Unbounded.Unbounded_String;
+   --  ...
+   Stream := Texture.Load (32, Content_Type'Access, null, Error);
+```
+
+The wrapper copies a null C result as an empty unbounded string and frees
+the C allocation when the output has `transfer-ownership="full"`. Borrowed
+strings are copied without being freed. Virtual-method handler profiles
+continue to use C-compatible `access Gtkada.Types.Chars_Ptr` outputs.
+
 A `direction` pinned in the TOML always wins over the GIR, which is the
 escape hatch for the cases upstream annotates wrongly. Such a pin should
 carry `default = "null"` as well, so that the caller can leave the

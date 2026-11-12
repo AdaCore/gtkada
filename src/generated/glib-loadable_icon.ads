@@ -25,14 +25,15 @@
 --  icons from streams.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib.Cancellable;  use Glib.Cancellable;
-with Glib.Error;        use Glib.Error;
-with Glib.Input_Stream; use Glib.Input_Stream;
-with Glib.Object;       use Glib.Object;
-with Glib.Types;        use Glib.Types;
-with Gtkada.Types;      use Gtkada.Types;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Glib.Cancellable;      use Glib.Cancellable;
+with Glib.Error;            use Glib.Error;
+with Glib.Input_Stream;     use Glib.Input_Stream;
+with Glib.Object;           use Glib.Object;
+with Glib.Types;            use Glib.Types;
+with Gtkada.Types;          use Gtkada.Types;
 pragma Warnings(Off);  --  might be unused
-with Gtkada.Bindings;   use Gtkada.Bindings;
+with Gtkada.Bindings;       use Gtkada.Bindings;
 pragma Warnings(On);
 
 package Glib.Loadable_Icon is
@@ -75,7 +76,7 @@ package Glib.Loadable_Icon is
    function Load
       (Self        : Gloadable_Icon;
        Size        : Glib.Gint;
-       The_Type    : access UTF8_String := null;
+       The_Type    : access Ada.Strings.Unbounded.Unbounded_String := null;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
@@ -107,7 +108,7 @@ package Glib.Loadable_Icon is
    function Load_Finish
       (Self     : Gloadable_Icon;
        Res      : Glib.G_Async_Result;
-       The_Type : access UTF8_String := null;
+       The_Type : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error    : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
    --  Finishes an asynchronous icon load started in
