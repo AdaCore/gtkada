@@ -80,6 +80,7 @@ procedure Main is
    procedure Test_Groups with Convention => C;
    procedure Test_Parse_And_Errors with Convention => C;
    procedure Test_Translation with Convention => C;
+   procedure Test_Get_Main_Group with Convention => C;
 
    --  Exercise context properties, generated help, and main-entry handling.
    procedure Test_Context_And_Help is
@@ -474,6 +475,50 @@ procedure Main is
       Glib.Option.Free (Context);
    end Test_Translation;
 
+   --  Regression for glib-option.get-main-group-pointer-return: the getter
+   --  must return the borrowed GOptionGroup handle, without dereferencing it
+   --  as though the C struct contained an Ada handle.
+   procedure Test_Get_Main_Group is
+      Flag_Value : aliased Glib.Gboolean := 0;
+      Entries    : Glib.Option.GOption_Entry_Array (0 .. 1);
+      Context    : Glib.Option.Goption_Context := Glib.Option.G_New;
+      Group      : Glib.Option.GOption_Group;
+   begin
+      --  A null-terminated entry array points at Ada storage for parsed data.
+      Entries (0) :=
+        (Long_Name       => Gtkada.Types.New_String ("main-group-option"),
+         Short_Name      => 'm',
+         Flags           => Glib.Option.G_Option_Flag_None,
+         Arg             => Glib.Option.G_Option_Arg_None,
+         Arg_Data        => Flag_Value'Address,
+         Description     => Gtkada.Types.New_String ("Main group option"),
+         Arg_Description => Gtkada.Types.Null_Ptr);
+      Entries (1) := Glib.Option.Null_GOption_Entry;
+      Glib.Option.Add_Main_Entries (Context, Entries);
+      Group := Glib.Option.Get_Main_Group (Context);
+      Glib.Test.Assert_True
+        (Group /= null,
+         "Get_Main_Group must return a non-null group after Add_Main_Entries");
+      --  Request main help: the implicitly created group has no heading
+      --  for GLib's group-specific help formatter.
+      Glib.Test.Assert_True
+        (Contains
+           (Glib.Option.Get_Help (Context, True, null),
+            "--main-group-option"),
+         "The main group must contain the option entries");
+      --  Free owns the group; only the original Ada strings need releasing.
+      Glib.Option.Free (Context);
+      Gtkada.Types.Free (Entries (0).Long_Name);
+      Gtkada.Types.Free (Entries (0).Description);
+
+      --  The same API promises null when no main group has been installed.
+      Context := Glib.Option.G_New;
+      Glib.Test.Assert_True
+        (Glib.Option.Get_Main_Group (Context) = null,
+         "Get_Main_Group must return null for a context without a main group");
+      Glib.Option.Free (Context);
+   end Test_Get_Main_Group;
+
 begin
    Glib.Test.Init;
    Glib.Test.Add_Func
@@ -484,5 +529,8 @@ begin
      ("/glib-option/parse-and-errors", Test_Parse_And_Errors'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/glib-option/translation", Test_Translation'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-option/get-main-group-pointer-return",
+      Test_Get_Main_Group'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;
