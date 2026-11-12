@@ -57,8 +57,21 @@ bind = false
 
 [[method]]
 id = "::open"
-bind = false
-# requires array_of_GFile
+
+[[method.parameter]]
+name = "files"
+type = "Glib.GFile.GFile_Array"
+
+[[method.parameter]]
+name = "n_files"
+ada = ""
+
+[method.doc]
+extend = true
+text = '''
+Files and its elements are borrowed for the duration of the callback.
+Take a reference to any file that must be kept after the handler returns.
+'''
 
 [[method]]
 id = "g_application_add_main_option_entries"

@@ -1666,7 +1666,7 @@ def indent_code(code, indent=3, addnewlines=True) -> str:
 
 
 class Local_Var(object):
-    __slots__ = ["name", "type", "default", "aliased", "constant"]
+    __slots__ = ["name", "type", "default", "aliased", "constant", "address"]
 
     def __init__(
         self,
@@ -1675,12 +1675,16 @@ class Local_Var(object):
         default: str = "",
         aliased: bool = False,
         constant: bool = False,
+        address: str = "",
     ):
         self.set_type(type)
         self.name = name
         self.default = default
         self.aliased = aliased
         self.constant = constant
+        # Imported views of borrowed C storage must not be initialized or
+        # finalized by Ada. The expression supplies their address.
+        self.address = address
 
     def __repr__(self):
         return "<Local_Var name=%s type=%s>" % (self.name, self.type)
@@ -1721,6 +1725,17 @@ class Local_Var(object):
         aliased = ""
         if self.aliased:
             aliased = "aliased "
+
+        if self.address:
+            assert not self.default
+            return "%-*s : %s%s%s with Import, Address => %s" % (
+                length,
+                self.name,
+                "constant " if self.constant else "",
+                aliased,
+                t,
+                self.address,
+            )
 
         if self.default and show_default:
             return "%-*s : %s%s%s := %s" % (
