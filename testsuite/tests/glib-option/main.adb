@@ -20,25 +20,15 @@ with Gtkada.Types;
 procedure Main is
    use type Glib.Error.GError;
    use type Glib.Gboolean;
+   use type Glib.Guint;
    use type Glib.Application.GApplication_Flags;
+   use type Glib.Option.GOption_Group;
+   use type System.Address;
    use type Gtkada.Types.Chars_Ptr;
 
    function To_Argv is new Ada.Unchecked_Conversion
      (System.Address, Gtkada.Bindings.chars_ptr_array_access);
    --  Parse's argv overload expects a C pointer to the first array element.
-
-   --  GLib exposes group construction and entry registration in C; these
-   --  imports create valid groups for the ownership-taking GtkAda wrappers.
-   function New_Option_Group
-     (Name, Description, Help_Description : Gtkada.Types.Chars_Ptr;
-      User_Data, Destroy_Notify           : System.Address)
-      return Glib.Option.GOption_Group;
-   pragma Import (C, New_Option_Group, "g_option_group_new");
-
-   procedure Add_Option_Group_Entries
-     (Group : Glib.Option.GOption_Group;
-      Items : Glib.Option.GOption_Entry_Array);
-   pragma Import (C, Add_Option_Group_Entries, "g_option_group_add_entries");
 
    Destroyed_User_Data : Natural := 0;
 
@@ -168,25 +158,38 @@ procedure Main is
       Gtkada.Types.Free (Entries (1).Arg_Description);
    end Test_Context_And_Help;
 
-   --  Build valid C groups because GtkAda does not publish a GOptionGroup
-   --  constructor; each context takes ownership of its group.
+   --  Construct groups through Ada, with explicit and transferred ownership.
    procedure Test_Groups is
-      Added_Flag  : aliased Glib.Gboolean := 0;
-      Main_Flag   : aliased Glib.Gboolean := 0;
-      Context     : Glib.Option.Goption_Context;
-      Group       : Glib.Option.GOption_Group;
-      Name        : Gtkada.Types.Chars_Ptr;
-      Description : Gtkada.Types.Chars_Ptr;
-      Group_Help  : Gtkada.Types.Chars_Ptr;
-      Items       : Glib.Option.GOption_Entry_Array (0 .. 1);
+      Added_Flag : aliased Glib.Gboolean := 0;
+      Main_Flag  : aliased Glib.Gboolean := 0;
+      Context    : Glib.Option.Goption_Context;
+      Group      : Glib.Option.GOption_Group;
+      Items      : Glib.Option.GOption_Entry_Array (0 .. 1);
+      Payload    : aliased Integer := 42;
+      Destroyed  : Glib.Guint := 0;
+
+      procedure Destroy_Group_Data (Data : System.Address)
+      with Convention => C;
+
+      procedure Destroy_Group_Data (Data : System.Address) is
+      begin
+         Glib.Test.Assert_True (Data = Payload'Address);
+         Destroyed := Destroyed + 1;
+      end Destroy_Group_Data;
    begin
+      --  A group that is not transferred must release its data exactly once.
+      Group := Glib.Option.G_New
+        ("standalone", "Standalone group:", "Standalone group help",
+         Payload'Address, Destroy_Group_Data'Unrestricted_Access);
+      Glib.Test.Assert_True (Group /= null);
+      Glib.Test.Assert_Cmpuint_Eq (Destroyed, 0);
+      Glib.Option.Unref (Group);
+      Glib.Test.Assert_Cmpuint_Eq (Destroyed, 1);
+
       --  A named group added to the context appears in --help-all output.
-      Name := Gtkada.Types.New_String ("extra");
-      Description := Gtkada.Types.New_String ("Extra group");
-      Group_Help := Gtkada.Types.New_String ("Extra group help");
-      Group := New_Option_Group
-        (Name, Description, Group_Help, System.Null_Address,
-         System.Null_Address);
+      Group := Glib.Option.G_New
+        ("extra", "Extra group:", "Extra group help",
+         Payload'Address, Destroy_Group_Data'Unrestricted_Access);
       Items (0) :=
         (Long_Name       => Gtkada.Types.New_String ("extra-option"),
          Short_Name      => 'e',
@@ -196,28 +199,26 @@ procedure Main is
          Description     => Gtkada.Types.New_String ("Extra option"),
          Arg_Description => Gtkada.Types.Null_Ptr);
       Items (1) := Glib.Option.Null_GOption_Entry;
-      Add_Option_Group_Entries (Group, Items);
+      Glib.Option.Add_Entries (Group, Items);
       --  Add_Group transfers the group to this context, so Free owns cleanup.
       Context := Glib.Option.G_New;
       Glib.Option.Add_Group (Context, Group);
       Glib.Test.Assert_True
         (Contains
            (Glib.Option.Get_Help (Context, False, null), "--extra-option"));
+      Glib.Test.Assert_True
+        (Contains
+           (Glib.Option.Get_Help (Context, False, null), "Extra group:"));
+      Glib.Test.Assert_Cmpuint_Eq (Destroyed, 1);
       Glib.Option.Free (Context);
-      Gtkada.Types.Free (Name);
-      Gtkada.Types.Free (Description);
-      Gtkada.Types.Free (Group_Help);
+      Glib.Test.Assert_Cmpuint_Eq (Destroyed, 2);
       Gtkada.Types.Free (Items (0).Long_Name);
       Gtkada.Types.Free (Items (0).Description);
 
       --  A main group contributes its options to ordinary --help output.
       --  GLib requires a main group to have no group name.
-      Name := Gtkada.Types.Null_Ptr;
-      Description := Gtkada.Types.New_String ("Main group");
-      Group_Help := Gtkada.Types.New_String ("Main group help");
-      Group := New_Option_Group
-        (Name, Description, Group_Help, System.Null_Address,
-         System.Null_Address);
+      Group := Glib.Option.G_New
+        (Description => "Main group:", Help_Description => "Main group help");
       Items (0) :=
         (Long_Name       => Gtkada.Types.New_String ("primary-option"),
          Short_Name      => 'p',
@@ -227,15 +228,15 @@ procedure Main is
          Description     => Gtkada.Types.New_String ("Primary option"),
          Arg_Description => Gtkada.Types.Null_Ptr);
       Items (1) := Glib.Option.Null_GOption_Entry;
-      Add_Option_Group_Entries (Group, Items);
+      Glib.Option.Add_Entries (Group, Items);
       Context := Glib.Option.G_New;
+      Glib.Test.Assert_True (Glib.Option.Get_Main_Group (Context) = null);
       Glib.Option.Set_Main_Group (Context, Group);
+      Glib.Test.Assert_True (Glib.Option.Get_Main_Group (Context) = Group);
       Glib.Test.Assert_True
         (Contains
            (Glib.Option.Get_Help (Context, True, null), "--primary-option"));
       Glib.Option.Free (Context);
-      Gtkada.Types.Free (Description);
-      Gtkada.Types.Free (Group_Help);
       Gtkada.Types.Free (Items (0).Long_Name);
       Gtkada.Types.Free (Items (0).Description);
    end Test_Groups;
