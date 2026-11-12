@@ -14,6 +14,7 @@ with Glib.Action_Group;
 with Glib.Variant;
 with GNAT.Strings;
 with Cairo;                 use Cairo;
+with Cairo.Font_Options;
 with Gdk.Rectangle;        use Gdk.Rectangle;
 with Gdk.Frame_Clock;
 with Gdk.RGBA;
@@ -77,6 +78,7 @@ procedure Gtk_Widget is
    procedure Test_Required_Tick_Callback with Convention => C;
    procedure Test_Required_Data_Tick_Callback with Convention => C;
    procedure Test_State_Flags_Changed with Convention => C;
+   procedure Test_Font_Options with Convention => C;
 
    procedure Test_Widget_Class_Init (Self : GObject_Class);
    pragma Convention (C, Test_Widget_Class_Init);
@@ -938,6 +940,46 @@ procedure Gtk_Widget is
       Unref (Slot);
    end Test_State_Flags_Changed;
 
+   --  Regression for gtk-widget.set-font-options-pointer-level: GTK takes
+   --  the Cairo object pointer, not the address of the Ada pointer variable.
+   --  Setting explicit options must copy their values, and a null pointer
+   --  must clear that override rather than install another options object.
+   procedure Test_Font_Options is
+      Label : constant Gtk_Label := Gtk_Label_New ("font options");
+      Options : Cairo_Font_Options := Cairo.Font_Options.Create;
+      No_Options : Cairo_Font_Options := Null_Font_Options;
+      Stored : Cairo_Font_Options;
+   begin
+      --  Sink the floating widget reference so Unref below owns its cleanup.
+      Ref_Sink (Label);
+      Assert_True
+        (Cairo.Font_Options.Status (Options) = Cairo_Status_Success);
+      Cairo.Font_Options.Set_Antialias (Options, Cairo_Antialias_None);
+      Cairo.Font_Options.Set_Hint_Style (Options, Cairo_Hint_Style_Full);
+
+      Set_Font_Options (Label, Options);
+      --  The getter is borrowed: only our original Options is destroyed.
+      Stored := Get_Font_Options (Label);
+      Assert_True
+        (Stored /= Null_Font_Options,
+         "Set_Font_Options must install the supplied font options");
+      Assert_True
+        (Cairo.Font_Options.Equal (Stored, Options),
+         "Set_Font_Options must preserve the supplied Cairo option values");
+      Cairo.Font_Options.Destroy (Options);
+      Assert_True
+        (Cairo.Font_Options.Get_Antialias (Stored) = Cairo_Antialias_None,
+         "Set_Font_Options must keep a copy after the caller destroys options");
+
+      --  A variable also compiles with the defective in out profile; it still
+      --  represents the documented null Cairo pointer that clears the override.
+      Set_Font_Options (Label, No_Options);
+      Assert_True
+        (Get_Font_Options (Label) = Null_Font_Options,
+         "Set_Font_Options with null must clear the widget font options");
+      Unref (Label);
+   end Test_Font_Options;
+
    --------------------------
    -- Test_Inherited_Vfuncs --
    --------------------------
@@ -1019,6 +1061,8 @@ begin
    Glib.Test.Add_Func
      ("/gtk-widget/state-flags-changed",
       Test_State_Flags_Changed'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gtk-widget/font-options", Test_Font_Options'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Gtk_Widget;

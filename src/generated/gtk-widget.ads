@@ -1023,7 +1023,7 @@ package Gtk.Widget is
 
    procedure Set_Font_Options
       (Widget  : not null access Gtk_Widget_Record;
-       Options : in out Cairo.Cairo_Font_Options);
+       Options : Cairo.Cairo_Font_Options);
    pragma Obsolescent (Set_Font_Options);
    --  Sets the `cairo_font_options_t` used for text rendering in the widget.
    --  When not set, the default font options for the `GdkDisplay` will be

@@ -2144,11 +2144,11 @@ package body Gtk.Widget is
 
    procedure Set_Font_Options
       (Widget  : not null access Gtk_Widget_Record;
-       Options : in out Cairo.Cairo_Font_Options)
+       Options : Cairo.Cairo_Font_Options)
    is
       procedure Internal
          (Widget  : System.Address;
-          Options : in out Cairo.Cairo_Font_Options);
+          Options : Cairo.Cairo_Font_Options);
       pragma Import (C, Internal, "gtk_widget_set_font_options");
    begin
       Internal (Get_Object (Widget), Options);

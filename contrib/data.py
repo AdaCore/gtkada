@@ -879,7 +879,7 @@ naming.type_exceptions = {
     "cairo_pattern_t*": Proxy("Cairo.Cairo_Pattern"),
     "cairo_surface_t*": Proxy("Cairo.Cairo_Surface"),
     "cairo_region_t*": Proxy("Cairo.Region.Cairo_Region"),
-    "cairo_font_options_t": Proxy("Cairo.Cairo_Font_Options"),
+    "cairo_font_options_t*": Proxy("Cairo.Cairo_Font_Options"),
     "GtkWidgetClass": Proxy("Glib.Object.GObject_Class"),
     "GtkWidgetClass*": Proxy("Glib.Object.GObject_Class"),
     # Force mapping to a Proxy. This is also hard-coded in GITClass.__init__
