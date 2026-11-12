@@ -18,6 +18,14 @@ package body Callbacks is
       Basic_Callback_Count := Basic_Callback_Count + 1;
    end On_Basic_Callback;
 
+   --  Record both dispatch and payload for glib-cancellable.callback-abi.
+   --  The generic adapter must retrieve the caller's data from its closure.
+   procedure On_Data_Callback (Data : Integer) is
+   begin
+      Data_Callback_Count := Data_Callback_Count + 1;
+      Last_Callback_Data := Data;
+   end On_Data_Callback;
+
    -------------------------
    -- On_Typed_Cancelled --
    -------------------------

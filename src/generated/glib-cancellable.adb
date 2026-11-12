@@ -68,14 +68,20 @@ package body Glib.Cancellable is
    function To_Address is new Ada.Unchecked_Conversion
      (Gcallback, System.Address);
 
-   procedure Internal_Gcallback (Data : System.Address);
+   procedure Internal_Gcallback
+      (Cancellable : System.Address;
+       Data        : System.Address);
    pragma Convention (C, Internal_Gcallback);
 
    ------------------------
    -- Internal_Gcallback --
    ------------------------
 
-   procedure Internal_Gcallback (Data : System.Address) is
+   procedure Internal_Gcallback
+      (Cancellable : System.Address;
+       Data        : System.Address)
+   is
+      pragma Unreferenced (Cancellable);
       Func : constant Gcallback := To_Gcallback (Data);
    begin
       Func.all;
@@ -158,15 +164,11 @@ package body Glib.Cancellable is
       function To_Address is new Ada.Unchecked_Conversion
         (Gcallback, System.Address);
 
-      procedure Internal_Cb (Data : System.Address);
+      procedure Internal_Cb
+         (Cancellable : System.Address;
+          Data        : System.Address);
       pragma Convention (C, Internal_Cb);
-      --  The type used for callback functions in structure definitions and
-      --  function signatures.
-      --  This doesn't mean that all callback functions must take no
-      --  parameters and return void. The required signature of a callback
-      --  function is determined by the context in which is used (e.g. the
-      --  signal to which it is connected).
-      --  Use G_CALLBACK to cast the callback function to a Gcallback.
+      --  Callback invoked when the cancellable is cancelled.
 
       -------------
       -- Connect --
@@ -192,7 +194,11 @@ package body Glib.Cancellable is
       -- Internal_Cb --
       -----------------
 
-      procedure Internal_Cb (Data : System.Address) is
+      procedure Internal_Cb
+         (Cancellable : System.Address;
+          Data        : System.Address)
+      is
+         pragma Unreferenced (Cancellable);
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
          To_Gcallback (D.Func) (D.Data.all);

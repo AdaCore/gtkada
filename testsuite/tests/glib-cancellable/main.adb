@@ -26,8 +26,8 @@ procedure Main is
    use type Glib.Object.GObject;
    use type System.Address;
 
-   --  The instance exposes the generic callback type independently of the
-   --  callback execution path, which is documented in the coverage notes.
+   --  Instantiate the binding for an ordinary Ada payload; its callback is
+   --  library-level in Callbacks so the stored address remains valid.
    package Integer_Connection is new Connect_User_Data (Integer);
    use type Integer_Connection.Gcallback;
 
@@ -160,11 +160,113 @@ procedure Main is
       Glib.Object.Unref (Glib.Object.GObject (Cancellable));
    end Test_Callbacks;
 
+   --  Regression for glib-cancellable.callback-abi: the C cancelled signal
+   --  passes the emitting object before the closure data. Connect's adapter
+   --  must use the latter to find the no-argument Ada callback. Cancellation
+   --  is synchronous, so the callback must have run when Cancel returns.
+   procedure Test_Connect_Callback with Convention => C;
+   procedure Test_Connect_Callback is
+      Cancellable : Gcancellable := Gcancellable_New;
+      Handler     : Glib.Gulong;
+   begin
+      Callbacks.Basic_Callback_Count := 0;
+      Handler := Connect
+        (Cancellable, Callbacks.On_Basic_Callback'Access, null);
+      Assert_True (Handler /= 0);
+
+      --  The defective adapter raises STORAGE_ERROR before the callback runs.
+      Cancel (Cancellable);
+      Assert_True
+        (Callbacks.Basic_Callback_Count = 1,
+         "Connect must invoke the registered callback on cancellation");
+      Cancel (Cancellable);
+      Assert_True
+        (Callbacks.Basic_Callback_Count = 1,
+         "Connect callback must run at most once");
+      Disconnect (Cancellable, Handler);
+      Glib.Object.Unref (Glib.Object.GObject (Cancellable));
+   end Test_Connect_Callback;
+
+   --  The generic adapter has the same ABI defect. It must dispatch the
+   --  callback with the original Ada payload, rather than interpreting the
+   --  emitting GCancellable as its internal closure. A null destroy notify
+   --  keeps this case independent of the separate closure cleanup defect.
+   procedure Test_Connect_User_Data_Callback with Convention => C;
+   procedure Test_Connect_User_Data_Callback is
+      Cancellable : Gcancellable := Gcancellable_New;
+      Handler     : Glib.Gulong;
+   begin
+      Callbacks.Data_Callback_Count := 0;
+      Callbacks.Last_Callback_Data := 0;
+      Handler := Integer_Connection.Connect
+        (Cancellable, Callbacks.On_Data_Callback'Access, 12345, null);
+      Assert_True (Handler /= 0);
+
+      Cancel (Cancellable);
+      Assert_True
+        (Callbacks.Data_Callback_Count = 1,
+         "Connect_User_Data must invoke the registered callback");
+      Assert_True
+        (Callbacks.Last_Callback_Data = 12345,
+         "Connect_User_Data must deliver the original Ada payload");
+      Cancel (Cancellable);
+      Assert_True
+        (Callbacks.Data_Callback_Count = 1,
+         "Connect_User_Data callback must run at most once");
+      Disconnect (Cancellable, Handler);
+      Glib.Object.Unref (Glib.Object.GObject (Cancellable));
+   end Test_Connect_User_Data_Callback;
+
+   --  Connecting an already-cancelled object invokes the callback directly
+   --  from g_cancellable_connect rather than through signal emission. Both
+   --  dispatch paths must use the same two-argument C callback profile.
+   procedure Test_Connect_Already_Cancelled with Convention => C;
+   procedure Test_Connect_Already_Cancelled is
+      Cancellable : Gcancellable := Gcancellable_New;
+      Handler     : Glib.Gulong;
+   begin
+      Callbacks.Basic_Callback_Count := 0;
+      Callbacks.Data_Callback_Count := 0;
+      Callbacks.Last_Callback_Data := 0;
+      Cancel (Cancellable);
+
+      Handler := Connect
+        (Cancellable, Callbacks.On_Basic_Callback'Access, null);
+      Assert_True (Handler = 0);
+      Assert_True
+        (Callbacks.Basic_Callback_Count = 1,
+         "Connect must invoke the callback before returning");
+
+      Handler := Integer_Connection.Connect
+        (Cancellable, Callbacks.On_Data_Callback'Access, -6789, null);
+      Assert_True (Handler = 0);
+      Assert_True
+        (Callbacks.Data_Callback_Count = 1,
+         "Connect_User_Data must invoke the callback before returning");
+      Assert_True
+        (Callbacks.Last_Callback_Data = -6789,
+         "Immediate cancellation must deliver the original Ada payload");
+
+      Cancel (Cancellable);
+      Assert_True (Callbacks.Basic_Callback_Count = 1);
+      Assert_True (Callbacks.Data_Callback_Count = 1);
+      Glib.Object.Unref (Glib.Object.GObject (Cancellable));
+   end Test_Connect_Already_Cancelled;
+
 begin
    Glib.Test.Init;
    Glib.Test.Add_Func
      ("/glib-cancellable/lifecycle", Test_Lifecycle'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/glib-cancellable/callbacks", Test_Callbacks'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-cancellable/connect-callback",
+      Test_Connect_Callback'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-cancellable/connect-user-data-callback",
+      Test_Connect_User_Data_Callback'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-cancellable/connect-already-cancelled",
+      Test_Connect_Already_Cancelled'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

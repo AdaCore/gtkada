@@ -3,6 +3,37 @@
 # ============================================================
 ada = "Glib.Cancellable"
 
+# GCallback is untyped in GObject's GIR. Here it receives the cancelled
+# signal's instance followed by closure data. Keep the instance in the C
+# adapters while preserving the no-argument Ada callback API.
+[[extra.gir_element]]
+xml = '''
+<gir:callback xmlns:c="http://www.gtk.org/introspection/c/1.0"
+              xmlns:gir="http://www.gtk.org/introspection/core/1.0"
+              name="Callback" c:type="GCallback">
+  <gir:doc>Callback invoked when the cancellable is cancelled.</gir:doc>
+  <gir:return-value transfer-ownership="none">
+    <gir:type name="none" c:type="void"/>
+  </gir:return-value>
+  <gir:parameters>
+    <gir:parameter name="cancellable" transfer-ownership="none">
+      <gir:type name="Cancellable" c:type="GCancellable*"/>
+    </gir:parameter>
+    <gir:parameter name="data" transfer-ownership="none" nullable="1"
+                   allow-none="1">
+      <gir:type name="gpointer" c:type="gpointer"/>
+    </gir:parameter>
+  </gir:parameters>
+</gir:callback>
+'''
+
+[[callback]]
+id = "Gcallback"
+
+[[callback.parameter]]
+name = "cancellable"
+ada = ""
+
 [[method]]
 id = "g_cancellable_make_pollfd"
 bind = false

@@ -695,9 +695,6 @@ destroy_data_params = [
     "user_data_free_func",
 ]
 
-# Callbacks that require special handling
-callback_exceptions = ['Gcallback']
-
 # Maps c methods to Ada subprograms or enumeration (for docs).
 # All methods that are generated automatically will be added
 # as they are processed.

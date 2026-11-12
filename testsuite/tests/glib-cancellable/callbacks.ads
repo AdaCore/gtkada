@@ -10,6 +10,8 @@ package Callbacks is
 
    --  These counters record each callback route for Glib.Test assertions.
    Basic_Callback_Count : Natural := 0;
+   Data_Callback_Count  : Natural := 0;
+   Last_Callback_Data   : Integer := 0;
    Typed_Signal_Count   : Natural := 0;
    Slot_Signal_Count    : Natural := 0;
    Exception_Count      : Natural := 0;
@@ -19,6 +21,9 @@ package Callbacks is
    Expected_Slot        : Glib.Cancellable.Gcancellable := null;
 
    procedure On_Basic_Callback;
+   --  A library-level callback also lets Connect_User_Data store a plain
+   --  Ada subprogram address without a nested subprogram trampoline.
+   procedure On_Data_Callback (Data : Integer);
    procedure On_Typed_Cancelled
      (Self : access Glib.Cancellable.Gcancellable_Record'Class);
    procedure On_Typed_Raises

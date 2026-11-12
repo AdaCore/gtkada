@@ -96,7 +96,7 @@ from adaformat import *
 import copy
 import textwrap
 from binding_gtkada import GtkAda, GtkAdaMethod
-from data import enums, interfaces, binding, manual_binding, user_data_params, callback_exceptions, destroy_data_params
+from data import enums, interfaces, binding, manual_binding, user_data_params, destroy_data_params
 import sys
 
 # type hints
@@ -1926,20 +1926,23 @@ end if;"""
 
         destroy = profile.find_param(destroy_data_params)
 
-        # Compute the profile of the callback (with all its arguments)
-        try:
-            cb_gir_node = self.gir.callbacks[cb.type.ada]
-        except:
-            raise Exception("No GIR node for %s in callback %s" % (cb.type.ada, cname))
+        # A generic C callback type such as GCallback has no fixed ABI.
+        # Prefer a package-local GIR callback supplied by the overrides,
+        # which describes the signature required by this context.
+        cb_gir_node = next(
+            (node for node in self.node.findall(ncallback)
+             if naming.case(node.get(ctype_qname, "")) == cbname),
+            None,
+        )
+        if cb_gir_node is None:
+            try:
+                cb_gir_node = self.gir.callbacks[cb.type.ada]
+            except KeyError:
+                raise Exception("No GIR node for %s in callback %s" % (cb.type.ada, cname))
 
         cbgtk = self.gtkpkg.get_method(cbname)
 
         cb_profile = SubprogramProfile.parse(cb_gir_node, gtkmethod=cbgtk, pkg=self.pkg)
-        # Override callbacks that require special handling
-        if cbname in callback_exceptions:
-            cb_profile.user_data_param = 0
-            cb_profile.add_param (cb_profile.user_data_param,
-                                  Parameter("Data", "System.Address"))
 
         user_data = profile.callback_user_data()
         cb_user_data = cb_profile.find_param(user_data_params)

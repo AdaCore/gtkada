@@ -763,6 +763,16 @@ the naming table.
 |-------|--------|-------------------------------------------------------------------------------|
 | `xml` | string | XML element matching what would have appeared in the GIR file. Used to add a method or other GIR construct that the actual .gir does not expose. |
 
+A package-local `<gir:callback>` with the same `c:type` as a callback
+parameter takes precedence over the namespace's callback definition.
+Use this for untyped callbacks such as `GCallback`, whose C signature
+depends on the context. Declare every C argument in ABI order, including
+the signal instance and closure data, then use `[[callback.parameter]]`
+with `ada = ""` to hide arguments the Ada callback does not need. Both
+the ordinary and generic user-data adapters retain those C arguments.
+`GCancellable.toml` provides the `cancelled` signal's two-argument profile
+while keeping its existing no-argument Ada callback type.
+
 ```toml
 # GtkEnums.toml
 [extra]
