@@ -260,8 +260,10 @@ package Gtk.GEntry is
 
    procedure Set_Extra_Menu
       (Self  : not null access Gtk_Entry_Record;
-       Model : access Glib.Menu_Model.Gmenu_Model_Record'Class);
+       Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class);
    --  Sets a menu model to add when constructing the context menu for Entry.
+   --  Model must be non-null. Passing null raises Constraint_Error before
+   --  calling GTK.
    --  @param Model a `GMenuModel`
 
    function Get_Has_Frame

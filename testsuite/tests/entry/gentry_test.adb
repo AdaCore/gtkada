@@ -219,6 +219,7 @@ procedure Gentry_Test is
    procedure Test_Completion_Accessors with Convention => C;
    procedure Test_Completion_Cell_Layout with Convention => C;
    procedure Test_Completion_Signals with Convention => C;
+   procedure Test_Extra_Menu_Nullability with Convention => C;
 
    --  Save a fixed-width snapshot so callbacks can verify before/after text.
    procedure Save_Text (Target : out UTF8_String; Value : UTF8_String) is
@@ -1208,6 +1209,31 @@ procedure Gentry_Test is
       Unref (Completion);
    end Test_Completion_Signals;
 
+   --  Regression for gtk-gentry.extra-menu-nullability: GTK rejects a null
+   --  extra menu with a g_object_ref critical, so the Ada setter must reject
+   --  it before entering C. A not-null access parameter raises Constraint_Error
+   --  for a null value obtained at runtime, while keeping this call compilable.
+   procedure Test_Extra_Menu_Nullability is
+      E : constant Gtk_Entry := Gtk_Entry_New;
+      Model : constant Gmenu_Model := E.Get_Extra_Menu;
+      Rejected : Boolean := False;
+   begin
+      --  Sink the widget's floating reference before releasing it with Unref.
+      Ref_Sink (E);
+      Assert_True (Model = null, "a new entry has no extra menu");
+
+      begin
+         E.Set_Extra_Menu (Model);
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+      Assert_True
+        (Rejected, "Set_Extra_Menu must reject a null model before calling GTK");
+      Assert_True (E.Get_Extra_Menu = null);
+      Unref (E);
+   end Test_Extra_Menu_Nullability;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
@@ -1231,5 +1257,10 @@ begin
    Glib.Test.Add_Func
      ("/entry/completion-signals",
       Test_Completion_Signals'Unrestricted_Access);
+   --  Run the nullability regression last so the fatal GTK critical in the
+   --  defective binding does not prevent the existing cases from running.
+   Glib.Test.Add_Func
+     ("/entry/extra-menu-nullability",
+      Test_Extra_Menu_Nullability'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Gentry_Test;

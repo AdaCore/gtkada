@@ -680,12 +680,12 @@ package body Gtk.GEntry is
 
    procedure Set_Extra_Menu
       (Self  : not null access Gtk_Entry_Record;
-       Model : access Glib.Menu_Model.Gmenu_Model_Record'Class)
+       Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
    is
       procedure Internal (Self : System.Address; Model : System.Address);
       pragma Import (C, Internal, "gtk_entry_set_extra_menu");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Model)));
+      Internal (Get_Object (Self), Get_Object (Model));
    end Set_Extra_Menu;
 
    -------------------
