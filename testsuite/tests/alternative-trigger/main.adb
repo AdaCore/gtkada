@@ -12,7 +12,10 @@ with Glib.Test;              use Glib.Test;
 with Gtk.Alternative_Trigger; use Gtk.Alternative_Trigger;
 with Gtk.Keyval_Trigger;
 with Gtk.Mnemonic_Trigger;
+with Gtk.Named_Action;
+with Gtk.Shortcut_Action;
 with Gtk.Shortcut_Trigger;   use Gtk.Shortcut_Trigger;
+with Gtk.Signal_Action;
 
 procedure Main is
    use type System.Address;
@@ -20,6 +23,8 @@ procedure Main is
    procedure Test_Constructors with Convention => C;
    procedure Test_Mnemonic_Trigger with Convention => C;
    procedure Test_Keyval_Trigger with Convention => C;
+   procedure Test_Parse_Alternative_Tag with Convention => C;
+   procedure Test_Parse_Action_Tag with Convention => C;
 
    ----------------------
    -- Test_Constructors --
@@ -135,6 +140,98 @@ procedure Main is
       Unref (Gtk_Shortcut_Trigger (By_Procedure));
    end Test_Keyval_Trigger;
 
+   --  Regression for gtk-alternative_trigger.polymorphic-constructor-tag.
+   --  As in shortcuts.c:test_trigger_parse_alternative, parsing two triggers
+   --  separated by | must produce an alternative with ordered children.
+   procedure Test_Parse_Alternative_Tag is
+      Parsed : constant Gtk_Shortcut_Trigger :=
+        Gtk_Shortcut_Trigger_Parse_String ("_U|<Shift>u");
+   begin
+      Assert_True (Parsed /= null, "alternative trigger parsing succeeds");
+      Assert_True
+        (Get_Type (GObject (Parsed)) = Gtk.Alternative_Trigger.Get_Type,
+         "GTK parser returns a GtkAlternativeTrigger GObject");
+
+      --  GObject type checks alone miss the defect: Ada access conversions
+      --  also check the wrapper's tag. Assert membership before converting,
+      --  so a discarded subtype gives a useful failure, not Constraint_Error.
+      Assert_True
+        (Parsed.all in Gtk_Alternative_Trigger_Record'Class,
+         "parsed alternative trigger must preserve its Ada subtype tag");
+      --  Glib.Test assertions are nonfatal. Stop this case after a bad tag
+      --  so the conversion cannot raise and prevent the other cases running.
+      if Parsed.all not in Gtk_Alternative_Trigger_Record'Class then
+         Unref (Parsed);
+         return;
+      end if;
+      declare
+         Alternative : constant Gtk_Alternative_Trigger :=
+           Gtk_Alternative_Trigger (Parsed);
+         First : constant Gtk_Shortcut_Trigger := Alternative.Get_First;
+         Second : constant Gtk_Shortcut_Trigger := Alternative.Get_Second;
+      begin
+         Assert_True
+           (First.all in Gtk.Mnemonic_Trigger.Gtk_Mnemonic_Trigger_Record'Class,
+            "first parsed alternative child must be a mnemonic trigger");
+         Assert_True
+           (Second.all in Gtk.Keyval_Trigger.Gtk_Keyval_Trigger_Record'Class,
+            "second parsed alternative child must be a keyval trigger");
+         Assert_Cmpuint_Eq
+           (Gtk.Mnemonic_Trigger.Gtk_Mnemonic_Trigger (First).Get_Keyval,
+            Guint (Character'Pos ('u')));
+         Assert_Cmpuint_Eq
+           (Gtk.Keyval_Trigger.Gtk_Keyval_Trigger (Second).Get_Keyval,
+            Guint (Character'Pos ('u')));
+         Assert_True
+           (Gtk.Keyval_Trigger.Gtk_Keyval_Trigger (Second).Get_Modifiers =
+              Gdk_Shift_Mask);
+      end;
+
+      --  Get_First/Get_Second borrow their references; only the parser's
+      --  full reference is ours to release, and it owns both children.
+      Unref (Parsed);
+   end Test_Parse_Alternative_Tag;
+
+   --  The action parser has the same defect, tracked by
+   --  gtk-alternative_trigger.polymorphic-constructor-tag. Its documented
+   --  named and signal results must support Ada conversions and getters.
+   procedure Test_Parse_Action_Tag is
+      Named : constant Gtk.Shortcut_Action.Gtk_Shortcut_Action :=
+        Gtk.Shortcut_Action.Gtk_Shortcut_Action_Parse_String
+          ("action(win.dark)");
+      Signal : constant Gtk.Shortcut_Action.Gtk_Shortcut_Action :=
+        Gtk.Shortcut_Action.Gtk_Shortcut_Action_Parse_String ("signal(frob)");
+   begin
+      Assert_True
+        (Get_Type (GObject (Named)) = Gtk.Named_Action.Get_Type,
+         "GTK action parser returns a GtkNamedAction GObject");
+      Assert_True
+        (Named.all in Gtk.Named_Action.Gtk_Named_Action_Record'Class,
+         "parsed named action must preserve its Ada subtype tag");
+      --  Guard conversions after nonfatal assertions to check both results
+      --  and release their references even when the subtype tag was lost.
+      if Named.all in Gtk.Named_Action.Gtk_Named_Action_Record'Class then
+         Assert_Cmpstr_Eq
+           (Gtk.Named_Action.Gtk_Named_Action (Named).Get_Action_Name,
+            "win.dark");
+      end if;
+      Assert_True
+        (Get_Type (GObject (Signal)) = Gtk.Signal_Action.Get_Type,
+         "GTK action parser returns a GtkSignalAction GObject");
+      Assert_True
+        (Signal.all in Gtk.Signal_Action.Gtk_Signal_Action_Record'Class,
+         "parsed signal action must preserve its Ada subtype tag");
+      if Signal.all in Gtk.Signal_Action.Gtk_Signal_Action_Record'Class then
+         Assert_Cmpstr_Eq
+           (Gtk.Signal_Action.Gtk_Signal_Action (Signal).Get_Signal_Name,
+            "frob");
+      end if;
+
+      --  Each parser call returns a full reference owned by this test.
+      Unref (GObject (Named));
+      Unref (GObject (Signal));
+   end Test_Parse_Action_Tag;
+
 begin
    Glib.Test.Init;
    Glib.Test.Add_Func ("/alternative-trigger/constructors",
@@ -143,5 +240,9 @@ begin
                        Test_Mnemonic_Trigger'Unrestricted_Access);
    Glib.Test.Add_Func ("/alternative-trigger/keyval-trigger",
                        Test_Keyval_Trigger'Unrestricted_Access);
+   Glib.Test.Add_Func ("/alternative-trigger/parse-alternative-tag",
+                       Test_Parse_Alternative_Tag'Unrestricted_Access);
+   Glib.Test.Add_Func ("/alternative-trigger/parse-action-tag",
+                       Test_Parse_Action_Tag'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;
