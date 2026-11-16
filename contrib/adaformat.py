@@ -2484,7 +2484,7 @@ class Code(object):
     automatically formatted (and C names substituted as appropriate).
     """
 
-    def __init__(self, content: str, iscomment: bool = False, fill: bool = True):
+    def __init__(self, content: str, iscomment: bool = False, fill: bool = True, format = True):
         """:param:`fill` whether to reflow the text if this is a comment.
         :param:`add_newline` whether the block should have a leading newline
         """
@@ -2492,13 +2492,17 @@ class Code(object):
         self.iscomment = iscomment
         self.fill = fill
         self.add_newline = True
+        self.do_format = format
 
     def format(self, indent="") -> str:
         """Return the code that should be written into a package"""
         if self.iscomment:
             return format_doc(self.content, indent=indent, fill=self.fill)
         else:
-            return indent_code(self.content, indent=len(indent), addnewlines=False)
+            if self.do_format:
+                return indent_code(self.content, indent=len(indent), addnewlines=False)
+            else:
+                return self.content
 
 
 class Section(object):
@@ -2542,7 +2546,7 @@ class Section(object):
                 "".join(format_doc(comment, indent="   ", fill=fill)) + "\n"
             )
 
-    def add(self, obj, in_spec=True, add_newline=True):
+    def add(self, obj, in_spec=True, add_newline=True, format = True):
         """Add one or more objects to the section (subprogram, code,...).
         :param:`add_newline` indicates whether the object should be
         followed by a blank line. There is never a blank line between some
@@ -2552,7 +2556,7 @@ class Section(object):
         iscode = False
 
         if isinstance(obj, bytes) or isinstance(obj, str):
-            obj = Code(obj)
+            obj = Code(obj, format=format)
             iscode = True
         elif isinstance(obj, Package):
             obj.isnested = True

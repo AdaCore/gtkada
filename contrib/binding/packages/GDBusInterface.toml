@@ -1,0 +1,27 @@
+# ============================================================
+#   GDBusInterface
+# ============================================================
+ada = "Glib.DBus_Interfaces"
+
+[[list]]
+ada = "Gdbus_Interface_List"
+ctype = "GDBusInterface"
+
+[[extra.type]]
+ctype = "DBusInterfaceGList*"
+ada = "Gdbus_Interface_GList"
+text = '''subtype Gdbus_Interface_GList is Gdbus_Interface_List.GList;
+'''
+
+[[extra.spec]]
+text = '''
+   function Get_Interfaces
+      (Self : Glib.DBus_Objects.Gdbus_Object)
+       return Gdbus_Interface_GList;
+   pragma Import (C, Get_Interfaces, "g_dbus_object_get_interfaces");
+   --  Gets the D-Bus interfaces associated with Object.
+   --  Since: gtk+ 2.30
+   --  @return A list of Glib.DBus_Interfaces.Gdbus_Interface instances. The
+   --  returned list must be freed by g_list_free after each element has been
+   --  freed with g_object_unref.
+'''

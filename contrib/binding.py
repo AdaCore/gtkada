@@ -4085,6 +4085,13 @@ end "+";"""
 
         for ctype, enum, adaname, fields, unions, private in self.gtkpkg.records():
 
+            if extra:
+                for p in extra:
+                    if p.tag == "spec" and p.get("before", None) is not None:
+                        n = p.get("before", "")
+                        if n == ctype or n == adaname:
+                            section.add(p.text, format=p.get("format", "true"))
+
             self.record_binding(section, ctype, adaname, enum, fields, unions, private)
             if extra:
                 for p in extra:
@@ -4128,7 +4135,7 @@ end "+";"""
                     if p.get("before", "true").lower() == "true":
                         # Go before the body of generated subprograms, so that
                         # we can add type definition
-                        section.add(p.text, in_spec=False)
+                        section.add(p.text, in_spec=False, format=p.get("format", "true"))
 
         self._constructors()
         self._method_get_type()
@@ -4148,10 +4155,11 @@ end "+";"""
                     if p.get("private", "False").lower() == "true":
                         self.pkg.add_private(p.text, at_end=True)
                     else:
-                        s = s or self.pkg.section("GtkAda additions")
-                        s.add(p.text)
+                        if p.get("before", None) is None:
+                            s = s or self.pkg.section("GtkAda additions")
+                            s.add(p.text, format=p.get("format", "true"))
                 elif p.tag == "body" and p.get("before", "true").lower() != "true":
-                    s.add(p.text, in_spec=False)
+                    s.add(p.text, in_spec=False, format=p.get("format", "true"))
 
         self._functions()
         self._globals()

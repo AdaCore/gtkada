@@ -1,0 +1,130 @@
+
+# ============================================================
+#   GDBusTypes
+# ============================================================
+ada = "Glib.GDBus_Types"
+
+[[extra.with_spec]]
+pkg = "Interfaces.C.Pointers"
+use = false
+
+[[enum]]
+ctype = "GDBusPropertyInfoFlags"
+asbitfield = true
+
+[[extra.spec]]
+before = "GDBusAnnotationInfo"
+format = false
+text = '''   type Gdbus_Annotation_Info;
+   type Gdbus_Annotation_Info_Access is access all Gdbus_Annotation_Info;
+   type Aliased_Gdbus_Annotation_Info_Access_Array is
+      array (Positive range <>) of aliased Gdbus_Annotation_Info_Access
+     with Convention => C;
+   package Gdbus_Annotation_Info_Array_Pointers is new Interfaces.C.Pointers
+     (Positive, Gdbus_Annotation_Info_Access,
+      Aliased_Gdbus_Annotation_Info_Access_Array, null);
+   subtype Gdbus_Annotation_Info_Array_Pointer is
+     Gdbus_Annotation_Info_Array_Pointers.Pointer;
+'''
+
+[[record]]
+ctype = "GDBusAnnotationInfo"
+[[record.field]]
+name = "annotations"
+type = "Gdbus_Annotation_Info_Array_Pointer"
+
+[[record]]
+ctype = "GDBusArgInfo"
+[[record.field]]
+name = "annotations"
+type = "Gdbus_Annotation_Info_Array_Pointer"
+
+[[extra.spec]]
+before = "GDBusMethodInfo"
+format = false
+text = '''   type Gdbus_Arg_Info_Access is access all Gdbus_Arg_Info;
+   type Aliased_Gdbus_Arg_Info_Access_Array is
+      array (Positive range <>) of aliased Gdbus_Arg_Info_Access
+     with Convention => C;
+   package Gdbus_Arg_Info_Array_Pointers is new Interfaces.C.Pointers
+     (Positive, Gdbus_Arg_Info_Access,
+      Aliased_Gdbus_Arg_Info_Access_Array, null);
+   subtype Gdbus_Arg_Info_Array_Pointer is
+     Gdbus_Arg_Info_Array_Pointers.Pointer;
+'''
+
+[[record]]
+ctype = "GDBusMethodInfo"
+[[record.field]]
+name = "in_args"
+type = "Gdbus_Arg_Info_Array_Pointer"
+[[record.field]]
+name = "out_args"
+type = "Gdbus_Arg_Info_Array_Pointer"
+[[record.field]]
+name = "annotations"
+type = "Gdbus_Annotation_Info_Array_Pointer"
+
+[[record]]
+ctype = "GDBusSignalInfo"
+[[record.field]]
+name = "args"
+type = "Gdbus_Arg_Info_Array_Pointer"
+[[record.field]]
+name = "annotations"
+type = "Gdbus_Annotation_Info_Array_Pointer"
+
+[[record]]
+ctype = "GDBusPropertyInfo"
+[[record.field]]
+name = "annotations"
+type = "Gdbus_Annotation_Info_Array_Pointer"
+
+[[extra.spec]]
+before = "GDBusInterfaceInfo"
+format = false
+text = '''   type Gdbus_Method_Info_Access is access all Gdbus_Method_Info;
+   type Aliased_Gdbus_Method_Info_Access_Array is
+      array (Positive range <>) of aliased Gdbus_Method_Info_Access
+     with Convention => C;
+   package Gdbus_Method_Info_Array_Pointers is new Interfaces.C.Pointers
+     (Positive, Gdbus_Method_Info_Access,
+      Aliased_Gdbus_Method_Info_Access_Array, null);
+   subtype Gdbus_Method_Info_Array_Pointer is
+     Gdbus_Method_Info_Array_Pointers.Pointer;
+
+   type Gdbus_Signal_Info_Access is access all Gdbus_Signal_Info;
+   type Aliased_Gdbus_Signal_Info_Access_Array is
+      array (Positive range <>) of aliased Gdbus_Signal_Info_Access
+     with Convention => C;
+   package Gdbus_Signal_Info_Array_Pointers is new Interfaces.C.Pointers
+     (Positive, Gdbus_Signal_Info_Access,
+      Aliased_Gdbus_Signal_Info_Access_Array, null);
+   subtype Gdbus_Signal_Info_Array_Pointer is
+     Gdbus_Signal_Info_Array_Pointers.Pointer;
+
+   type Gdbus_Property_Info_Access is access all Gdbus_Property_Info;
+   type Aliased_Gdbus_Property_Info_Access_Array is
+      array (Positive range <>) of aliased Gdbus_Property_Info_Access
+     with Convention => C;
+   package Gdbus_Property_Info_Array_Pointers is new Interfaces.C.Pointers
+     (Positive, Gdbus_Property_Info_Access,
+      Aliased_Gdbus_Property_Info_Access_Array, null);
+   subtype Gdbus_Property_Info_Array_Pointer is
+     Gdbus_Property_Info_Array_Pointers.Pointer;
+'''
+
+[[record]]
+ctype = "GDBusInterfaceInfo"
+[[record.field]]
+name = "methods"
+type = "Gdbus_Method_Info_Array_Pointer"
+[[record.field]]
+name = "signals"
+type = "Gdbus_Signal_Info_Array_Pointer"
+[[record.field]]
+name = "properties"
+type = "Gdbus_Property_Info_Array_Pointer"
+[[record.field]]
+name = "annotations"
+type = "Gdbus_Annotation_Info_Array_Pointer"
