@@ -297,10 +297,10 @@ package body Glib.Option is
    --------------------
 
    function Get_Main_Group (Self : Goption_Context) return GOption_Group is
-      function Internal (Self : System.Address) return access GOption_Group;
+      function Internal (Self : System.Address) return GOption_Group;
       pragma Import (C, Internal, "g_option_context_get_main_group");
    begin
-      return Internal (Get_Object (Self)).all;
+      return Internal (Get_Object (Self));
    end Get_Main_Group;
 
    ----------------------
@@ -566,6 +566,42 @@ package body Glib.Option is
       Tmp_Return := Internal (Tmp_Parameter_String);
       Free (Tmp_Parameter_String);
       return From_Object (Tmp_Return);
+   end G_New;
+
+   -----------
+   -- G_New --
+   -----------
+
+   function G_New
+      (Name             : UTF8_String := "";
+       Description      : UTF8_String;
+       Help_Description : UTF8_String;
+       User_Data        : System.Address := System.Null_Address;
+       Destroy          : Glib.G_Destroy_Notify_Address := null)
+       return GOption_Group
+   is
+      function Internal
+         (Name             : Gtkada.Types.Chars_Ptr;
+          Description      : Gtkada.Types.Chars_Ptr;
+          Help_Description : Gtkada.Types.Chars_Ptr;
+          User_Data        : System.Address;
+          Destroy          : Glib.G_Destroy_Notify_Address)
+          return GOption_Group;
+      pragma Import (C, Internal, "g_option_group_new");
+      Tmp_Name             : Gtkada.Types.Chars_Ptr;
+      Tmp_Description      : Gtkada.Types.Chars_Ptr := New_String (Description);
+      Tmp_Help_Description : Gtkada.Types.Chars_Ptr := New_String (Help_Description);
+      Tmp_Return           : GOption_Group;
+   begin
+      Tmp_Name :=
+        (if Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Name));
+      Tmp_Return := Internal (Tmp_Name, Tmp_Description, Tmp_Help_Description, User_Data, Destroy);
+      Free (Tmp_Help_Description);
+      Free (Tmp_Description);
+      Free (Tmp_Name);
+      return Tmp_Return;
    end G_New;
 
 end Glib.Option;

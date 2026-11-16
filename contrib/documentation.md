@@ -219,8 +219,10 @@ These four arrays use **the same schema**; they only differ in which
 GIR node is matched.
 
 * `[[method]]` — match a `<method>`.
-* `[[function]]` — match a namespace-level `<function>` and add it
-  to the current Ada package.
+* `[[function]]` — match a namespace-level `<function>` or a type's
+  `<constructor>` by C identifier and add it to the current Ada package.
+  This also exposes constructors of types declared through `[[record]]`,
+  whose methods are not otherwise generated (see `GOptionContext.toml`).
 * `[[callback]]` — match a `<callback>` referenced as a parameter.
 * `[[virtual_method]]` — match a `<virtual-method>`. For
   interfaces every virtual method is bound by default; for other

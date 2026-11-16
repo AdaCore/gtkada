@@ -180,7 +180,7 @@ class GIR(object):
       ``name``; ``self.callbacks`` by Ada name; ``self.enums``,
       ``self.records`` and ``self.constants`` by C name;
       ``self.globals`` is a :class:`GlobalsBinder` holding namespace
-      ``<function>`` nodes by C identifier).
+      functions and type constructors by C identifier).
     * **Owner of the output Ada packages**, in
       ``self.packages`` (lower-cased Ada name to
       :class:`adaformat.Package`). ``self.ccode`` accumulates the C
@@ -459,14 +459,14 @@ class GIR(object):
 
 
 class GlobalsBinder(object):
-    """Flat dictionary of namespace-level ``<function>`` GIR XML nodes,
+    """Flat dictionary of namespace-level functions and GIR constructors,
     keyed by C identifier.
 
     GIR exposes top-level (non-method) functions under
-    ``<namespace>/<function>``. ``GlobalsBinder`` collects all of them
-    across every parsed GIR file so that a TOML ``[[Pkg.function]]``
-    entry can resolve its ``id = "g_..."`` to the matching XML node and
-    bind the function inside an arbitrary Ada package.
+    ``<namespace>/<function>`` and constructors under their owning types.
+    ``GlobalsBinder`` collects both across every parsed GIR file so that
+    a TOML ``[[Pkg.function]]`` entry can resolve its ``id = "g_..."``
+    to the matching XML node and bind it inside an arbitrary Ada package.
     """
 
     def __init__(self, gir):
@@ -474,16 +474,19 @@ class GlobalsBinder(object):
         self.globals = dict()
 
     def add(self, node):
-        """Collect every ``<function>`` from ``node``'s namespace."""
+        """Collect namespace functions and constructors of their types."""
         k = "{%(uri)s}namespace/{%(uri)s}function" % {"uri": uri}
         all = node.findall(k)
+        all += node.findall(
+            "{%(uri)s}namespace/*/{%(uri)s}constructor" % {"uri": uri}
+        )
         if all is not None:
             for c in all:
                 id = c.get(cidentifier)
                 self.globals[id] = c
 
     def get_function(self, id):
-        """Return the XML node corresponding to a global function"""
+        """Return the XML node for a namespace function or constructor."""
         return self.globals[id]
 
 
@@ -2673,9 +2676,8 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
             self.pkg.add_with("Glib.Object")
 
     def _globals(self):
-        """Bind every namespace-level function listed in this package's
-        ``[[Pkg.function]]`` TOML entries as a top-level function of
-        the Ada package.
+        """Bind the namespace functions or type constructors listed in this
+        package's ``[[Pkg.function]]`` TOML entries as top-level functions.
         """
         funcs = self.gtkpkg.get_global_functions()  # List of binding.toml entries
         if funcs:

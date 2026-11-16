@@ -905,6 +905,9 @@ naming.type_exceptions = {
     "GVariantType": Proxy("Glib.Variant.Gvariant_Type"),
     "GVariantType*": Proxy("Glib.Variant.Gvariant_Type"),
     "GVariantIter": Proxy("Glib.Variant.Gvariant_Iter"),
+    # GOptionGroup is an opaque pointer, including when returned borrowed.
+    "GOptionGroup": Proxy("Glib.Option.GOption_Group"),
+    "GOptionGroup*": Proxy("Glib.Option.GOption_Group"),
     # Proper generation of lists
     "GdkEventSequence": Proxy("Gdk.Event.Gdk_Event_Sequence"),
     # GdkEventSequence* is what the Gtk gir actually spells (see the

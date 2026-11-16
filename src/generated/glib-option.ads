@@ -391,6 +391,18 @@ package Glib.Option is
 
    Null_GOption_Entry : constant GOption_Entry;
 
+   procedure Add_Entries
+     (Group : GOption_Group; Entries : GOption_Entry_Array);
+   pragma Import (C, Add_Entries, "g_option_group_add_entries");
+   --  Add a Null_GOption_Entry-terminated array of options to Group.
+   --  The strings and Arg_Data in Entries must remain valid while used by
+   --  the group.
+
+   procedure Unref (Group : GOption_Group);
+   pragma Import (C, Unref, "g_option_group_unref");
+   --  Release an owned group, freeing it when its reference count reaches
+   --  zero. Do not release borrowed groups or groups transferred to an owner.
+
    type Parse_Filter is access function (Param : String) return Boolean;
    --  Returns True if the parameter is to be passed from Command_Line to
    --  Goption_Context
@@ -437,6 +449,39 @@ package Glib.Option is
    --  of `--help` output, after the usage summary `programname [OPTION...]`
    --  @return a newly created Glib.Option.Goption_Context, which must be
    --  freed with Glib.Option.Free after use. Has transfer-ownership='full'.
+
+   function G_New
+      (Name             : UTF8_String := "";
+       Description      : UTF8_String;
+       Help_Description : UTF8_String;
+       User_Data        : System.Address := System.Null_Address;
+       Destroy          : Glib.G_Destroy_Notify_Address := null)
+       return GOption_Group;
+   --  Creates a new Glib.Option.GOption_Group.
+   --  Description is typically used to provide a title for the group. If so,
+   --  it is recommended that it's written in title case, and has a trailing
+   --  colon so that it matches the style of built-in GLib group titles such as
+   --  ‘Application Options:'.
+   --  The caller owns the returned group. Transfer it to Add_Group,
+   --  Set_Main_Group or Glib.Application.Add_Option_Group, or release it with
+   --  Unref. Copies of a GOption_Group do not acquire a reference. An empty
+   --  Name creates an unnamed group suitable for Set_Main_Group.
+   --  Since: gtk+ 2.6
+   --  @param Name the name for the option group, this is used to provide help
+   --  for the options in this group with `--help-`Name
+   --  @param Description a description for this group to be shown in
+   --  `--help`. This string is translated using the translation domain or
+   --  translation function of the group
+   --  @param Help_Description a description for the `--help-`Name option.
+   --  This string is translated using the translation domain or translation
+   --  function of the group
+   --  @param User_Data user data that will be passed to the pre- and
+   --  post-parse hooks, the error hook and to callbacks of
+   --  Glib.Option.G_Option_Arg_Callback options, or null
+   --  @param Destroy a function that will be called to free User_Data, or
+   --  null
+   --  @return a newly created option group. It should be added to a
+   --  Glib.Option.Goption_Context or freed with g_option_group_unref.
 
 private
    Null_Goption_Context : constant Goption_Context :=

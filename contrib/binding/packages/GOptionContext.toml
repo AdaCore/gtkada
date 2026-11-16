@@ -33,9 +33,31 @@ ctype = "GOptionFlags"
 id = "g_option_context_new"
 ada = "G_New"
 
-[[method]]
+[[function]]
 id = "g_option_group_new"
 ada = "G_New"
+
+[[function.parameter]]
+name = "name"
+allow_none = "1"
+default = "\"\""
+
+[[function.parameter]]
+name = "user_data"
+default = "System.Null_Address"
+
+[[function.parameter]]
+name = "destroy"
+default = "null"
+
+[function.doc]
+extend = true
+text = '''
+The caller owns the returned group. Transfer it to Add_Group, Set_Main_Group
+or Glib.Application.Add_Option_Group, or release it with Unref. Copies of a
+GOption_Group do not acquire a reference. An empty Name creates an unnamed
+group suitable for Set_Main_Group.
+'''
 
 [[method]]
 id = "g_option_context_parse"
@@ -174,6 +196,18 @@ use = false
 text = '''
 
    Null_GOption_Entry : constant GOption_Entry;
+
+   procedure Add_Entries
+     (Group : GOption_Group; Entries : GOption_Entry_Array);
+   pragma Import (C, Add_Entries, "g_option_group_add_entries");
+   --  Add a Null_GOption_Entry-terminated array of options to Group.
+   --  The strings and Arg_Data in Entries must remain valid while used by
+   --  the group.
+
+   procedure Unref (Group : GOption_Group);
+   pragma Import (C, Unref, "g_option_group_unref");
+   --  Release an owned group, freeing it when its reference count reaches
+   --  zero. Do not release borrowed groups or groups transferred to an owner.
 
    type Parse_Filter is access function (Param : String) return Boolean;
    --  Returns True if the parameter is to be passed from Command_Line to

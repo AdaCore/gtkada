@@ -580,6 +580,50 @@ procedure Main is
       Glib.Object.Unref (Glib.Object.GObject (App));
    end Test_Run_Using_Process_Arguments;
 
+   --  Regression for glib-application.option-group-unconstructible: create
+   --  an owned option group through Ada and transfer it to GApplication.
+   --  Get_Main_Group returns a borrowed pointer and cannot replace a group
+   --  constructor. The GOptionContext overrides name that constructor G_New;
+   --  its missing overload currently makes this case fail at compilation.
+   procedure Test_Option_Group_Construction
+   with Convention => C;
+
+   procedure Test_Option_Group_Construction is
+      use type Glib.Option.GOption_Group;
+
+      App : constant Gapplication := Gapplication_New
+        ("org.gtkada.Regression.OptionGroup", G_Application_Non_Unique);
+      Group : constant Glib.Option.GOption_Group := Glib.Option.G_New
+        (Name             => "extra",
+         Description      => "Extra Options:",
+         Help_Description => "Show extra options");
+      Args : GNAT.Strings.String_List :=
+        (1 => new String'("glib-application-option-group"));
+      Activated : Boolean := False;
+
+      procedure Activate (Self : access Gapplication_Record'Class);
+
+      procedure Activate (Self : access Gapplication_Record'Class) is
+      begin
+         Activated := True;
+         Self.Quit;
+      end Activate;
+   begin
+      Assert_True
+        (Group /= null,
+         "glib-application.option-group-unconstructible: constructor returned null");
+      --  An empty group is valid. Add_Option_Group takes ownership, so it
+      --  must survive option parsing and be released by the application.
+      --  Non-unique mode and explicit argv keep this independent of D-Bus
+      --  and of the test runner's command-line switches.
+      App.Add_Option_Group (Group);
+      App.On_Activate (Activate'Unrestricted_Access);
+      Assert_Cmpint_Eq (App.Run (Args'Length, Args), 0);
+      Assert_True (Activated, "application with an Ada-created group activates");
+      GNAT.Strings.Free (Args (1));
+      Glib.Object.Unref (Glib.Object.GObject (App));
+   end Test_Option_Group_Construction;
+
 begin
    Glib.Test.Init;
    Add_Func ("/glib-application/lifecycle-properties",
@@ -590,5 +634,7 @@ begin
              Test_Command_Line_And_Run'Unrestricted_Access);
    Add_Func ("/glib-application/process-arguments",
              Test_Run_Using_Process_Arguments'Unrestricted_Access);
+   Add_Func ("/glib-application/option-group-construction",
+             Test_Option_Group_Construction'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Run);
 end Main;
