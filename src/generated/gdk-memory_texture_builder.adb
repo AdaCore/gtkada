@@ -28,6 +28,19 @@ with System;
 
 package body Gdk.Memory_Texture_Builder is
 
+   procedure Set_Bytes
+     (Self  : not null access Gdk_Memory_Texture_Builder_Record;
+      Bytes : Glib.Bytes.Gbytes)
+   is
+      procedure Internal (Self : System.Address; Bytes : System.Address);
+      pragma Import (C, Internal, "gdk_memory_texture_builder_set_bytes");
+   begin
+      if Glib.Is_Null (Bytes) then
+         raise Constraint_Error with "Set_Bytes requires non-null bytes";
+      end if;
+      Internal (Get_Object (Self), Get_Object (Bytes));
+   end Set_Bytes;
+
    package Type_Conversion_Gdk_Memory_Texture_Builder is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gdk_Memory_Texture_Builder_Record);
    pragma Unreferenced (Type_Conversion_Gdk_Memory_Texture_Builder);
@@ -225,20 +238,6 @@ package body Gdk.Memory_Texture_Builder is
    begin
       return Internal (Get_Object (Self));
    end Get_Width;
-
-   ---------------
-   -- Set_Bytes --
-   ---------------
-
-   procedure Set_Bytes
-      (Self  : not null access Gdk_Memory_Texture_Builder_Record;
-       Bytes : Glib.Bytes.Gbytes)
-   is
-      procedure Internal (Self : System.Address; Bytes : System.Address);
-      pragma Import (C, Internal, "gdk_memory_texture_builder_set_bytes");
-   begin
-      Internal (Get_Object (Self), Get_Object (Bytes));
-   end Set_Bytes;
 
    ---------------------
    -- Set_Color_State --

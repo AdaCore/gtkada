@@ -94,15 +94,6 @@ package Gdk.Memory_Texture_Builder is
    --  Since: gtk+ 4.16
    --  @return The bytes. Has transfer-ownership='none'.
 
-   procedure Set_Bytes
-      (Self  : not null access Gdk_Memory_Texture_Builder_Record;
-       Bytes : Glib.Bytes.Gbytes);
-   --  Sets the data to be shown but the texture.
-   --  The bytes must be set before calling
-   --  [methodGdk.MemoryTextureBuilder.build].
-   --  Since: gtk+ 4.16
-   --  @param Bytes The bytes the texture shows or null to unset
-
    function Get_Color_State
       (Self : not null access Gdk_Memory_Texture_Builder_Record)
        return Gdk.Color_State.Gdk_Color_State;
@@ -264,6 +255,20 @@ package Gdk.Memory_Texture_Builder is
    --  of the provided format.
    --  Since: gtk+ 4.16
    --  @param Width The texture's width or 0 to unset
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   procedure Set_Bytes
+     (Self  : not null access Gdk_Memory_Texture_Builder_Record;
+      Bytes : Glib.Bytes.Gbytes);
+   --  Sets the data to be shown by the texture.
+   --  The bytes must be set before calling Build.
+   --  Raises Constraint_Error if Bytes is Glib.Bytes.Null_Gbytes, leaving
+   --  the previously configured bytes unchanged.
+   --  Since: gtk+ 4.16
+   --  @param Bytes The non-null bytes the texture shows
 
    ----------------
    -- Properties --
