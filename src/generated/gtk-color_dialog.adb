@@ -172,7 +172,14 @@ package body Gtk.Color_Dialog is
          Gdk.RGBA.Free (Color);
          return Gdk.RGBA.Null_RGBA;
       end if;
-      return Gdk.RGBA.From_Object_Free (Color);
+
+      declare
+         Value : constant Gdk.RGBA.Gdk_RGBA := Color.all;
+      begin
+         --  Release the owned copy with GDK's destructor, not g_free
+         Gdk.RGBA.Free (Color);
+         return Value;
+      end;
    end Choose_Rgba_Finish;
 
    ---------------

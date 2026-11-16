@@ -77,12 +77,6 @@ procedure Color_Dialog is
    procedure G_Object_Unref (Object : System.Address);
    pragma Import (C, G_Object_Unref, "g_object_unref");
 
-   function G_Malloc (Size : Glib.Gsize) return System.Address;
-   pragma Import (C, G_Malloc, "g_malloc");
-
-   type RGBA_Access is access all Gdk_RGBA;
-   function To_RGBA_Access is new Ada.Unchecked_Conversion
-     (System.Address, RGBA_Access);
    function To_Async_Result is new Ada.Unchecked_Conversion
      (System.Address, G_Async_Result);
 
@@ -356,19 +350,15 @@ procedure Color_Dialog is
    procedure Test_Dialog_Finish_Success is
       Dialog : constant Gtk_Color_Dialog := Gtk_Color_Dialog_New;
       Chosen : constant Gdk_RGBA := (0.125, 0.375, 0.625, 0.875);
-      Bytes  : constant Glib.Gsize :=
-        Glib.Gsize
-          ((Gdk_RGBA'Size + System.Storage_Unit - 1) / System.Storage_Unit);
-      Buffer : constant RGBA_Access := To_RGBA_Access (G_Malloc (Bytes));
+      --  Allocate the result as Gtk does, with gdk_rgba_copy, since the Ada
+      --  binding releases the transfer-full GdkRGBA with gdk_rgba_free.
+      Buffer : constant Gdk_RGBA_Access := Gdk.RGBA.Copy (Chosen);
       Task_Handle : constant System.Address :=
         G_Task_New (Dialog.Get_Object, System.Null_Address,
                     System.Null_Address, System.Null_Address);
       Error  : GError;
       Actual : Gdk_RGBA;
    begin
-      --  The result buffer uses GLib allocation because the Ada binding frees
-      --  the transfer-full GdkRGBA with g_free after copying its fields.
-      Buffer.all := Chosen;
       G_Task_Set_Source_Tag (Task_Handle, Choose_Rgba_Tag'Address);
       G_Task_Return_Pointer
         (Task_Handle, Buffer.all'Address, System.Null_Address);
