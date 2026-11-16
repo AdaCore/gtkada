@@ -140,7 +140,7 @@ package Gdk.Clipboard is
        Mime_Types  : GNAT.Strings.String_List;
        Io_Priority : Glib.Gint;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Callback    : Gasync_Ready_Callback);
+       Callback    : not null Gasync_Ready_Callback);
    --  Asynchronously requests an input stream to read the Clipboard's
    --  contents from.
    --  The clipboard will choose the most suitable mime type from the given
@@ -225,9 +225,11 @@ package Gdk.Clipboard is
    function Read_Value_Finish
       (Self   : not null access Gdk_Clipboard_Record;
        Result : Glib.G_Async_Result;
-       Error  : out Glib.Error.GError) return Glib.Values.GValue;
+       Error  : out Glib.Error.GError)
+       return Glib.Values.GValue_Const_Access;
    --  Finishes an asynchronous clipboard read.
    --  See [methodGdk.Clipboard.read_value_async].
+   --  The returned value is borrowed; do not unset or free it.
    --  @param Result a `GAsyncResult`
    --  @param Error the return location for a recoverable error
    --  @return a `GValue` containing the result.

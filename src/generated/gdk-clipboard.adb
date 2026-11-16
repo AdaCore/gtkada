@@ -226,17 +226,12 @@ package body Gdk.Clipboard is
        Mime_Types  : GNAT.Strings.String_List;
        Io_Priority : Glib.Gint;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Callback    : Gasync_Ready_Callback)
+       Callback    : not null Gasync_Ready_Callback)
    is
       Tmp_Mime_Types : Gtkada.Types.chars_ptr_array := From_String_List (Mime_Types);
    begin
-      if Callback = null then
-         C_Gdk_Clipboard_Read_Async (Get_Object (Self), Tmp_Mime_Types, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
-         Gtkada.Types.Free (Tmp_Mime_Types);
-      else
-         C_Gdk_Clipboard_Read_Async (Get_Object (Self), Tmp_Mime_Types, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
-         Gtkada.Types.Free (Tmp_Mime_Types);
-      end if;
+      C_Gdk_Clipboard_Read_Async (Get_Object (Self), Tmp_Mime_Types, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+      Gtkada.Types.Free (Tmp_Mime_Types);
    end Read_Async;
 
    -----------------
@@ -389,16 +384,18 @@ package body Gdk.Clipboard is
    function Read_Value_Finish
       (Self   : not null access Gdk_Clipboard_Record;
        Result : Glib.G_Async_Result;
-       Error  : out Glib.Error.GError) return Glib.Values.GValue
+       Error  : out Glib.Error.GError)
+       return Glib.Values.GValue_Const_Access
    is
       function Internal
          (Self      : System.Address;
           Result    : Glib.G_Async_Result;
-          Acc_Error : access Glib.Error.GError) return Glib.Values.GValue;
+          Acc_Error : access Glib.Error.GError)
+          return Glib.Values.GValue_Const_Access;
       pragma Import (C, Internal, "gdk_clipboard_read_value_finish");
       Acc_Error  : aliased Glib.Error.GError;
-      Return_Obj : Glib.Values.GValue;
-      Tmp_Return : Glib.Values.GValue;
+      Return_Obj : Glib.Values.GValue_Const_Access;
+      Tmp_Return : Glib.Values.GValue_Const_Access;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;

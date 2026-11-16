@@ -12,6 +12,24 @@ id = "gdk_drop_read_finish"
 bind = false
 # Unconstrained `UTF8_String` temp object
 
+[[method]]
+id = "gdk_drop_read_value_async"
+
+[[method.parameter]]
+name = "callback"
+allow_none = "0"
+# GDK requires a callback despite the GIR's allow-none annotation.
+
+[[method]]
+id = "gdk_drop_read_value_finish"
+return = "Glib.Values.GValue_Const_Access"
+# Returns a borrowed const GValue*, not a GValue record by value.
+# A library-level access type can safely pass through the error wrapper.
+
+[method.doc]
+extend = true
+text = "The returned value is borrowed; do not unset or free it."
+
 [[extra.with_body]]
 pkg = "System"
 use = false

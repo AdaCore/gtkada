@@ -145,7 +145,7 @@ package Gdk.Drop is
        The_Type    : GType;
        Io_Priority : Glib.Gint;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Callback    : Gasync_Ready_Callback);
+       Callback    : not null Gasync_Ready_Callback);
    --  Asynchronously request the drag operation's contents converted to the
    --  given Type.
    --  For local drag-and-drop operations that are available in the given
@@ -159,9 +159,11 @@ package Gdk.Drop is
    function Read_Value_Finish
       (Self   : not null access Gdk_Drop_Record;
        Result : Glib.G_Async_Result;
-       Error  : out Glib.Error.GError) return Glib.Values.GValue;
+       Error  : out Glib.Error.GError)
+       return Glib.Values.GValue_Const_Access;
    --  Finishes an async drop read.
    --  See [methodGdk.Drop.read_value_async].
+   --  The returned value is borrowed; do not unset or free it.
    --  @param Result a `GAsyncResult`
    --  @param Error the return location for a recoverable error
    --  @return a `GValue` containing the result.

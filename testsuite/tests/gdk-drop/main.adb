@@ -5,6 +5,7 @@
 
 with Ada.Command_Line;
 with Ada.Unchecked_Conversion;
+with Gdk.Clipboard;
 with Gdk.Content_Formats;
 with Gdk.Content_Provider;
 with Gdk.Device;
@@ -14,6 +15,7 @@ with Gdk.Drop;
 with Gdk.Seat;
 with Gdk.Surface;
 with Glib;
+with Glib.Error;
 with Glib.Main;
 with Glib.Object;
 with Glib.Test;
@@ -28,6 +30,8 @@ procedure Main is
    use Glib.Test;
    use type Glib.GType;
    use type Glib.Gboolean;
+   use type Glib.Error.GError;
+   use type Glib.Values.GValue_Const_Access;
    use type Gdk.Gdk_Device;
    use type Gdk.Gdk_Display;
    use type Gdk.Gdk_Seat;
@@ -80,39 +84,54 @@ procedure Main is
       Source : System.Address) return Glib.Gboolean;
    pragma Import (C, G_Task_Is_Valid, "g_task_is_valid");
 
-   --  GTest captures the runtime's critical diagnostic for the null callback
-   --  case, which the Gdk GIR marks nullable but the linked library rejects.
-   procedure G_Test_Expect_Message
-     (Domain : Interfaces.C.Strings.chars_ptr;
-      Level  : Interfaces.C.int;
-      Pattern : Interfaces.C.Strings.chars_ptr);
-   pragma Import (C, G_Test_Expect_Message, "g_test_expect_message");
-   procedure G_Test_Assert_Expected_Messages
-     (Domain : Interfaces.C.Strings.chars_ptr;
-      File   : Interfaces.C.Strings.chars_ptr;
-      Line   : Interfaces.C.int;
-      Func   : Interfaces.C.Strings.chars_ptr);
-   pragma Import
-     (C, G_Test_Assert_Expected_Messages,
-      "g_test_assert_expected_messages_internal");
-
-   --  The callback records its result here; assertions stay in the test
-   --  thread instead of raising through GDK's C callback stack.
+   --  The callback records its source and completion for the local fixture.
    Current_Drop       : Gdk.Drop.Gdk_Drop := null;
    Callback_Source   : System.Address := System.Null_Address;
    Callback_Completed : Boolean := False;
    Callback_Task_Valid : Boolean := False;
+   Finish_Drop_Read : Boolean := False;
+
+   --  Both finish methods return a borrowed GValue in C. Inspect it only
+   --  inside the callback, while the GAsyncResult still owns its contents;
+   --  unlike the input GValues in the fixture, it must not be Unset here.
+   --  These checks cover gdk-drop.gvalue-pointer-return-abi: importing that
+   --  pointer as a by-value record corrupts the C call's return convention.
+   procedure Check_Read_Value
+     (Value : Glib.Values.GValue_Const_Access;
+      Error : Glib.Error.GError;
+      Expected : String) is
+   begin
+      Assert_True (Error = null, "Read_Value_Finish must succeed");
+      Assert_True
+        (Value /= null, "Read_Value_Finish must return a non-null GValue");
+      Assert_True
+        (Glib.Values.Type_Of (Value.all) = Glib.GType_String,
+         "Read_Value_Finish must return a string GValue");
+      Assert_Cmpstr_Eq (Glib.Values.Get_String (Value.all), Expected);
+   end Check_Read_Value;
 
    procedure On_Value_Read
      (Source : access Glib.Object.GObject_Record'Class;
       Result : Glib.G_Async_Result);
    procedure On_Value_Read
      (Source : access Glib.Object.GObject_Record'Class;
-      Result : Glib.G_Async_Result) is
+      Result : Glib.G_Async_Result)
+   is
+      Error : Glib.Error.GError;
+      Value : Glib.Values.GValue_Const_Access;
    begin
       Callback_Source := Glib.Object.Get_Object (Source);
       Callback_Task_Valid := G_Task_Is_Valid
         (To_Address (Result), Glib.Object.Get_Object (Current_Drop)) /= 0;
+      if Finish_Drop_Read then
+         --  Validate the source/result pair before calling finish, so an
+         --  ABI failure cannot be blamed on the fixture.
+         Assert_True
+           (Callback_Source = Glib.Object.Get_Object (Current_Drop));
+         Assert_True (Callback_Task_Valid);
+         Value := Current_Drop.Read_Value_Finish (Result, Error);
+         Check_Read_Value (Value, Error, "gdk-drop test payload");
+      end if;
       Callback_Completed := True;
    end On_Value_Read;
 
@@ -207,8 +226,8 @@ procedure Main is
 
       --  A successful async local read reaches Ada's callback conversion. The
       --  result is also a GTask for this exact drop, as required by the finish
-      --  API; Read_Value_Finish itself is excluded due to the binding issue
-      --  recorded in the unit notes.
+      --  API. The separate read-value-finish case also consumes this result
+      --  through the public Ada finish binding while the callback is active.
       Stored_Drop.Read_Value_Async
         (Glib.GType_String, 0, null,
          On_Value_Read'Unrestricted_Access);
@@ -218,30 +237,29 @@ procedure Main is
       Assert_True (Callback_Source = Glib.Object.Get_Object (Stored_Drop));
       Assert_True (Callback_Task_Valid);
 
-      --  The GIR allows a null callback, and GtkAda forwards it as null for
-      --  both the C callback and user data. The runtime currently rejects it.
-      Callback_Completed := False;
+      --  Regression for gdk-drop.read-value-async-null-callback: GDK requires
+      --  a callback even though its GIR marks it nullable. GtkAda must reject
+      --  null with an Ada null-exclusion check before calling into GDK.
+      --  Use a variable, rather than a null literal, so this remains a legal
+      --  call after Callback becomes not null and tests its runtime check.
+      --  Volatile keeps the callback value a runtime input to that check.
       declare
-         Domain  : Interfaces.C.Strings.chars_ptr :=
-           Interfaces.C.Strings.New_String ("Gdk");
-         Pattern : Interfaces.C.Strings.chars_ptr :=
-           Interfaces.C.Strings.New_String
-             ("*assertion 'callback != NULL' failed*");
-         File    : Interfaces.C.Strings.chars_ptr :=
-           Interfaces.C.Strings.New_String ("main.adb");
-         Func    : Interfaces.C.Strings.chars_ptr :=
-           Interfaces.C.Strings.New_String ("Test_Accessors_And_Read");
+         Callback : Gdk.Drop.Gasync_Ready_Callback := null;
+         pragma Volatile (Callback);
+         Rejected : Boolean := False;
       begin
-         G_Test_Expect_Message (Domain, 8, Pattern);
-         Stored_Drop.Read_Value_Async (Glib.GType_String, 0, null, null);
-         G_Test_Assert_Expected_Messages
-           (Interfaces.C.Strings.Null_Ptr, File, 1, Func);
-         Interfaces.C.Strings.Free (Domain);
-         Interfaces.C.Strings.Free (Pattern);
-         Interfaces.C.Strings.Free (File);
-         Interfaces.C.Strings.Free (Func);
+         begin
+            Stored_Drop.Read_Value_Async
+              (Glib.GType_String, 0, null, Callback);
+         exception
+            when Constraint_Error =>
+               Rejected := True;
+         end;
+         --  With the defective binding the call instead reaches GDK and
+         --  emits a fatal "callback != NULL" critical under Glib.Test.
+         Assert_True
+           (Rejected, "Read_Value_Async must reject a null callback in Ada");
       end;
-      Assert_False (Callback_Completed);
 
       --  Unset every locally initialized GValue and free C strings after
       --  g_object_new_with_properties has consumed the constructor arguments.
@@ -259,10 +277,77 @@ procedure Main is
       Window.Destroy;
    end Test_Accessors_And_Read;
 
+   --  Reuse the complete local-drop fixture, keeping the existing accessor
+   --  and callback-only case intact. No physical drop event is required for
+   --  Read_Value_Finish, only the matching result of Read_Value_Async.
+   procedure Test_Drop_Value_Finish with Convention => C;
+   procedure Test_Drop_Value_Finish is
+   begin
+      Callback_Completed := False;
+      Finish_Drop_Read := True;
+      Test_Accessors_And_Read;
+      Finish_Drop_Read := False;
+   end Test_Drop_Value_Finish;
+
+   --  The clipboard has the same gdk-drop.gvalue-pointer-return-abi defect.
+   --  A local clipboard value makes this second finish path independent of
+   --  external clipboard owners and display-server transfer protocols.
+   Clipboard : Gdk.Clipboard.Gdk_Clipboard;
+   Clipboard_Completed : Boolean := False;
+
+   procedure On_Clipboard_Value_Read
+     (Source : access Glib.Object.GObject_Record'Class;
+      Result : Glib.G_Async_Result)
+   is
+      Error : Glib.Error.GError;
+      Value : Glib.Values.GValue_Const_Access;
+   begin
+      Assert_True
+        (Glib.Object.Get_Object (Source) = Clipboard.Get_Object);
+      Assert_True
+        (G_Task_Is_Valid (To_Address (Result), Clipboard.Get_Object) /= 0);
+      Value := Clipboard.Read_Value_Finish (Result, Error);
+      Check_Read_Value (Value, Error, "clipboard value-finish payload");
+      Clipboard_Completed := True;
+   end On_Clipboard_Value_Read;
+
+   procedure Test_Clipboard_Value_Finish with Convention => C;
+   procedure Test_Clipboard_Value_Finish is
+   begin
+      Clipboard := Gdk.Display.Get_Default.Get_Clipboard;
+      Clipboard.Set_Text ("clipboard value-finish payload");
+      Clipboard_Completed := False;
+      Clipboard.Read_Value_Async
+        (Glib.GType_String, 0, null,
+         On_Clipboard_Value_Read'Unrestricted_Access);
+      --  Iteration dispatches GtkAda's callback trampoline; the callback's
+      --  Unrestricted_Access is the usual idiom for this nested Ada main.
+      for Attempt in 1 .. 300 loop
+         exit when Clipboard_Completed;
+         declare
+            Dispatched : constant Boolean :=
+              Glib.Main.Main_Context_Iteration (May_Block => False);
+         begin
+            if not Dispatched then
+               delay 0.01;
+            end if;
+         end;
+      end loop;
+      Assert_True
+        (Clipboard_Completed, "clipboard value read must complete");
+      Assert_True (Clipboard.Set_Content (null));
+   end Test_Clipboard_Value_Finish;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
    Glib.Test.Add_Func
      ("/gdk/drop/accessors-and-read", Test_Accessors_And_Read'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk/drop/read-value-finish",
+      Test_Drop_Value_Finish'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk/drop/clipboard-read-value-finish",
+      Test_Clipboard_Value_Finish'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;
