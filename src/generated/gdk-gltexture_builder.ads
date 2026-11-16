@@ -288,9 +288,6 @@ package Gdk.GLTexture_Builder is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
-   Sync_Property : constant Glib.Properties.Property_String :=
-   Glib.Properties.Build ("sync");--  Unknown type: gpointer
-
    Color_State_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Color_State
    --  The color state of the texture.
@@ -312,6 +309,12 @@ package Gdk.GLTexture_Builder is
    Id_Property : constant Glib.Properties.Property_Uint;
    --  The texture ID to use.
 
+   Sync_Property : constant Glib.Properties.Property_Address;
+   --  Type: System.Address
+   --  An optional `GLSync` object.
+   --
+   --  If this is set, GTK will wait on it before using the texture.
+
    Update_Region_Property : constant Glib.Properties.Property_Boxed;
    --  Type: cairo.Region
    --  The update region for [propertyGdk.GLTextureBuilder:update-texture].
@@ -331,6 +334,8 @@ private
      Glib.Properties.Build ("update-texture");
    Update_Region_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("update-region");
+   Sync_Property : constant Glib.Properties.Property_Address :=
+     Glib.Properties.Build ("sync");
    Id_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("id");
    Height_Property : constant Glib.Properties.Property_Int :=
