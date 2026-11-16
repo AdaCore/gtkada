@@ -14,6 +14,7 @@ with Glib.Values;
 
 procedure Main is
    use Glib.Test;
+   use type Gdk.RGBA.Gdk_RGBA_Access;
    use type Glib.GType;
    use type Interfaces.C.C_float;
    use type System.Address;
@@ -22,6 +23,8 @@ procedure Main is
    procedure Test_Parse_And_String with Convention => C;
    procedure Test_Null_Conversion with Convention => C;
    procedure Test_Temporary_Wrapper with Convention => C;
+   procedure Test_Copy_And_Free with Convention => C;
+   procedure Test_Copy_Contents with Convention => C;
 
    --  From_Object_Free calls g_free, so its Ada record must be allocated by
    --  GLib. The unchecked conversion gives that correctly aligned storage a
@@ -146,6 +149,48 @@ procedure Main is
       Assert_True (Converted.Alpha = Color.Alpha);
    end Test_Temporary_Wrapper;
 
+   ------------------------
+   -- Test_Copy_And_Free --
+   ------------------------
+
+   --  Reproduce gdk-rgba.copy-free-pointer-profile: the GIR promises that
+   --  Copy returns a separately allocated RGBA which Free can release.
+   --  Nesting the calls preserves the owned result without assuming its Ada
+   --  type, so this also exercises the corrected access-valued Copy profile.
+   --  With the current record-valued imports, Free receives a temporary Ada
+   --  record instead of the allocated pointer and attempts an invalid free.
+   procedure Test_Copy_And_Free is
+      Color : constant Gdk.RGBA.Gdk_RGBA := (0.125, 0.25, 0.5, 0.75);
+   begin
+      Gdk.RGBA.Free (Gdk.RGBA.Copy (Color));
+
+      --  Releasing the copy must leave the caller's source record intact.
+      Assert_True
+        (Color.Red = 0.125 and then Color.Green = 0.25
+         and then Color.Blue = 0.5 and then Color.Alpha = 0.75,
+         "RGBA Copy/Free must preserve the source color");
+   end Test_Copy_And_Free;
+
+   ------------------------
+   -- Test_Copy_Contents --
+   ------------------------
+
+   --  The owned result must contain every channel and remain independent of
+   --  the source record when changed through its public access type.
+   procedure Test_Copy_Contents is
+      Color : constant Gdk.RGBA.Gdk_RGBA := (0.125, 0.25, 0.5, 0.75);
+      Copied : constant Gdk.RGBA.Gdk_RGBA_Access := Gdk.RGBA.Copy (Color);
+   begin
+      Assert_True (Copied /= null);
+      Assert_True
+        (Copied.Red = Color.Red and then Copied.Green = Color.Green
+         and then Copied.Blue = Color.Blue and then Copied.Alpha = Color.Alpha);
+      Assert_True (Copied.all'Address /= Color'Address);
+      Copied.Red := 0.875;
+      Assert_True (Color.Red = 0.125);
+      Gdk.RGBA.Free (Copied);
+   end Test_Copy_Contents;
+
 begin
    Glib.Test.Init;
    Glib.Test.Add_Func
@@ -156,6 +201,10 @@ begin
      ("/gdk/rgba/null-conversion", Test_Null_Conversion'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/gdk/rgba/temporary-wrapper", Test_Temporary_Wrapper'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk/rgba/copy-and-free", Test_Copy_And_Free'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk/rgba/copy-contents", Test_Copy_Contents'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

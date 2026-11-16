@@ -153,13 +153,13 @@ package body Gtk.Color_Dialog is
       function Internal
          (Self   : System.Address;
           Result : Glib.G_Async_Result;
-          Error  : access Glib.Error.GError) return access Gdk.RGBA.Gdk_RGBA;
+          Error  : access Glib.Error.GError) return Gdk.RGBA.Gdk_RGBA_Access;
       pragma Import (C, Internal, "gtk_color_dialog_choose_rgba_finish");
       --  gtk_color_dialog_choose_rgba_finish returns a newly allocated
       --  GdkRGBA* (transfer full), or NULL when the dialog was dismissed,
       --  in which case it sets Error.
       Acc_Error  : aliased Glib.Error.GError := null;
-      Color      : constant access Gdk.RGBA.Gdk_RGBA :=
+      Color      : constant Gdk.RGBA.Gdk_RGBA_Access :=
         Internal (Get_Object (Self), Result, Acc_Error'Access);
    begin
       Error := Acc_Error;
@@ -169,10 +169,17 @@ package body Gtk.Color_Dialog is
          return Gdk.RGBA.Null_RGBA;
       elsif Error /= null then
          --  Failure and non-null value
-         Gdk.RGBA.Free (Color.all);
+         Gdk.RGBA.Free (Color);
          return Gdk.RGBA.Null_RGBA;
       end if;
-      return Gdk.RGBA.From_Object_Free (Color);
+
+      declare
+         Value : constant Gdk.RGBA.Gdk_RGBA := Color.all;
+      begin
+         --  Release the owned copy with GDK's destructor, not g_free
+         Gdk.RGBA.Free (Color);
+         return Value;
+      end;
    end Choose_Rgba_Finish;
 
    ---------------
