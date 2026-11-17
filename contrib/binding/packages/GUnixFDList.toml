@@ -1,0 +1,95 @@
+# ============================================================
+#   GIOUnixFDList
+# ============================================================
+ada = "Glib.GUnixFDList"
+
+[[extra.with_body]]
+pkg = "Interfaces.C.Pointers"
+use = false
+
+[extra]
+body = '''
+      use Interfaces.C;
+      package P is new Interfaces.C.Pointers
+        (Natural, Gint, Gint_Array, -1);
+'''
+
+[[method]]
+id = "g_unix_fd_list_peek_fds"
+body = '''
+      function Internal
+         (Self   : System.Address;
+          Length : access Glib.Gint) return P.Pointer;
+      pragma Import (C, Internal, "g_unix_fd_list_peek_fds");
+      Acc_Length : aliased Glib.Gint;
+      Acc_Result : P.Pointer := null;
+   begin
+      Acc_Result := Internal (Get_Object (Self), Acc_Length'Access);
+      declare
+         Result : constant GLib.Gint_Array :=
+           P.Value (Acc_Result, Interfaces.C.ptrdiff_t (Acc_Length));
+      begin
+         return Result;
+      end;      
+'''
+
+[method.doc]
+text   = '''
+   Returns the array of file descriptors that is contained in this object.
+   After this call, the descriptors remain the property of List. The
+   caller must not close them. The array is valid only until List is
+   changed in any way. In case there are no file descriptors
+   contained in List, an empty array is returned.
+'''
+
+[[method.parameter]]
+name = "length"
+ada = ""
+
+[[method]]
+id = "g_unix_fd_list_steal_fds"
+body = '''
+      function Internal
+         (Self   : System.Address;
+          Length : access Glib.Gint) return P.Pointer;
+      pragma Import (C, Internal, "g_unix_fd_list_steal_fds");
+      Acc_Length : aliased Glib.Gint;
+      Acc_Result : P.Pointer := null;
+   begin
+      Acc_Result := Internal (Get_Object (Self), Acc_Length'Access);
+      declare
+         Result : constant GLib.Gint_Array :=
+           P.Value (Acc_Result, Interfaces.C.ptrdiff_t (Acc_Length));
+      begin
+         Glib.g_free (Acc_Result.all'Address); --  transfer-ownership="full"
+         return Result;
+      end;      
+'''
+
+[method.doc]
+text   = '''
+   Returns the array of file descriptors that is contained in this object.
+   After this call, the descriptors are no longer contained in List.
+   Further calls will return an empty list (unless more descriptors have
+   been added).
+   The caller is also responsible for closing all of the file descriptors.
+   The file descriptors in the array are set to close-on-exec.
+   If Length is non-null then it is set to the number of file descriptors
+   in the returned array. The returned array is also terminated with -1.
+   This function never returns null. In case there are no file descriptors
+   contained in List, an empty array is returned.
+
+   @return an array of file descriptors
+'''
+
+[[method.parameter]]
+name = "length"
+ada = ""
+
+[[method]]
+id = "g_unix_fd_list_append"
+default_return = "-1"
+
+[[method]]
+id = "g_unix_fd_list_get"
+default_return = "-1"

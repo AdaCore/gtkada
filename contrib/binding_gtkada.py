@@ -550,6 +550,11 @@ class GtkAdaMethod(object):
             return self.node.get("return_as_param")
         return None
 
+    def default_return(self) -> str:
+        if self.node is not None:
+            return self.node.get("default_return")
+        return ""
+
     def transfer_ownership(self, return_girnode: GIRNode) -> bool:
         """Whether the value returned by this method needs to be freed by the
         caller.

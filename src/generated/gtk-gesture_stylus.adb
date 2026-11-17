@@ -42,10 +42,8 @@ package body Gtk.Gesture_Stylus is
       Values : out Gdouble_Array) return Boolean
    is
       use Interfaces.C;
-      type Aliased_Gdouble_Array is array (Natural range <>) of aliased Gdouble;
-      pragma Convention (C, Aliased_Gdouble_Array);
       package P is new Interfaces.C.Pointers
-        (Natural, Gdouble, Aliased_Gdouble_Array, 0.0);
+        (Natural, Gdouble, Gdouble_Array, 0.0);
       use P;
 
       function Internal
@@ -60,7 +58,8 @@ package body Gtk.Gesture_Stylus is
 
       if Acc_Result /= 0 then
          declare
-            Arr : constant Gdouble_Array := Gdouble_Array (P.Value (Acc_Values, Axes'Length - 1));
+            Arr : constant Gdouble_Array :=
+            P.Value (Acc_Values, Axes'Length - 1);
          begin
             Glib.g_free (Acc_Values.all'Address);
             Values := Arr;

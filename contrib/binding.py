@@ -1117,6 +1117,7 @@ class SubprogramProfile(object):
                     Local_Var(
                         name=var_return,
                         type=self.returns.ada,
+                        default=self.gtkmethod.default_return() if self.gtkmethod else "",
                     )
                 )
                 ret_stmt += self._wrap_stmt (assign_stmt)
