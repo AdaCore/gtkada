@@ -167,15 +167,15 @@ at build time. One recurring case:
 
 These keys sit at the top level of the file.
 
-| Key            | Type   | Meaning                                                                                                       | Default |
-|----------------|--------|---------------------------------------------------------------------------------------------------------------|---------|
-| `bindtype`           | bool   | When `false`, no Ada type is emitted; only the methods are bound (useful for namespace-only packages).        | `true`  |
-| `ada_access_root`    | bool | When `true`, emit subtype access type from namespace package instead of declaring a new access type in the class package. | `false` |
+| Key | Type | Meaning | Default |
+| ---------------- | -------- | --------------------------------------------------------------------------------------------------------------- | --------- |
+| `bindtype` | bool | When `false`, no Ada type is emitted; only the methods are bound (useful for namespace-only packages). | `true` |
+| `ada_access_root` | bool | When `true`, emit subtype access type from namespace package instead of declaring a new access type in the class package. | `false` |
 | `ada_elaborate_body` | bool | When `true`, emit `pragma Elaborate_Body;` in the package spec. | `false` |
-| `into`               | string | C type of another package; the types and methods of *this* package are merged into the named package.         | unset   |
-| `ada`                | string | Override the Ada package name.                                                                                | derived from the C type |
-| `parent`             | string | Override the parent type of the widget type emitted by this package (GIR name).                               | from GIR |
-| `obsolescent`        | bool   | When `true`, the generated package gets `pragma Obsolescent`.                                                 | `false` |
+| `into` | string | C type of another package; the types and methods of *this* package are merged into the named package. | unset |
+| `ada` | string | Override the Ada package name. | derived from the C type |
+| `parent` | string | Override the parent type of the widget type emitted by this package (GIR name). | from GIR |
+| `obsolescent` | bool | When `true`, the generated package gets `pragma Obsolescent`. | `false` |
 
 ```toml
 # GtkHButtonBox.toml
@@ -342,6 +342,17 @@ while a `scope="async"` closure remains alive until the completion callback
 returns. Cancellation still delivers that completion callback. If C provides
 a destroy-notify hook, that hook releases the closure instead. Passing a null
 callback creates no closure and does not call the generic's `Destroy` hook.
+
+The callback's GIR `destroy` attribute identifies the C destroy-notify
+parameter by its zero-based index, excluding the instance parameter. The
+generator uses this annotation before falling back to conventional parameter
+names for unannotated APIs. The Ada wrappers hide that parameter: the generic
+user-data form supplies its own notifier to call `Destroy` on the stored Ada
+value and free the private closure; the ordinary form passes no notifier for
+its borrowed callback address. For example, `Glib.Cancellable.Connect` takes
+only the cancellable and callback, while `Connect_User_Data.Connect` adds the
+Ada data and uses the generic `Destroy` for cleanup on disconnection,
+finalization, or immediate dispatch on an already-cancelled object.
 
 ### Recovering a varargs subprogram
 
@@ -762,6 +773,16 @@ the naming table.
 | Key   | Type   | Meaning                                                                       |
 |-------|--------|-------------------------------------------------------------------------------|
 | `xml` | string | XML element matching what would have appeared in the GIR file. Used to add a method or other GIR construct that the actual .gir does not expose. |
+
+A package-local `<gir:callback>` with the same `c:type` as a callback
+parameter takes precedence over the namespace's callback definition.
+Use this for untyped callbacks such as `GCallback`, whose C signature
+depends on the context. Declare every C argument in ABI order, including
+the signal instance and closure data, then use `[[callback.parameter]]`
+with `ada = ""` to hide arguments the Ada callback does not need. Both
+the ordinary and generic user-data adapters retain those C arguments.
+`GCancellable.toml` provides the `cancelled` signal's two-argument profile
+while keeping its existing no-argument Ada callback type.
 
 ```toml
 # GtkEnums.toml

@@ -38,23 +38,19 @@ package body Glib.Cancellable is
       (Self              : System.Address;
        Callback          : System.Address;
        Data              : System.Address;
-       Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong;
+       Data_Destroy_Func : System.Address) return Gulong;
    pragma Import (C, C_G_Cancellable_Connect, "g_cancellable_connect");
-   --  Convenience function to connect to the
-   --  Glib.Cancellable.Gcancellable::cancelled signal. Also handles the race
-   --  condition that may happen if the cancellable is cancelled right before
-   --  connecting.
-   --  Callback is called at most once, either directly at the time of the
-   --  connect if Cancellable is already cancelled, or when Cancellable is
-   --  cancelled in some thread.
-   --  Data_Destroy_Func will be called when the handler is disconnected, or
-   --  immediately if the cancellable is already cancelled.
-   --  See Glib.Cancellable.Gcancellable::cancelled for details on how to use
-   --  this.
-   --  Since GLib 2.40, the lock protecting Cancellable is not held when
-   --  Callback is invoked. This lifts a restriction in place for earlier GLib
-   --  versions which now makes it easier to write cleanup code that
-   --  unconditionally invokes e.g. Glib.Cancellable.Cancel.
+   --  Convenience function to connect to the cancelled signal, handling the
+   --  race with concurrent cancellation.
+   --  Callback is called at most once: before Connect returns if Self is
+   --  already cancelled, or when Self is cancelled in some thread.
+   --  Connect_User_Data copies Data into a private closure. Its generic
+   --  Destroy procedure is called exactly once when the handler is
+   --  disconnected or Self is finalized, or immediately after Callback returns
+   --  if Self was already cancelled. Use that generic procedure to release Ada
+   --  data; the C destroy notifier is managed by GtkAda.
+   --  Since GLib 2.40, the lock protecting Self is not held when Callback
+   --  runs, so Callback may itself invoke Cancel.
    --  Since: gtk+ 2.22
    --  @param Callback The Gcallback to connect.
    --  @param Data Data to pass to Callback.
@@ -68,14 +64,20 @@ package body Glib.Cancellable is
    function To_Address is new Ada.Unchecked_Conversion
      (Gcallback, System.Address);
 
-   procedure Internal_Gcallback (Data : System.Address);
+   procedure Internal_Gcallback
+      (Cancellable : System.Address;
+       Data        : System.Address);
    pragma Convention (C, Internal_Gcallback);
 
    ------------------------
    -- Internal_Gcallback --
    ------------------------
 
-   procedure Internal_Gcallback (Data : System.Address) is
+   procedure Internal_Gcallback
+      (Cancellable : System.Address;
+       Data        : System.Address)
+   is
+      pragma Unreferenced (Cancellable);
       Func : constant Gcallback := To_Gcallback (Data);
    begin
       Func.all;
@@ -135,15 +137,14 @@ package body Glib.Cancellable is
    -------------
 
    function Connect
-      (Self              : access Gcancellable_Record'Class;
-       Callback          : Gcallback;
-       Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong
+      (Self     : access Gcancellable_Record'Class;
+       Callback : Gcallback) return Gulong
    is
    begin
       if Callback = null then
-         return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), System.Null_Address, System.Null_Address, Data_Destroy_Func);
+         return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), System.Null_Address, System.Null_Address, System.Null_Address);
       else
-         return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), Internal_Gcallback'Address, To_Address (Callback), Data_Destroy_Func);
+         return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), Internal_Gcallback'Address, To_Address (Callback), System.Null_Address);
       end if;
    end Connect;
 
@@ -158,33 +159,28 @@ package body Glib.Cancellable is
       function To_Address is new Ada.Unchecked_Conversion
         (Gcallback, System.Address);
 
-      procedure Internal_Cb (Data : System.Address);
+      procedure Internal_Cb
+         (Cancellable : System.Address;
+          Data        : System.Address);
       pragma Convention (C, Internal_Cb);
-      --  The type used for callback functions in structure definitions and
-      --  function signatures.
-      --  This doesn't mean that all callback functions must take no
-      --  parameters and return void. The required signature of a callback
-      --  function is determined by the context in which is used (e.g. the
-      --  signal to which it is connected).
-      --  Use G_CALLBACK to cast the callback function to a Gcallback.
+      --  Callback invoked when the cancellable is cancelled.
 
       -------------
       -- Connect --
       -------------
 
       function Connect
-         (Self              : access Glib.Cancellable.Gcancellable_Record'Class;
-          Callback          : Gcallback;
-          Data              : User_Data_Type;
-          Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong
+         (Self     : access Glib.Cancellable.Gcancellable_Record'Class;
+          Callback : Gcallback;
+          Data     : User_Data_Type) return Gulong
       is
          D : System.Address;
       begin
          if Callback = null then
-            return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), System.Null_Address, System.Null_Address, Data_Destroy_Func);
+            return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
             D := Users.Build (To_Address (Callback), Data);
-            return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), Internal_Cb'Address, D, Data_Destroy_Func);
+            return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Connect;
 
@@ -192,7 +188,11 @@ package body Glib.Cancellable is
       -- Internal_Cb --
       -----------------
 
-      procedure Internal_Cb (Data : System.Address) is
+      procedure Internal_Cb
+         (Cancellable : System.Address;
+          Data        : System.Address)
+      is
+         pragma Unreferenced (Cancellable);
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
          To_Gcallback (D.Func) (D.Data.all);

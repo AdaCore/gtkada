@@ -3,6 +3,58 @@
 # ============================================================
 ada = "Glib.Cancellable"
 
+# GCallback is untyped in GObject's GIR. Here it receives the cancelled
+# signal's instance followed by closure data. Keep the instance in the C
+# adapters while preserving the no-argument Ada callback API.
+[[extra.gir_element]]
+xml = '''
+<gir:callback xmlns:c="http://www.gtk.org/introspection/c/1.0"
+              xmlns:gir="http://www.gtk.org/introspection/core/1.0"
+              name="Callback" c:type="GCallback">
+  <gir:doc>Callback invoked when the cancellable is cancelled.</gir:doc>
+  <gir:return-value transfer-ownership="none">
+    <gir:type name="none" c:type="void"/>
+  </gir:return-value>
+  <gir:parameters>
+    <gir:parameter name="cancellable" transfer-ownership="none">
+      <gir:type name="Cancellable" c:type="GCancellable*"/>
+    </gir:parameter>
+    <gir:parameter name="data" transfer-ownership="none" nullable="1"
+                   allow-none="1">
+      <gir:type name="gpointer" c:type="gpointer"/>
+    </gir:parameter>
+  </gir:parameters>
+</gir:callback>
+'''
+
+[[callback]]
+id = "Gcallback"
+
+[[callback.parameter]]
+name = "cancellable"
+ada = ""
+
+[[method]]
+id = "g_cancellable_connect"
+
+[method.doc]
+text = '''
+   Convenience function to connect to the cancelled signal, handling the
+   race with concurrent cancellation.
+
+   Callback is called at most once: before Connect returns if Self is already
+   cancelled, or when Self is cancelled in some thread.
+
+   Connect_User_Data copies Data into a private closure. Its generic Destroy
+   procedure is called exactly once when the handler is disconnected or Self
+   is finalized, or immediately after Callback returns if Self was already
+   cancelled. Use that generic procedure to release Ada data; the C destroy
+   notifier is managed by GtkAda.
+
+   Since GLib 2.40, the lock protecting Self is not held when Callback runs,
+   so Callback may itself invoke Cancel.
+'''
+
 [[method]]
 id = "g_cancellable_make_pollfd"
 bind = false
