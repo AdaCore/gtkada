@@ -618,6 +618,8 @@ class SubprogramProfile(object):
 
     * ``callback_param``: list of indices of the callback parameters.
       Empty list means "no callback".
+    * ``callback_scope``: GIR lifetime of the callback (``call``, ``async``
+      or ``notified``). Only single-callback bindings are supported.
     * ``user_data_param``: index of the closure/user-data parameter,
       or ``-1`` when the callback has no user-data.
     * ``destroy_param``: index of the destroy-notify parameter, or
@@ -639,6 +641,7 @@ class SubprogramProfile(object):
         # and generate an Ada generic
 
         self.callback_param: list[int] = []  # indexes of the callback parameter
+        self.callback_scope: str = ""
         self.user_data_param: int = -1  # index of the "user data" parameter
         self.destroy_param: int = -1  # index of the parameter to destroy data
 
@@ -1257,15 +1260,15 @@ class SubprogramProfile(object):
                 or p.get("closure", "") != ""
             ):
 
-                # "async" means a callback with no closure. As a special case,
-                # we ignore it for destroy callbacks, since they are already
-                # handled specially.
+                # "async" callbacks keep their closure until completion.
+                # Ignore destroy callbacks, which are handled separately.
 
                 if (
                     p.get("scope") != "async"
                     or type.ada != "Glib.G_Destroy_Notify_Address"
                 ):
                     self.callback_param.append(p_index)
+                    self.callback_scope = p.get("scope", "")
                     self.user_data_param = int(p.get("closure", "-1"))
                     self.destroy_param = int(p.get("destroy", "-1")) - 1
 
@@ -2076,17 +2079,19 @@ end if;"""
         # Now create a generic package that will provide access to
         # user_data. The function can no longer be a primitive operation of the
         # object, since it is in a nested package.
-        # It is possible that the function doesn't accept a user data in fact
-        # (for instance when scope="async"). In this case, no need for a
-        # generic package.
+        # If the callback has no user data, no generic package is needed.
 
         user_data2 = cb_profile.find_param(user_data_params)
+        free_on_completion = (
+            profile.callback_scope == "async"
+            and profile.callback_destroy() is None
+        )
 
         # If we have no "destroy" callback, any memory allocated by
-        # User.Build would be leaked, so we don't emit a binding in
-        # that case. Some functions however don't need to keep the
-        # data alive after they return, and are exempted from this
-        # check explicitly.
+        # Users.Build would be leaked unless the callback scope determines
+        # when to release it. Keep the existing set of generic bindings;
+        # some need their data only during the call, while async callbacks
+        # release it on completion.
         bind_user_data = (
             profile.callback_destroy() is not None
             or "_for" in cname
@@ -2141,7 +2146,8 @@ end if;"""
             user_cb_call = user_cb.call(
                 in_pkg=self.pkg,
                 lang="c->ada",
-                extra_postcall="".join(call),
+                extra_postcall="".join(call)
+                + (f"Users.Free_Data ({user_data2});" if free_on_completion else ""),
                 values=values,
             )
 
@@ -2176,7 +2182,7 @@ end if;"""
             full_profile.replace_param(cb.name, user_cb_type)
             full_profile.replace_param(user_data, "User_Data_Type")
 
-            if profile.callback_destroy() is None:
+            if profile.callback_destroy() is None and not free_on_completion:
                 c_call = call_to_c(
                     gtk_func,
                     values,

@@ -306,7 +306,6 @@ package body Glib.App_Info is
             D := Users.Build (To_Address (Callback), User_Data);
             C_G_App_Info_Get_Default_For_Type_Async (Tmp_Content_Type, Boolean'Pos (Must_Support_Uris), Get_Object_Or_Null (GObject (Cancellable)), Internal_Cb'Address, D);
             Free (Tmp_Content_Type);
-            Users.Free_Data (D);
          end if;
       end Get_Default_For_Type_Async;
 
@@ -323,6 +322,7 @@ package body Glib.App_Info is
          Stub_GObject : Glib.Object.GObject_Record;
       begin
          To_Gasync_Ready_Callback (D.Func) (Get_User_Data (Source_Object, Stub_GObject), Res, D.Data.all);
+         Users.Free_Data (Data);
       end Internal_Cb;
 
    end Get_Default_For_Type_Async_User_Data;
@@ -398,7 +398,6 @@ package body Glib.App_Info is
             D := Users.Build (To_Address (Callback), User_Data);
             C_G_App_Info_Get_Default_For_Uri_Scheme_Async (Tmp_Uri_Scheme, Get_Object_Or_Null (GObject (Cancellable)), Internal_Cb'Address, D);
             Free (Tmp_Uri_Scheme);
-            Users.Free_Data (D);
          end if;
       end Get_Default_For_Uri_Scheme_Async;
 
@@ -415,6 +414,7 @@ package body Glib.App_Info is
          Stub_GObject : Glib.Object.GObject_Record;
       begin
          To_Gasync_Ready_Callback (D.Func) (Get_User_Data (Source_Object, Stub_GObject), Res, D.Data.all);
+         Users.Free_Data (Data);
       end Internal_Cb;
 
    end Get_Default_For_Uri_Scheme_Async_User_Data;
@@ -576,6 +576,7 @@ package body Glib.App_Info is
          Stub_GObject : Glib.Object.GObject_Record;
       begin
          To_Gasync_Ready_Callback (D.Func) (Get_User_Data (Source_Object, Stub_GObject), Res, D.Data.all);
+         Users.Free_Data (Data);
       end Internal_Cb;
 
       ----------------------------------
@@ -599,7 +600,6 @@ package body Glib.App_Info is
             D := Users.Build (To_Address (Callback), User_Data);
             C_G_App_Info_Launch_Default_For_Uri_Async (Tmp_URI, Get_Object_Or_Null (GObject (Context)), Get_Object_Or_Null (GObject (Cancellable)), Internal_Cb'Address, D);
             Free (Tmp_URI);
-            Users.Free_Data (D);
          end if;
       end Launch_Default_For_Uri_Async;
 
