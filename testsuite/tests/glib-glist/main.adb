@@ -34,6 +34,7 @@ procedure Main is
 
    use type Lists.Glist;
    use type Glib.Gint;
+   use type Glib.Guint;
    use type System.Address;
    use type System.Storage_Elements.Integer_Address;
 
@@ -126,8 +127,54 @@ procedure Main is
       Assert_False (Lists.Is_Created (List));
    end Test_List;
 
+   --  Regression for glib-glist.concat-imports-append: Concat must splice
+   --  the existing nodes of both lists, as g_list_concat promises, rather
+   --  than append the second list's head address as a single data item.
+   procedure Test_Concat with Convention => C;
+
+   procedure Test_Concat is
+      Left     : Lists.Glist := Lists.Null_List;
+      Right    : Lists.Glist := Lists.Null_List;
+      Joined   : Lists.Glist;
+      Left_End : Lists.Glist;
+   begin
+      Lists.Append (Left, (Value => 10));
+      Lists.Append (Left, (Value => 20));
+      Lists.Append (Right, (Value => 30));
+      Lists.Append (Right, (Value => 40));
+      Left_End := Lists.Last (Left);
+
+      Joined := Lists.Concat (Left, Right);
+      Assert_True
+        (Lists.Length (Joined) = 4,
+         "Concat must join all four nodes of the two input lists");
+      Assert_True (Joined = Left, "Concat must preserve the first head");
+      Assert_True
+        (Lists.Next (Left_End) = Right,
+         "Concat must reuse the second list's head node");
+      Assert_True
+        (Lists.Prev (Right) = Left_End,
+         "Concat must link the second list back to the first");
+      --  Assertions can report failure and continue; do not read data past
+      --  the end of a shortened chain when the binding is defective.
+      if Lists.Length (Joined) = 4 then
+         for Index in Glib.Guint range 0 .. 3 loop
+            Assert_True
+              (Lists.Nth_Data (Joined, Index).Value =
+                 System.Storage_Elements.Integer_Address ((Index + 1) * 10),
+               "Concat must preserve the data order of both lists");
+         end loop;
+      end if;
+      Assert_True (Lists.Next (Lists.Last (Joined)) = Lists.Null_List);
+
+      --  Glist values are handles to nodes, not owning containers. After
+      --  concatenation Left and Right alias Joined, so free the chain once.
+      Lists.Free (Joined);
+   end Test_Concat;
+
 begin
    Glib.Test.Init;
    Glib.Test.Add_Func ("/glib-glist/operations", Test_List'Unrestricted_Access);
+   Glib.Test.Add_Func ("/glib-glist/concat", Test_Concat'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;
