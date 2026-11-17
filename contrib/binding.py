@@ -2275,8 +2275,7 @@ end if;"""
         case we also emit the equivalent function form (named
         ``<Type>_<Suffix>``). Constructors marked ``polymorphic`` in the
         TOML look up the returned pointer's Ada wrapper, so that it has
-        the Ada type of the object C returned; ``Initialize`` keeps the
-        supplied record and its tag.
+        the Ada type of the object C returned, and get no ``Initialize``.
         """
 
         def to_constructor(
@@ -2449,7 +2448,7 @@ end if;"""
             )
 
         if self.is_gobject:
-            # Three constructors:
+            # Three constructors (no Initialize if polymorphic):
             #   procedure Initialize...
             #   procedure G/Gtk/Gdk_New
             #   function [typename]_New
@@ -2516,7 +2515,13 @@ end if;"""
             if polymorphic:
                 gtk_new.add_nested(internal)
             section.add(gtk_new)
-            section.add(initialize)
+
+            # No Initialize for a polymorphic constructor: it may return a
+            # singleton, and attaching that to the caller's record would
+            # free the singleton's existing Ada wrapper, or give it the
+            # caller's tag for good.
+            if not polymorphic:
+                section.add(initialize)
 
             # function gtk_new, built the same way as the procedure
             if polymorphic:

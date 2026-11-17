@@ -73,27 +73,6 @@ package body Gtk.Shortcut_Action is
       return Self;
    end Gtk_Shortcut_Action_Parse_String;
 
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
-      (Self   : not null access Gtk_Shortcut_Action_Record'Class;
-       String : UTF8_String)
-   is
-      function Internal
-         (String : Gtkada.Types.Chars_Ptr) return System.Address;
-      pragma Import (C, Internal, "gtk_shortcut_action_parse_string");
-      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
-      Tmp_Return : System.Address;
-   begin
-      if not Self.Is_Created then
-         Tmp_Return := Internal (Tmp_String);
-         Set_Object (Self, Tmp_Return);
-      end if;
-      Free (Tmp_String);
-   end Initialize;
-
    --------------
    -- Activate --
    --------------

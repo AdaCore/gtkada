@@ -328,9 +328,14 @@ functions. The Ada object gets the type registered for the C object's
 GType, an existing Ada object is reused, and a null C result gives null.
 The registration for a subtype happens when its package is elaborated.
 
-`Initialize` is unaffected: it attaches the C result to the record the
-caller supplied, and keeps that record's tag, as Ada-derived types need.
-It cannot give the record the tag of a subtype.
+A polymorphic constructor has no `Initialize`. `Initialize` attaches the
+C result to a record that the caller already allocated, so it cannot give
+that record the tag of a subtype. Worse, the C result may be a singleton:
+`"never"` gives GTK's `GtkNeverTrigger`. If the singleton already has an
+Ada object, attaching it to the caller's record frees that object and
+leaves its handles dangling. If it has none yet, the caller's record
+becomes its Ada object for good, and `Gtk.Never_Trigger.Get` raises
+`Constraint_Error`.
 
 Only GObject constructors can be polymorphic; the generator rejects the
 key on a constructor of a boxed type, a render node or an expression.

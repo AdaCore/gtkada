@@ -4,6 +4,7 @@ with Glib.Test;             use Glib.Test;
 with Gtk.Alternative_Trigger;
 with Gtk.Named_Action;
 with Gtk.Never_Trigger;
+with Gtk.Nothing_Action;
 with Gtk.Shortcut_Action;   use Gtk.Shortcut_Action;
 with Gtk.Shortcut_Trigger;  use Gtk.Shortcut_Trigger;
 
@@ -11,6 +12,7 @@ procedure Main is
    procedure Test_Procedures with Convention => C;
    procedure Test_Null_Results with Convention => C;
    procedure Test_Cached_Wrapper with Convention => C;
+   procedure Test_First_Wrapper with Convention => C;
 
    --  The function-form regression is in alternative-trigger. The out
    --  parameter constructors must preserve the returned subtype as well.
@@ -61,6 +63,23 @@ procedure Main is
       --  Cached is borrowed from Get; only the parser references are ours.
    end Test_Cached_Wrapper;
 
+   --  Parsing "nothing" returns GTK's singleton before anything else has
+   --  wrapped it, so the parser creates its Ada object, which must have
+   --  the singleton's own Ada type for later lookups. (No other case may
+   --  touch this singleton.) Polymorphic constructors have no Initialize,
+   --  which would have given the singleton the caller's tag for good.
+   procedure Test_First_Wrapper is
+      Parsed : constant Gtk_Shortcut_Action :=
+        Gtk_Shortcut_Action_Parse_String ("nothing");
+   begin
+      Assert_True
+        (Parsed /= null
+         and then Parsed.all in
+           Gtk.Nothing_Action.Gtk_Nothing_Action_Record'Class);
+      Assert_True (Gtk.Nothing_Action.Get = Parsed);
+      Unref (Parsed);
+   end Test_First_Wrapper;
+
 begin
    Glib.Test.Init;
    Glib.Test.Add_Func
@@ -72,5 +91,8 @@ begin
    Glib.Test.Add_Func
      ("/polymorphic-constructors/cached-wrapper",
       Test_Cached_Wrapper'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/polymorphic-constructors/first-wrapper",
+      Test_First_Wrapper'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;
