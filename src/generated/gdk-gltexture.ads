@@ -24,17 +24,18 @@
 --  A `GdkTexture` representing a GL texture object.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.GLContext;      use Gdk.GLContext;
-with Gdk.Paintable;      use Gdk.Paintable;
-with Gdk.Snapshot;       use Gdk.Snapshot;
-with Gdk.Texture;        use Gdk.Texture;
-with Glib;               use Glib;
-with Glib.Cancellable;   use Glib.Cancellable;
-with Glib.Error;         use Glib.Error;
-with Glib.Input_Stream;  use Glib.Input_Stream;
-with Glib.Loadable_Icon; use Glib.Loadable_Icon;
-with Glib.Object;        use Glib.Object;
-with Glib.Types;         use Glib.Types;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Gdk.GLContext;         use Gdk.GLContext;
+with Gdk.Paintable;         use Gdk.Paintable;
+with Gdk.Snapshot;          use Gdk.Snapshot;
+with Gdk.Texture;           use Gdk.Texture;
+with Glib;                  use Glib;
+with Glib.Cancellable;      use Glib.Cancellable;
+with Glib.Error;            use Glib.Error;
+with Glib.Input_Stream;     use Glib.Input_Stream;
+with Glib.Loadable_Icon;    use Glib.Loadable_Icon;
+with Glib.Object;           use Glib.Object;
+with Glib.Types;            use Glib.Types;
 with System;
 
 package Gdk.GLTexture is
@@ -199,7 +200,7 @@ package Gdk.GLTexture is
    function Load
       (Self        : not null access Gdk_Gltexture_Record;
        Size        : Glib.Gint;
-       The_Type    : access UTF8_String := null;
+       The_Type    : access Ada.Strings.Unbounded.Unbounded_String := null;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
@@ -207,7 +208,7 @@ package Gdk.GLTexture is
    function Load_Finish
       (Self     : not null access Gdk_Gltexture_Record;
        Res      : Glib.G_Async_Result;
-       The_Type : access UTF8_String := null;
+       The_Type : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error    : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
 

@@ -4,6 +4,7 @@
 --  standalone C clipboard test to port, so these cases check the binding API.
 
 with Ada.Command_Line;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with GNAT.Strings;
 
 with Gdk.Clipboard;         use Gdk.Clipboard;
@@ -48,7 +49,7 @@ procedure Main is
    Stream_Result : Glib.Input_Stream.Ginput_Stream;
    Texture_Result : Gdk.Texture.Gdk_Texture;
    Store_Result : Boolean := False;
-   Mime_Result : aliased UTF8_String := "text/plain;charset=utf-8";
+   Mime_Result : aliased Unbounded_String;
    Typed_Changed_Count : Natural := 0;
    Slot_Changed_Count  : Natural := 0;
    Typed_Exception_Count : Natural := 0;
@@ -238,7 +239,8 @@ procedure Main is
       Wait_For_Async;
       Glib.Test.Assert_True (Async_Error = null);
       Glib.Test.Assert_True (Stream_Result /= null);
-      Glib.Test.Assert_Cmpstr_Eq (Mime_Result, "text/plain;charset=utf-8");
+      Glib.Test.Assert_Cmpstr_Eq
+        (To_String (Mime_Result), "text/plain;charset=utf-8");
       Glib.Object.Unref (Glib.Object.GObject (Stream_Result));
 
       --  The cancelled stream read returns an error and no MIME type.

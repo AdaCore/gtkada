@@ -2,6 +2,7 @@
 --  GLoadableIcon sync and async paths. No C test covers this unit directly.
 
 with Ada.Command_Line;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Gdk.Memory_Texture;
 with Gdk.Paintable;
 with Gdk.Snapshot;
@@ -45,7 +46,7 @@ procedure Main is
    Async_Expect_Error : Boolean := False;
    Async_Error : Glib.Error.GError;
    Async_Stream : Glib.Input_Stream.Ginput_Stream;
-   Async_Type : access UTF8_String;
+   Async_Type : access Unbounded_String;
    Async_Icon : Glib.Loadable_Icon.Gloadable_Icon :=
      Glib.Loadable_Icon.Null_Gloadable_Icon;
 
@@ -168,11 +169,11 @@ procedure Main is
       Node := Snapshot.To_Node;
       Assert_True (Node /= null);
 
-      --  Memory textures do not set a content type, so pass the zero-length
-      --  buffer matching the empty string returned by this implementation.
+      --  Memory textures return an unspecified content type, represented as
+      --  an empty unbounded string.
       declare
-         Sync_Type : aliased UTF8_String := "";
-         Async_Type_Buffer : aliased UTF8_String := "";
+         Sync_Type : aliased Unbounded_String;
+         Async_Type_Buffer : aliased Unbounded_String;
       begin
          --  Synchronous loading returns a stream and the empty content type.
          Sync_Stream := Glib.Loadable_Icon.Load

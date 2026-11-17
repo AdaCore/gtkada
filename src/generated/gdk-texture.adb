@@ -645,7 +645,7 @@ package body Gdk.Texture is
    function Load
       (Self        : not null access Gdk_Texture_Record;
        Size        : Glib.Gint;
-       The_Type    : access UTF8_String := null;
+       The_Type    : access Ada.Strings.Unbounded.Unbounded_String := null;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream
@@ -659,14 +659,14 @@ package body Gdk.Texture is
       pragma Import (C, Internal, "g_loadable_icon_load");
       Acc_Error          : aliased Glib.Error.GError;
       Return_Obj         : Glib.Input_Stream.Ginput_Stream;
-      Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
+      Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Size, Acc_The_Type, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       if The_Type /= null then
-         The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
+         The_Type.all := Ada.Strings.Unbounded.To_Unbounded_String (Gtkada.Bindings.Value_And_Free (Tmp_The_Type));
       end if;
       Error := Acc_Error;
       if Error = null then
@@ -682,7 +682,7 @@ package body Gdk.Texture is
    function Load_Finish
       (Self     : not null access Gdk_Texture_Record;
        Res      : Glib.G_Async_Result;
-       The_Type : access UTF8_String := null;
+       The_Type : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error    : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream
    is
@@ -694,14 +694,14 @@ package body Gdk.Texture is
       pragma Import (C, Internal, "g_loadable_icon_load_finish");
       Acc_Error          : aliased Glib.Error.GError;
       Return_Obj         : Glib.Input_Stream.Ginput_Stream;
-      Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
+      Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Res, Acc_The_Type, Acc_Error'Access);
       if The_Type /= null then
-         The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
+         The_Type.all := Ada.Strings.Unbounded.To_Unbounded_String (Gtkada.Bindings.Value_And_Free (Tmp_The_Type));
       end if;
       Error := Acc_Error;
       if Error = null then

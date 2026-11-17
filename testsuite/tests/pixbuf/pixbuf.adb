@@ -1,4 +1,5 @@
 with Ada.Command_Line;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Unchecked_Conversion;
 with Ada.Directories;
 with Gdk.Paintable;
@@ -60,7 +61,7 @@ procedure Pixbuf is
    Async_Width, Async_Height : Gint;
    Async_Save_Succeeded : Boolean := False;
    Async_Expect_Error : Boolean := False;
-   Async_Type : aliased UTF8_String := "image/png";
+   Async_Type : aliased Unbounded_String;
 
    procedure On_Async_Ready
      (Source_Object : access GObject_Record'Class;
@@ -795,7 +796,7 @@ procedure Pixbuf is
       Async_Saved_Name : constant String := "pixbuf-async-save.png";
       Sync_Stream : Glib.Input_Stream.Ginput_Stream;
       Original : Address;
-      Type_Name : aliased UTF8_String := "image/png";
+      Type_Name : aliased Unbounded_String;
 
       function Open_Input (Path : String)
         return Glib.File_Input_Stream.Gfile_Input_Stream
@@ -934,7 +935,8 @@ procedure Pixbuf is
       Unref (Async_Pixbuf);
       Glib.Object.Unref (Glib.Object.GObject (Input));
 
-      --  The GLoadableIcon methods return the encoded data for a pixbuf.
+      --  The GLoadableIcon methods return the encoded data and an allocated
+      --  content type. Grow initially empty strings to hold the C results.
       P := Gdk_Pixbuf_New_From_File ("pixbuf.png", Error);
       Assert_True (Error = null and P /= null);
       Sync_Stream := P.Load (32, Type_Name'Access, null, Error);
@@ -943,7 +945,7 @@ procedure Pixbuf is
       Glib.Object.Unref (Glib.Object.GObject (Sync_Stream));
       Async_Pixbuf := P;
       Async_Kind := Load_Icon;
-      Async_Type := "image/png";
+      Async_Type := Null_Unbounded_String;
       Async_Done := False;
       P.Load_Async (32, null, On_Async_Ready'Unrestricted_Access);
       Wait_For_Callback;

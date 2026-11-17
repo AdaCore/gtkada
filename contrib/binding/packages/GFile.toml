@@ -219,7 +219,7 @@ default = "Contents'Length"
 # GIR spells the "etag_out" of the load_bytes family "gchar**" where the rest
 # of GFile spells it "char**", and the generator reads "gchar**" as a
 # NULL-terminated array of strings. Naming the pointed-to type instead gives
-# the "access UTF8_String" that g_file_replace_contents already uses for the
+# the unbounded string output that g_file_replace_contents uses for the
 # very same etag.
 [[method]]
 id = "g_file_load_bytes"

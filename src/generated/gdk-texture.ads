@@ -47,6 +47,7 @@
 --  data.
 
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
 with Gdk.Color_State;         use Gdk.Color_State;
 with Gdk.Paintable;           use Gdk.Paintable;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
@@ -584,7 +585,7 @@ package Gdk.Texture is
    function Load
       (Self        : not null access Gdk_Texture_Record;
        Size        : Glib.Gint;
-       The_Type    : access UTF8_String := null;
+       The_Type    : access Ada.Strings.Unbounded.Unbounded_String := null;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
@@ -592,7 +593,7 @@ package Gdk.Texture is
    function Load_Finish
       (Self     : not null access Gdk_Texture_Record;
        Res      : Glib.G_Async_Result;
-       The_Type : access UTF8_String := null;
+       The_Type : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error    : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
 

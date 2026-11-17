@@ -8,6 +8,7 @@
 --  widget is created, so this test needs no display.
 
 with Ada.Command_Line;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Directories;
 
 with Glib;         use Glib;
@@ -151,6 +152,12 @@ procedure Main is
    with Convention => C;
 
    procedure Test_Save_And_Loadable_Icon
+   with Convention => C;
+
+   procedure Test_Load_Content_Type
+   with Convention => C;
+
+   procedure Test_Load_Finish_Content_Type
    with Convention => C;
 
    procedure On_Icon_Ready
@@ -760,8 +767,7 @@ procedure Main is
       Ada.Directories.Delete_File (Png_Path);
       Ada.Directories.Delete_File (Tiff_Path);
 
-      --  LoadableIcon.Load returns a readable stream. Omit the optional type
-      --  output because its Ada binding cannot safely resize a String result.
+      --  LoadableIcon.Load also works when the optional type output is omitted.
       Sync_Stream := Texture.Load (32, null, null, Error);
       Assert_True (Error = null and Sync_Stream /= null);
       Glib.Object.Unref (Glib.Object.GObject (Sync_Stream));
@@ -792,6 +798,98 @@ procedure Main is
       Unref (Tiff_Bytes_Out);
       Unref (Bytes);
    end Test_Save_And_Loadable_Icon;
+
+   --  Regression for gdk-texture.load-content-type-output: GLoadableIcon's
+   --  char** output supplies a newly allocated string, not a caller-sized
+   --  buffer. GTK currently leaves the texture's content type unspecified
+   --  (NULL), which GtkAda represents as an empty string. Replacing an
+   --  existing value must work even when the returned length differs.
+   procedure Test_Load_Content_Type is
+      Bytes : Gbytes := Png_Bytes;
+      Error : GError;
+      Texture : Gdk_Texture := Gdk_Texture_New_From_Bytes (Bytes, Error);
+      Content_Type : aliased Unbounded_String :=
+        To_Unbounded_String ("image/png");
+      Stream : Glib.Input_Stream.Ginput_Stream;
+   begin
+      Assert_True (Error = null and Texture /= null);
+      --  Aliased plus 'Access requests the optional unbounded string output.
+      --  Turn the generated length-check exception into a specific assertion.
+      begin
+         Stream := Texture.Load (32, Content_Type'Access, null, Error);
+      exception
+         when Constraint_Error =>
+            Unref (Texture);
+            Unref (Bytes);
+            Assert_True
+              (False, "gdk-texture.load-content-type-output: Load raised "
+               & "Constraint_Error assigning the content type output");
+            --  Assertions can be nonfatal under Glib.Test: avoid using the
+            --  absent stream, and let the other cases continue running.
+            return;
+      end;
+      Assert_True (Error = null and Stream /= null);
+      Assert_True
+        (Content_Type = "" or else Content_Type = "image/png",
+         "Load must return an unspecified or PNG content type");
+      Glib.Object.Unref (Glib.Object.GObject (Stream));
+      Unref (Texture);
+      Unref (Bytes);
+   end Test_Load_Content_Type;
+
+   --  The asynchronous half of gdk-texture.load-content-type-output must
+   --  marshal the same optional string safely in Load_Finish as well.
+   procedure Test_Load_Finish_Content_Type is
+      Bytes : Gbytes := Png_Bytes;
+      Error : GError;
+      Texture : Gdk_Texture := Gdk_Texture_New_From_Bytes (Bytes, Error);
+      Content_Type : aliased Unbounded_String :=
+        To_Unbounded_String ("image/png");
+      Stream : Glib.Input_Stream.Ginput_Stream;
+      Output_Raised : Boolean := False;
+
+      --  Finish inside the callback while its temporary GAsyncResult is live.
+      --  Catch here: the C callback adapter otherwise swallows Ada exceptions,
+      --  hiding the failing assignment behind a timeout waiting for completion.
+      procedure On_Ready
+        (Source_Object : access Glib.Object.GObject_Record'Class;
+         Res           : Glib.G_Async_Result) is
+      begin
+         Async_Source_Matches :=
+           Source_Object.Get_Object = Texture.Get_Object;
+         begin
+            Stream := Texture.Load_Finish (Res, Content_Type'Access, Error);
+         exception
+            when Constraint_Error =>
+               Output_Raised := True;
+         end;
+         Async_Done := True;
+      end On_Ready;
+   begin
+      Assert_True (Error = null and Texture /= null);
+      Async_Done := False;
+      Async_Source_Matches := False;
+      --  GtkAda's callback adapter accepts a nested Ada subprogram with
+      --  'Unrestricted_Access; this scope stays live until the load completes.
+      Texture.Load_Async (32, null, On_Ready'Unrestricted_Access);
+      Wait_For_Icon_Load;
+      if Output_Raised then
+         Unref (Texture);
+         Unref (Bytes);
+         Assert_True
+           (False, "gdk-texture.load-content-type-output: Load_Finish raised "
+            & "Constraint_Error assigning the content type output");
+         --  Do not cascade into an access check if assertions are nonfatal.
+         return;
+      end if;
+      Assert_True (Error = null and Stream /= null);
+      Assert_True
+        (Content_Type = "" or else Content_Type = "image/png",
+         "Load_Finish must return an unspecified or PNG content type");
+      Glib.Object.Unref (Glib.Object.GObject (Stream));
+      Unref (Texture);
+      Unref (Bytes);
+   end Test_Load_Finish_Content_Type;
 
 begin
    Glib.Test.Init;
@@ -828,6 +926,12 @@ begin
    Glib.Test.Add_Func
      ("/gdk-texture/save-and-loadable-icon",
       Test_Save_And_Loadable_Icon'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk-texture/load-content-type",
+      Test_Load_Content_Type'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gdk-texture/load-finish-content-type",
+      Test_Load_Finish_Content_Type'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

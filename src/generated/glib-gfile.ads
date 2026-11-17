@@ -113,6 +113,7 @@
 --  <gtkada_demo>create_data_lists.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
 with GNAT.Strings;            use GNAT.Strings;
 limited with Glib.App_Info;
 with Glib.Bytes;              use Glib.Bytes;
@@ -845,7 +846,7 @@ package Glib.GFile is
    function Load_Bytes
       (Self        : Gfile;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Etag_Out    : access UTF8_String := null;
+       Etag_Out    : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error       : out Glib.Error.GError) return Glib.Bytes.Gbytes;
    --  Loads the contents of File and returns it as Glib.Bytes.Gbytes.
    --  If File is a resource:// based URI, the resulting bytes will reference
@@ -883,7 +884,7 @@ package Glib.GFile is
    function Load_Bytes_Finish
       (Self     : Gfile;
        Result   : Glib.G_Async_Result;
-       Etag_Out : access UTF8_String := null;
+       Etag_Out : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error    : out Glib.Error.GError) return Glib.Bytes.Gbytes;
    --  Completes an asynchronous request to Glib.GFile.Load_Bytes_Async.
    --  For resources, Etag_Out will be set to null.
@@ -1624,7 +1625,7 @@ package Glib.GFile is
        Etag        : UTF8_String := "";
        Make_Backup : Boolean;
        Flags       : GFile_Create_Flags;
-       New_Etag    : access UTF8_String := null;
+       New_Etag    : access Ada.Strings.Unbounded.Unbounded_String := null;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError) return Boolean;
    --  Replaces the contents of File with Contents of Length bytes.
@@ -1711,7 +1712,7 @@ package Glib.GFile is
    function Replace_Contents_Finish
       (Self     : Gfile;
        Res      : Glib.G_Async_Result;
-       New_Etag : access UTF8_String := null;
+       New_Etag : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error    : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous replace of the given File. See
    --  Glib.GFile.Replace_Contents_Async. Sets New_Etag to the new entity tag

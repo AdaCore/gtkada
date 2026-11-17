@@ -1502,7 +1502,7 @@ package body Glib.GFile is
    function Load_Bytes
       (Self        : Gfile;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Etag_Out    : access UTF8_String := null;
+       Etag_Out    : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error       : out Glib.Error.GError) return Glib.Bytes.Gbytes
    is
       function Internal
@@ -1512,13 +1512,13 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_load_bytes");
       Acc_Error    : aliased Glib.Error.GError;
-      Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
+      Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
    begin
       Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Etag_Out, Acc_Error'Access);
       if Etag_Out /= null then
-         Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
+         Etag_Out.all := Ada.Strings.Unbounded.To_Unbounded_String (Gtkada.Bindings.Value_And_Free (Tmp_Etag_Out));
       end if;
       Error := Acc_Error;
       return
@@ -1551,7 +1551,7 @@ package body Glib.GFile is
    function Load_Bytes_Finish
       (Self     : Gfile;
        Result   : Glib.G_Async_Result;
-       Etag_Out : access UTF8_String := null;
+       Etag_Out : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error    : out Glib.Error.GError) return Glib.Bytes.Gbytes
    is
       function Internal
@@ -1561,13 +1561,13 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_load_bytes_finish");
       Acc_Error    : aliased Glib.Error.GError;
-      Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
+      Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
    begin
       Tmp_Return := Internal (Self, Result, Acc_Etag_Out, Acc_Error'Access);
       if Etag_Out /= null then
-         Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
+         Etag_Out.all := Ada.Strings.Unbounded.To_Unbounded_String (Gtkada.Bindings.Value_And_Free (Tmp_Etag_Out));
       end if;
       Error := Acc_Error;
       return
@@ -2509,7 +2509,7 @@ package body Glib.GFile is
        Etag        : UTF8_String := "";
        Make_Backup : Boolean;
        Flags       : GFile_Create_Flags;
-       New_Etag    : access UTF8_String := null;
+       New_Etag    : access Ada.Strings.Unbounded.Unbounded_String := null;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError) return Boolean
    is
@@ -2526,7 +2526,7 @@ package body Glib.GFile is
       pragma Import (C, Internal, "g_file_replace_contents");
       Acc_Error    : aliased Glib.Error.GError;
       Tmp_Etag     : Gtkada.Types.Chars_Ptr;
-      Tmp_New_Etag : aliased Gtkada.Types.Chars_Ptr;
+      Tmp_New_Etag : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
       Acc_New_Etag : constant access Gtkada.Types.Chars_Ptr := (if New_Etag /= null then Tmp_New_Etag'Access else null);
       Tmp_Return   : Glib.Gboolean;
    begin
@@ -2536,7 +2536,7 @@ package body Glib.GFile is
          else New_String (Etag));
       Tmp_Return := Internal (Self, Contents'Address, Contents'Length, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Acc_New_Etag, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       if New_Etag /= null then
-         New_Etag.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_New_Etag);
+         New_Etag.all := Ada.Strings.Unbounded.To_Unbounded_String (Gtkada.Bindings.Value_And_Free (Tmp_New_Etag));
       end if;
       Error := Acc_Error;
       Free (Tmp_Etag);
@@ -2614,7 +2614,7 @@ package body Glib.GFile is
    function Replace_Contents_Finish
       (Self     : Gfile;
        Res      : Glib.G_Async_Result;
-       New_Etag : access UTF8_String := null;
+       New_Etag : access Ada.Strings.Unbounded.Unbounded_String := null;
        Error    : out Glib.Error.GError) return Boolean
    is
       function Internal
@@ -2624,13 +2624,13 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_replace_contents_finish");
       Acc_Error    : aliased Glib.Error.GError;
-      Tmp_New_Etag : aliased Gtkada.Types.Chars_Ptr;
+      Tmp_New_Etag : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
       Acc_New_Etag : constant access Gtkada.Types.Chars_Ptr := (if New_Etag /= null then Tmp_New_Etag'Access else null);
       Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Self, Res, Acc_New_Etag, Acc_Error'Access);
       if New_Etag /= null then
-         New_Etag.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_New_Etag);
+         New_Etag.all := Ada.Strings.Unbounded.To_Unbounded_String (Gtkada.Bindings.Value_And_Free (Tmp_New_Etag));
       end if;
       Error := Acc_Error;
       return Tmp_Return /= 0;
