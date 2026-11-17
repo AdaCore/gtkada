@@ -443,17 +443,21 @@ package body Gtkada.Canvas_View is
       Slot : access GObject_Record'Class := null)
       return Gtk.Handlers.Handler_Id
    is
+      Temp : constant Object_Callback.Marshallers.Void_Marshaller.Handler;
+      for Temp'Address use Call'Address;
+      pragma Import (Ada, Temp);
+      --  Work around the RM 3.10.2(13.1) subclause
    begin
       if Slot = null then
          return Object_Callback.Connect
             (Self,
              Signal_Layout_Changed,
-             Object_Callback.To_Marshaller (Call));
+             Object_Callback.To_Marshaller (Temp));
       else
          return Object_Callback.Object_Connect
             (Self,
              Signal_Layout_Changed,
-             Object_Callback.To_Marshaller (Call),
+             Object_Callback.To_Marshaller (Temp),
              Slot);
       end if;
    end On_Layout_Changed;
@@ -483,18 +487,20 @@ package body Gtkada.Canvas_View is
       Slot : access GObject_Record'Class := null)
       return Gtk.Handlers.Handler_Id
    is
-      Id : Handler_Id;
+      Temp : constant Abstract_Item_Marshallers.Handler;
+      for Temp'Address use Call'Address;
+      pragma Import (Ada, Temp);
+      --  Work around the RM 3.10.2(13.1) subclause
    begin
       if Slot = null then
-         Id := Object_Callback.Connect
+         return Object_Callback.Connect
            (Self, Signal_Item_Contents_Changed,
-            Abstract_Item_Marshallers.To_Marshaller (Call));
+            Abstract_Item_Marshallers.To_Marshaller (Temp));
       else
-         Id := Object_Callback.Object_Connect
+         return Object_Callback.Object_Connect
            (Self, Signal_Item_Contents_Changed,
-            Abstract_Item_Marshallers.To_Marshaller (Call), Slot);
+            Abstract_Item_Marshallers.To_Marshaller (Temp), Slot);
       end if;
-      return Id;
    end On_Item_Contents_Changed;
 
    --------------------------------
@@ -1804,15 +1810,19 @@ package body Gtkada.Canvas_View is
       Slot : access GObject_Record'Class := null)
       return Gtk.Handlers.Handler_Id
    is
+      Temp : constant Object_Callback.Marshallers.Void_Marshaller.Handler;
+      for Temp'Address use Call'Address;
+      pragma Import (Ada, Temp);
+      --  Work around the RM 3.10.2(13.1) subclause
    begin
       if Slot = null then
          return Object_Callback.Connect
            (Self, Signal_Viewport_Changed,
-            Object_Callback.To_Marshaller (Call));
+            Object_Callback.To_Marshaller (Temp));
       else
          return Object_Callback.Object_Connect
            (Self, Signal_Viewport_Changed,
-            Object_Callback.To_Marshaller (Call), Slot);
+            Object_Callback.To_Marshaller (Temp), Slot);
       end if;
    end On_Viewport_Changed;
 
@@ -1842,15 +1852,19 @@ package body Gtkada.Canvas_View is
         return Boolean;
       Slot : access GObject_Record'Class := null)
    is
+      Temp : constant EDA_Marshallers.Handler;
+      for Temp'Address use Call'Address;
+      pragma Import (Ada, Temp);
+      --  Work around the RM 3.10.2(13.1) subclause
    begin
       if Slot = null then
          Object_Return_Callback.Connect
            (Self, Signal_Item_Event,
-            EDA_Marshallers.To_Marshaller (Call));
+            EDA_Marshallers.To_Marshaller (Temp));
       else
          Object_Return_Callback.Object_Connect
            (Self, Signal_Item_Event,
-            EDA_Marshallers.To_Marshaller (Call), Slot);
+            EDA_Marshallers.To_Marshaller (Temp), Slot);
       end if;
    end On_Item_Event;
 
@@ -1876,16 +1890,21 @@ package body Gtkada.Canvas_View is
       Call : not null access procedure
         (Self : access GObject_Record'Class; Item : Abstract_Item);
       Slot : access GObject_Record'Class := null)
-      return Gtk.Handlers.Handler_Id is
+      return Gtk.Handlers.Handler_Id
+   is
+      Temp : constant Abstract_Item_Marshallers.Handler;
+      for Temp'Address use Call'Address;
+      pragma Import (Ada, Temp);
+      --  Work around the RM 3.10.2(13.1) subclause
    begin
       if Slot = null then
          return Object_Callback.Connect
            (Self, Signal_Inline_Editing_Started,
-            Abstract_Item_Marshallers.To_Marshaller (Call));
+            Abstract_Item_Marshallers.To_Marshaller (Temp));
       else
          return Object_Callback.Object_Connect
            (Self, Signal_Inline_Editing_Started,
-            Abstract_Item_Marshallers.To_Marshaller (Call), Slot);
+            Abstract_Item_Marshallers.To_Marshaller (Temp), Slot);
       end if;
    end On_Inline_Editing_Started;
 
@@ -1911,16 +1930,21 @@ package body Gtkada.Canvas_View is
       Call : not null access procedure
         (Self : access GObject_Record'Class; Item : Abstract_Item);
       Slot : access GObject_Record'Class := null)
-      return Gtk.Handlers.Handler_Id is
+      return Gtk.Handlers.Handler_Id
+   is
+      Temp : constant Abstract_Item_Marshallers.Handler;
+      for Temp'Address use Call'Address;
+      pragma Import (Ada, Temp);
+      --  Work around the RM 3.10.2(13.1) subclause
    begin
       if Slot = null then
          return Object_Callback.Connect
            (Self, Signal_Inline_Editing_Finished,
-            Abstract_Item_Marshallers.To_Marshaller (Call));
+            Abstract_Item_Marshallers.To_Marshaller (Temp));
       else
          return Object_Callback.Object_Connect
            (Self, Signal_Inline_Editing_Finished,
-            Abstract_Item_Marshallers.To_Marshaller (Call), Slot);
+            Abstract_Item_Marshallers.To_Marshaller (Temp), Slot);
       end if;
    end On_Inline_Editing_Finished;
 
@@ -2486,18 +2510,20 @@ package body Gtkada.Canvas_View is
       Slot : access GObject_Record'Class := null)
       return Gtk.Handlers.Handler_Id
    is
-      Id : Handler_Id;
+      Temp : constant Abstract_Item_Marshallers.Handler;
+      for Temp'Address use Call'Address;
+      pragma Import (Ada, Temp);
+      --  Work around the RM 3.10.2(13.1) subclause
    begin
       if Slot = null then
-         Id := Object_Callback.Connect
+         return Object_Callback.Connect
            (Self, Signal_Item_Destroyed,
-            Abstract_Item_Marshallers.To_Marshaller (Call));
+            Abstract_Item_Marshallers.To_Marshaller (Temp));
       else
-         Id := Object_Callback.Object_Connect
+         return Object_Callback.Object_Connect
            (Self, Signal_Item_Destroyed,
-            Abstract_Item_Marshallers.To_Marshaller (Call), Slot);
+            Abstract_Item_Marshallers.To_Marshaller (Temp), Slot);
       end if;
-      return Id;
    end On_Item_Destroyed;
 
    --------------------
@@ -5123,17 +5149,21 @@ package body Gtkada.Canvas_View is
       Slot : access GObject_Record'Class := null)
       return Gtk.Handlers.Handler_Id
    is
+      Temp : constant Abstract_Item_Marshallers.Handler;
+      for Temp'Address use Call'Address;
+      pragma Import (Ada, Temp);
+      --  Work around the RM 3.10.2(13.1) subclause
    begin
       if Slot = null then
          return Object_Callback.Connect
            (Self,
             Signal_Selection_Changed,
-            Abstract_Item_Marshallers.To_Marshaller (Call));
+            Abstract_Item_Marshallers.To_Marshaller (Temp));
       else
          return Object_Callback.Object_Connect
            (Self,
             Signal_Selection_Changed,
-            Abstract_Item_Marshallers.To_Marshaller (Call),
+            Abstract_Item_Marshallers.To_Marshaller (Temp),
             Slot);
       end if;
    end On_Selection_Changed;
