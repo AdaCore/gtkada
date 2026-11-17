@@ -239,6 +239,25 @@ are:
     handler receives the command line arguments,
     including those passed to a second instance.
 
+`G_Application_Handles_Open`
+    The primary instance emits "open" when it receives filenames on the
+    command line. Connect with `Glib.Application.On_Open`; its handler has
+    this profile:
+
+    .. code-block:: ada
+
+       procedure Open_Files
+         (Self  : access Glib.Application.Gapplication_Record'Class;
+          Files : Glib.GFile.GFile_Array;
+          Hint  : Glib.UTF8_String);
+
+    `Files` contains the files in the order supplied, with the count in
+    ``Files'Length``. `Hint` is the hint passed to `Glib.Application.Open`,
+    or an empty string for command-line files. The array and its elements
+    are borrowed for the callback; take a reference to a file before
+    keeping it beyond the handler's return. `On_Open` also has an overload
+    that takes a GObject slot, like the other application signal connectors.
+
 
 To handle the command line, use `G_Application_Handles_Command_Line` and
 connect a handler to "command-line":

@@ -2941,6 +2941,9 @@ See Glib.Properties for more information on properties)"""
         """Computes the suffix for the connect and marshallers types based on
         the profile of the signal.
         """
+        # Hidden parameters still occupy GValues. Keep them in the signature
+        # so that different C layouts do not share a marshaller just because
+        # their visible Ada callback profiles match.
         return "_".join(
             [base_name(selftype.ada)]
             + [
@@ -2956,8 +2959,40 @@ See Glib.Properties for more information on properties)"""
         marshaller, and its body
         """
         call_params = []
+        marsh_local = []
+        params_node = profile.node.find(nparams)
+        param_nodes = [] if params_node is None else params_node.findall(nparam)
         for index, p in enumerate(profile.params):
-            if isinstance(p.type, Tagged):
+            # Keep the original GValue indices even when an Ada profile
+            # omits a C array's length parameter.
+            if not p.ada_binding:
+                continue
+
+            array = param_nodes[index].find(narray)
+            if (
+                array is not None
+                and array.get("length") is not None
+                and not isinstance(p.type, UTF8_List)
+                and p.mode == "in"
+            ):
+                # A TOML type override can select a C-compatible Ada array.
+                # Its bounds come from the GIR length parameter, which is
+                # another GValue, not from the pointer to the elements.
+                length_index = int(array.get("length"))
+                length_type = base_name(profile.params[length_index].type.ada)
+                array_type = p.type.as_ada_param(self.pkg)
+                tmp = "Tmp_%s" % p.name
+                marsh_local.append(
+                    Local_Var(
+                        tmp,
+                        "%s (1 .. Natural (Unchecked_To_%s (Params, %d)))"
+                        % (array_type, length_type, length_index + 1),
+                        constant=True,
+                        address="Unchecked_To_Address (Params, %d)" % (index + 1),
+                    )
+                )
+                call_params.append(tmp)
+            elif isinstance(p.type, Tagged):
                 call_params.append(
                     "%s.From_Object (Unchecked_To_Address (Params, %d))"
                     % (package_name(p.type.ada), index + 1)
@@ -3003,7 +3038,6 @@ See Glib.Properties for more information on properties)"""
             call = "H (Obj)"
 
         if profile.returns is None:
-            marsh_local = []
             marsh_body = "%s;" % call
 
         elif isinstance(profile.returns, GObject):
@@ -3013,7 +3047,7 @@ See Glib.Properties for more information on properties)"""
             # provide an object (GIR nullable="1"), and "not null access" would
             # raise Constraint_Error before the value was ever stored.
             self.pkg.add_with("Glib.Object", specs=False, do_use=False)
-            marsh_local = [
+            marsh_local += [
                 Local_Var(
                     "V",
                     "System.Address",
@@ -3025,7 +3059,9 @@ See Glib.Properties for more information on properties)"""
             marsh_body = "Set_Value (Return_Value, V'Address);"
 
         else:
-            marsh_local = [Local_Var("V", profile.returns, aliased=True, default=call)]
+            marsh_local.append(
+                Local_Var("V", profile.returns, aliased=True, default=call)
+            )
             marsh_body = "Set_Value (Return_Value, V'Address);"
 
         marsh_body += "exception when E : others => Process_Exception (E);"
@@ -3056,7 +3092,8 @@ See Glib.Properties for more information on properties)"""
 
         callback = Subprogram(
             name="",
-            plist=[Parameter(name="Self", type=callback_selftype)] + profile.params,
+            plist=[Parameter(name="Self", type=callback_selftype)]
+            + [p for p in profile.params if p.ada_binding],
             code=["null"],
             allow_none=False,
             returns=profile.returns,
@@ -3167,7 +3204,8 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
         callback = Subprogram(
             name="",
-            plist=[Parameter(name="Self", type=selftype)] + profile.params,
+            plist=[Parameter(name="Self", type=selftype)]
+            + [p for p in profile.params if p.ada_binding],
             code=["null"],
             allow_none=False,
             returns=profile.returns,
@@ -3358,7 +3396,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                     )
                     section.add(obj_connect)
 
-                doc = _get_clean_doc(s)
+                doc = "\n\n".join(gtkmethod.get_doc(default=_get_clean_doc(s)))
                 if doc:
                     section.add(Code("  %s" "" % doc, iscomment=True))
 

@@ -1313,6 +1313,16 @@ package body Glib.Application is
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_GObject_Boolean);
 
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gapplication_GFile_Array_Gint_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gapplication_GFile_Array_Gint_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_GFile_Array_Gint_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_GFile_Array_Gint_UTF8_String_Void);
+
    procedure Connect
       (Object  : access Gapplication_Record'Class;
        C_Name  : Glib.Signal_Name;
@@ -1329,6 +1339,12 @@ package body Glib.Application is
       (Object  : access Gapplication_Record'Class;
        C_Name  : Glib.Signal_Name;
        Handler : Cb_Gapplication_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gapplication_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gapplication_GFile_Array_Gint_UTF8_String_Void;
        After   : Boolean);
 
    procedure Connect_Slot
@@ -1352,6 +1368,13 @@ package body Glib.Application is
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
+   procedure Connect_Slot
+      (Object  : access Gapplication_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_GFile_Array_Gint_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
    procedure Marsh_GObject_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -1360,6 +1383,15 @@ package body Glib.Application is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Boolean);
+
+   procedure Marsh_GObject_GFile_Array_Gint_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_GFile_Array_Gint_UTF8_String_Void);
 
    procedure Marsh_GObject_Gapplication_Command_Line_Gint
       (Closure         : GClosure;
@@ -1387,6 +1419,15 @@ package body Glib.Application is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gapplication_Boolean);
+
+   procedure Marsh_Gapplication_GFile_Array_Gint_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gapplication_GFile_Array_Gint_UTF8_String_Void);
 
    procedure Marsh_Gapplication_Gapplication_Command_Line_Gint
       (Closure         : GClosure;
@@ -1463,6 +1504,25 @@ package body Glib.Application is
          After       => After);
    end Connect;
 
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gapplication_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gapplication_GFile_Array_Gint_UTF8_String_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gapplication_GFile_Array_Gint_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
    ------------------
    -- Connect_Slot --
    ------------------
@@ -1526,6 +1586,27 @@ package body Glib.Application is
          After       => After);
    end Connect_Slot;
 
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gapplication_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_GFile_Array_Gint_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_GFile_Array_Gint_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
    ---------------------------
    -- Marsh_GObject_Boolean --
    ---------------------------
@@ -1547,6 +1628,28 @@ package body Glib.Application is
    exception
       when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean;
+
+   -----------------------------------------------------
+   -- Marsh_GObject_GFile_Array_Gint_UTF8_String_Void --
+   -----------------------------------------------------
+
+   procedure Marsh_GObject_GFile_Array_Gint_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H         : constant Cb_GObject_GFile_Array_Gint_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj       : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      Tmp_Files : constant Glib.GFile.GFile_Array (1 .. Natural (Unchecked_To_Gint (Params, 2))) with Import, Address => Unchecked_To_Address (Params, 1);
+   begin
+      H (Obj, Tmp_Files, Unchecked_To_UTF8_String (Params, 3));
+   exception
+      when E : others => Process_Exception (E);
+   end Marsh_GObject_GFile_Array_Gint_UTF8_String_Void;
 
    --------------------------------------------------
    -- Marsh_GObject_Gapplication_Command_Line_Gint --
@@ -1612,6 +1715,28 @@ package body Glib.Application is
    exception
       when E : others => Process_Exception (E);
    end Marsh_Gapplication_Boolean;
+
+   ----------------------------------------------------------
+   -- Marsh_Gapplication_GFile_Array_Gint_UTF8_String_Void --
+   ----------------------------------------------------------
+
+   procedure Marsh_Gapplication_GFile_Array_Gint_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H         : constant Cb_Gapplication_GFile_Array_Gint_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj       : constant Gapplication := Gapplication (Unchecked_To_Object (Params, 0));
+      Tmp_Files : constant Glib.GFile.GFile_Array (1 .. Natural (Unchecked_To_Gint (Params, 2))) with Import, Address => Unchecked_To_Address (Params, 1);
+   begin
+      H (Obj, Tmp_Files, Unchecked_To_UTF8_String (Params, 3));
+   exception
+      when E : others => Process_Exception (E);
+   end Marsh_Gapplication_GFile_Array_Gint_UTF8_String_Void;
 
    -------------------------------------------------------
    -- Marsh_Gapplication_Gapplication_Command_Line_Gint --
@@ -1736,6 +1861,33 @@ package body Glib.Application is
    begin
       Connect_Slot (Self, "name-lost" & ASCII.NUL, Call, After, Slot);
    end On_Name_Lost;
+
+   -------------
+   -- On_Open --
+   -------------
+
+   procedure On_Open
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_Gapplication_GFile_Array_Gint_UTF8_String_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "open" & ASCII.NUL, Call, After);
+   end On_Open;
+
+   -------------
+   -- On_Open --
+   -------------
+
+   procedure On_Open
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_GObject_GFile_Array_Gint_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "open" & ASCII.NUL, Call, After, Slot);
+   end On_Open;
 
    -----------------
    -- On_Shutdown --

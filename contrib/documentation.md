@@ -106,6 +106,18 @@ signals differing only in nullability, such as `Gtk.List_Box`'s
 `row-activated` and `row-selected`, get distinct handler types: `access`
 for the nullable parameter, `not null access` for the other.
 
+For an input signal array whose GIR `length` names a separate parameter,
+select a C-compatible, integer-indexed Ada array with a `type` override.
+The generated marshaller views the borrowed C storage with bounds
+`1 .. length`. Its component representation must match C directly, as
+`Glib.GFile.GFile_Array` does for an array of interface pointers; an array
+of Ada GObject wrappers would require element-by-element conversion.
+Hide the redundant length from the callback with `ada = ""`. The
+marshaller still reads that length and preserves the original GValue
+indices of subsequent arguments. `GApplication.toml`'s `::open` override
+is the worked example. The array and its elements remain owned by the
+signal emitter; the marshaller neither initializes nor frees them.
+
 When in doubt, look for a similar pattern in an existing TOML — many
 of the recipes you will need are already present in
 [`contrib/binding/packages/`](packages/). The legacy gtk3 overrides

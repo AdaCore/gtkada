@@ -1204,18 +1204,35 @@ package Glib.Application is
    -- 
    --  Callback parameters:
 
+   type Cb_Gapplication_GFile_Array_Gint_UTF8_String_Void is not null access procedure
+     (Self  : access Gapplication_Record'Class;
+      Files : Glib.GFile.GFile_Array;
+      Hint  : UTF8_String);
+
+   type Cb_GObject_GFile_Array_Gint_UTF8_String_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Files : Glib.GFile.GFile_Array;
+      Hint  : UTF8_String);
+
    Signal_Open : constant Glib.Signal_Name := "open";
+   procedure On_Open
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_Gapplication_GFile_Array_Gint_UTF8_String_Void;
+       After : Boolean := False);
+   procedure On_Open
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_GObject_GFile_Array_Gint_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::open signal is emitted on the primary instance when there are
    --  files to open. See Glib.Application.Open for more information.
-   --    procedure Handler
-   --       (Self    : access Gapplication_Record'Class;
-   --        Files   : array_of_File;
-   --        N_Files : Glib.Gint;
-   --        Hint    : UTF8_String)
+   --
+   --  Files and its elements are borrowed for the duration of the callback.
+   --  Take a reference to any file that must be kept after the handler
+   --  returns.
    -- 
    --  Callback parameters:
    --    --  @param Files an array of GFiles
-   --    --  @param N_Files the length of Files
    --    --  @param Hint a hint provided by the calling instance
 
    Signal_Shutdown : constant Glib.Signal_Name := "shutdown";

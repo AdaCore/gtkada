@@ -401,6 +401,97 @@ procedure Main is
       Glib.Object.Unref (Glib.Object.GObject (Empty_App));
    end Test_Lifecycle_And_Properties;
 
+   --  Regression for glib-application.open-signal-unbound: Open must deliver
+   --  the GFile array and hint to typed Ada handlers, including a GObject slot.
+   --  On_Open is missing today, so these connections intentionally fail to
+   --  compile until it is bound. A custom C marshaller would bypass the defect.
+   procedure Test_Open_Signal
+   with Convention => C;
+
+   procedure Test_Open_Signal is
+      App : constant Gapplication := Gapplication_New
+        ("org.gtkada.Coverage.Open",
+         G_Application_Non_Unique or G_Application_Handles_Open);
+      Slot : constant Gapplication := Gapplication_New
+        ("org.gtkada.Coverage.OpenSlot", G_Application_Non_Unique);
+      Files : constant Glib.GFile.GFile_Array :=
+        (Glib.GFile.New_For_Uri ("file:///gtkada-open-first.txt"),
+         Glib.GFile.New_For_Uri ("file:///gtkada-open-second.txt"));
+      Open_Calls      : Natural := 0;
+      Open_Slot_Calls : Natural := 0;
+      Empty_Hint      : Boolean := False;
+
+      procedure Check_Payload
+        (Received : Glib.GFile.GFile_Array;
+         Hint     : UTF8_String)
+      is
+      begin
+         --  The Ada array carries the C n_files value in its length, just as
+         --  in Open. Check both entries and their order, without assuming the
+         --  callback array has the same lower bound as the caller's array.
+         Assert_True (Received'Length = Files'Length);
+         for Offset in 0 .. Files'Length - 1 loop
+            Assert_True
+              (Received (Received'First + Offset) = Files (Files'First + Offset));
+            Assert_Cmpstr_Eq
+              (Glib.GFile.Get_Uri (Received (Received'First + Offset)),
+               Glib.GFile.Get_Uri (Files (Files'First + Offset)));
+         end loop;
+         if Empty_Hint then
+            Assert_Cmpstr_Eq (Hint, "");
+         else
+            Assert_Cmpstr_Eq (Hint, "view");
+         end if;
+         --  Signal arguments are borrowed: only the caller releases GFiles.
+      end Check_Payload;
+
+      procedure Open_Callback
+        (Self  : access Gapplication_Record'Class;
+         Files : Glib.GFile.GFile_Array;
+         Hint  : UTF8_String)
+      is
+      begin
+         Assert_True (Self.Get_Object = App.Get_Object);
+         Check_Payload (Files, Hint);
+         Open_Calls := Open_Calls + 1;
+      end Open_Callback;
+
+      procedure Open_Slot_Callback
+        (Self  : access Glib.Object.GObject_Record'Class;
+         Files : Glib.GFile.GFile_Array;
+         Hint  : UTF8_String)
+      is
+      begin
+         --  A distinct slot ensures this overload substitutes the receiver.
+         Assert_True (Self.Get_Object = Slot.Get_Object);
+         Check_Payload (Files, Hint);
+         Open_Slot_Calls := Open_Slot_Calls + 1;
+      end Open_Slot_Callback;
+   begin
+      --  Unrestricted_Access is the usual GtkAda idiom for nested callbacks;
+      --  these callbacks and the slot outlive both synchronous Open calls.
+      Glib.Application.On_Open (App, Open_Callback'Unrestricted_Access);
+      Glib.Application.On_Open
+        (App, Open_Slot_Callback'Unrestricted_Access, Slot);
+      --  Non-unique registration needs no session bus. GFile construction
+      --  needs no real files: Open dispatches them without reading them.
+      Assert_True (App.Register (null));
+      App.Open (Files, "view");
+      Assert_True (Open_Calls = 1);
+      Assert_True (Open_Slot_Calls = 1);
+      Empty_Hint := True;
+      App.Open (Files, "");
+      Assert_True (Open_Calls = 2);
+      Assert_True (Open_Slot_Calls = 2);
+
+      Glib.Object.Unref (Glib.Object.GObject (App));
+      Glib.Object.Unref (Glib.Object.GObject (Slot));
+      for File of Files loop
+         Glib.Object.Unref
+           (Glib.Types.To_Object (Glib.Types.GType_Interface (File)));
+      end loop;
+   end Test_Open_Signal;
+
    --  Test the application as both GActionMap and GActionGroup, including
    --  action metadata queries, state changes, batch entries and signal emitters.
    procedure Test_Action_Interfaces
@@ -636,5 +727,7 @@ begin
              Test_Run_Using_Process_Arguments'Unrestricted_Access);
    Add_Func ("/glib-application/option-group-construction",
              Test_Option_Group_Construction'Unrestricted_Access);
+   Add_Func ("/glib-application/open-signal",
+             Test_Open_Signal'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Run);
 end Main;
