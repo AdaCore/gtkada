@@ -515,6 +515,10 @@ class GtkAdaMethod(object):
     def is_class_wide(self) -> bool:
         return self.node is not None and self.node.get("classwide", False)
 
+    def is_polymorphic(self) -> bool:
+        """Whether this constructor may return a subtype of its class"""
+        return self.node is not None and self.node.get("polymorphic", False)
+
     def bind(self, default: str = "true") -> bool:
         """Whether to bind"""
         if self.node is not None:

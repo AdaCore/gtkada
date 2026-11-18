@@ -78,9 +78,6 @@ package Gtk.Shortcut_Action is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Shortcut_Action; String : UTF8_String);
-   procedure Initialize
-      (Self   : not null access Gtk_Shortcut_Action_Record'Class;
-       String : UTF8_String);
    --  Tries to parse the given string into an action.
    --  On success, the parsed action is returned. When parsing failed, null is
    --  returned.
@@ -89,8 +86,6 @@ package Gtk.Shortcut_Action is
    --  `GtkActivateAction` - `mnemonic-activate`, for `GtkMnemonicAction` -
    --  `action(NAME)`, for a `GtkNamedAction` for the action named `NAME` -
    --  `signal(NAME)`, for a `GtkSignalAction` for the signal `NAME`
-   --  Initialize does nothing if the object was already created with another
-   --  call to Initialize* or G_New.
    --  @param String the string to parse
 
    function Gtk_Shortcut_Action_Parse_String

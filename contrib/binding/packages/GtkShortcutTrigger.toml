@@ -5,6 +5,7 @@
 [[method]]
 id = "gtk_shortcut_trigger_parse_string"
 ada = "Gtk_New"
+polymorphic = true
 
 [[method]]
 id = "gtk_shortcut_trigger_compare"

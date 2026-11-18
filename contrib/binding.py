@@ -2273,7 +2273,9 @@ end if;"""
         procedure plus an ``Initialize`` primitive, and for
         boxed/proxy types a single ``Gtk_New`` procedure. In every
         case we also emit the equivalent function form (named
-        ``<Type>_<Suffix>``).
+        ``<Type>_<Suffix>``). Constructors marked ``polymorphic`` in the
+        TOML look up the returned pointer's Ada wrapper, so that it has
+        the Ada type of the object C returned, and get no ``Initialize``.
         """
 
         def to_constructor(
@@ -2286,6 +2288,7 @@ end if;"""
             selfname: str = "Self",
             guard: str = "",
             extra_doc: str = "",
+            polymorphic: bool = False,
         ) -> Subprogram:
             """
             Build constructor with necessary checks and overrides
@@ -2309,10 +2312,21 @@ end if;"""
             # Define object init
             constructor = ""
             if internal.returnvar:
-                if self.is_gobject:
+                if self.is_gobject and not polymorphic:
                     constructor = "Set_Object (%s, %s);" % (
                         selfname,
                         internal.returnvar,
+                    )
+                elif self.is_gobject:
+                    # A polymorphic constructor may return a subtype (or an
+                    # existing singleton). Use the same wrapper lookup as
+                    # ordinary GObject-valued functions, rather than
+                    # attaching the pointer to a newly allocated base record.
+                    conversion = GObject(selftypename).convert_from_c()
+                    extra_locals = extra_locals + conversion.tmp_vars
+                    constructor = "%s := %s;" % (
+                        selfname,
+                        conversion.conversion % {"var": internal.returnvar},
                     )
                 elif self.is_boxed:
                     constructor = "%s.Set_Object (%s);" % (selfname, internal.returnvar)
@@ -2328,6 +2342,10 @@ end if;"""
             # Do we set Self through assignment or return?
             if constructor:
                 body += new_profile._wrap_stmt(constructor)
+                if polymorphic and new_profile.throws:
+                    body += new_profile._wrap_stmt(
+                        "%s := null;" % selfname, success=False
+                    )
             elif new_profile.throws:
                 null_val = 'null'
                 if 'null_name' in self._subst:
@@ -2420,8 +2438,17 @@ end if;"""
         else:
             selftype = selftypename
 
+        # Get_User_Data only handles GObjects. Fundamental types (render
+        # nodes and expressions) go through the GObject path below, but
+        # cannot use it.
+        polymorphic = gtkmethod.is_polymorphic()
+        if polymorphic and (not self.is_gobject or self.is_parent_fundamental):
+            raise Exception(
+                "%s: only GObject constructors can be polymorphic" % cname
+            )
+
         if self.is_gobject:
-            # Three constructors:
+            # Three constructors (no Initialize if polymorphic):
             #   procedure Initialize...
             #   procedure G/Gtk/Gdk_New
             #   function [typename]_New
@@ -2455,13 +2482,21 @@ end if;"""
                 extra_doc=init_doc
             ).add_nested(internal)
 
+            # A polymorphic constructor calls C directly, then looks up the
+            # result's Ada wrapper. Others allocate a record of this type
+            # and pass it to Initialize.
+            if polymorphic:
+                new_call = internal.call(in_pkg=self.pkg, extra_postcall="".join(code))
+                new_locals = local_vars
+            else:
+                call = initialize.call(in_pkg=self.pkg)
+                assert call.returnvar is None, "This is a procedure"
+                allocation = selfname + " := new %(typename)s_Record;" % self._subst
+                new_call = call._replace(precall=call.precall + [allocation])
+                new_locals = []
+
             # procedure gtk_new (Self : out ...)
-            # wraps call to Initialize and assigns Self
-            call = initialize.call(in_pkg=self.pkg)
-            assert call.returnvar is None, "This is a procedure"
             naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
-            allocation = selfname + " := new %(typename)s_Record;" % self._subst
-            new_call = call._replace(precall=call.precall + [allocation])
             gtk_new = to_constructor(
                 name=adaname,
                 selfname=selfname,
@@ -2474,26 +2509,43 @@ end if;"""
                         mode="out",
                     )
                 ],
+                extra_locals=new_locals,
+                polymorphic=polymorphic,
             )
+            if polymorphic:
+                gtk_new.add_nested(internal)
             section.add(gtk_new)
-            section.add(initialize)
 
-            # function gtk_new wraps Initialize and returns Self
+            # No Initialize for a polymorphic constructor: it may return a
+            # singleton, and attaching that to the caller's record would
+            # free the singleton's existing Ada wrapper, or give it the
+            # caller's tag for good.
+            if not polymorphic:
+                section.add(initialize)
+
+            # function gtk_new, built the same way as the procedure
+            if polymorphic:
+                new_call = internal.call(in_pkg=self.pkg, extra_postcall="".join(code))
+                new_locals = local_vars + [Local_Var(selfname, selftypename)]
+            else:
+                new_call = call
+                new_locals = [Local_Var(
+                    selfname,
+                    selftypename,
+                    "new %(typename)s_Record" % self._subst,
+                    constant=not profile.throws,
+                )]
             gtk_new = to_constructor(
                 name="%s_%s" % (selftypename, name),
                 selfname=selfname,
                 profile=profile,
-                internal=call,
+                internal=new_call,
                 returns=AdaType(selftypename, in_spec=True, pkg=self.pkg),
-                extra_locals=[
-                    Local_Var(
-                        selfname,
-                        selftypename,
-                        "new %(typename)s_Record" % self._subst,
-                        constant=not profile.throws
-                    )
-                ],
+                extra_locals=new_locals,
+                polymorphic=polymorphic,
             )
+            if polymorphic:
+                gtk_new.add_nested(internal)
             section.add(gtk_new)
 
         elif self.is_boxed:

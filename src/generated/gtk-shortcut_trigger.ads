@@ -52,9 +52,6 @@ package Gtk.Shortcut_Trigger is
    ------------------
 
    procedure Gtk_New (Self : out Gtk_Shortcut_Trigger; String : UTF8_String);
-   procedure Initialize
-      (Self   : not null access Gtk_Shortcut_Trigger_Record'Class;
-       String : UTF8_String);
    --  Tries to parse the given string into a trigger.
    --  On success, the parsed trigger is returned. When parsing failed, null
    --  is returned.
@@ -68,8 +65,6 @@ package Gtk.Shortcut_Trigger is
    --  Note that you will have to escape the `<` and `>` characters when
    --  specifying triggers in XML files, such as GtkBuilder ui files. Use `<`
    --  instead of `<` and `>` instead of `>`.
-   --  Initialize does nothing if the object was already created with another
-   --  call to Initialize* or G_New.
    --  @param String the string to parse
 
    function Gtk_Shortcut_Trigger_Parse_String

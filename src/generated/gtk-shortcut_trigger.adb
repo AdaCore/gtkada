@@ -40,9 +40,16 @@ package body Gtk.Shortcut_Trigger is
    -------------
 
    procedure Gtk_New (Self : out Gtk_Shortcut_Trigger; String : UTF8_String) is
+      function Internal
+         (String : Gtkada.Types.Chars_Ptr) return System.Address;
+      pragma Import (C, Internal, "gtk_shortcut_trigger_parse_string");
+      Stub_Gtk_Shortcut_Trigger : Gtk_Shortcut_Trigger_Record;
+      Tmp_String                : Gtkada.Types.Chars_Ptr := New_String (String);
+      Tmp_Return                : System.Address;
    begin
-      Self := new Gtk_Shortcut_Trigger_Record;
-      Gtk.Shortcut_Trigger.Initialize (Self, String);
+      Tmp_Return := Internal (Tmp_String);
+      Self := Gtk_Shortcut_Trigger (Get_User_Data (Tmp_Return, Stub_Gtk_Shortcut_Trigger));
+      Free (Tmp_String);
    end Gtk_New;
 
    ---------------------------------------
@@ -52,32 +59,19 @@ package body Gtk.Shortcut_Trigger is
    function Gtk_Shortcut_Trigger_Parse_String
       (String : UTF8_String) return Gtk_Shortcut_Trigger
    is
-      Self : constant Gtk_Shortcut_Trigger := new Gtk_Shortcut_Trigger_Record;
-   begin
-      Gtk.Shortcut_Trigger.Initialize (Self, String);
-      return Self;
-   end Gtk_Shortcut_Trigger_Parse_String;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
-      (Self   : not null access Gtk_Shortcut_Trigger_Record'Class;
-       String : UTF8_String)
-   is
       function Internal
          (String : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_shortcut_trigger_parse_string");
-      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
-      Tmp_Return : System.Address;
+      Self                      : Gtk_Shortcut_Trigger;
+      Stub_Gtk_Shortcut_Trigger : Gtk_Shortcut_Trigger_Record;
+      Tmp_String                : Gtkada.Types.Chars_Ptr := New_String (String);
+      Tmp_Return                : System.Address;
    begin
-      if not Self.Is_Created then
-         Tmp_Return := Internal (Tmp_String);
-         Set_Object (Self, Tmp_Return);
-      end if;
+      Tmp_Return := Internal (Tmp_String);
+      Self := Gtk_Shortcut_Trigger (Get_User_Data (Tmp_Return, Stub_Gtk_Shortcut_Trigger));
       Free (Tmp_String);
-   end Initialize;
+      return Self;
+   end Gtk_Shortcut_Trigger_Parse_String;
 
    -------------
    -- Compare --

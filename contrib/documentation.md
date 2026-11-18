@@ -255,6 +255,7 @@ GIR node is matched.
 | `return_as_param`    | string | Replace the function's return value with an `out` parameter of this name.                    |
 | `return`             | string | Override the C type of the return value. Use `"void"` to turn a function into a procedure. To override the GIR's `@return` documentation use `[method.doc]` `extend` block (see `GtkListItem.toml`). |
 | `classwide`          | bool   | When `true`, declare the subprogram class-wide rather than as a primitive operation.                                                                        |
+| `polymorphic`        | bool   | When `true`, this GObject constructor may return a subtype of its class; see [Polymorphic constructors](#polymorphic-constructors).                         |
 | `body`               | string | Hand-written body inserted after the `is` keyword (use `'''...'''`). Use `%(auto)s` inside the string to splice the automatic body in.                       |
 | `convention`         | string | Override the calling convention (e.g. `"C"`).                                                                                                              |
 
@@ -301,6 +302,43 @@ passes a record input through `access constant Gdk_RGBA`. This preserves
 the allocation's identity; importing the return as a record would lose
 the pointer and use the wrong C return convention. Ordinary record-valued
 accessors can keep their existing mappings.
+
+### Polymorphic constructors
+
+A GObject constructor normally allocates a record of its own Ada type,
+then calls C and attaches the result to it. The Ada tag is therefore
+fixed before C has run. That is wrong for a constructor that may return
+a subtype of its class: `gtk_shortcut_trigger_parse_string` returns a
+`GtkAlternativeTrigger` for `"_U|<Shift>u"`, but its Ada object would
+still be a plain `Gtk_Shortcut_Trigger_Record`, and converting it to
+`Gtk_Alternative_Trigger` would raise `Constraint_Error`.
+
+Mark such constructors with `polymorphic = true`:
+
+```toml
+[[method]]
+id          = "gtk_shortcut_trigger_parse_string"
+ada         = "Gtk_New"
+polymorphic = true
+```
+
+Their `Gtk_New` procedure and function then call C first, and convert the
+result through `Glib.Object.Get_User_Data`, like ordinary GObject-valued
+functions. The Ada object gets the type registered for the C object's
+GType, an existing Ada object is reused, and a null C result gives null.
+The registration for a subtype happens when its package is elaborated.
+
+A polymorphic constructor has no `Initialize`. `Initialize` attaches the
+C result to a record that the caller already allocated, so it cannot give
+that record the tag of a subtype. Worse, the C result may be a singleton:
+`"never"` gives GTK's `GtkNeverTrigger`. If the singleton already has an
+Ada object, attaching it to the caller's record frees that object and
+leaves its handles dangling. If it has none yet, the caller's record
+becomes its Ada object for good, and `Gtk.Never_Trigger.Get` raises
+`Constraint_Error`.
+
+Only GObject constructors can be polymorphic; the generator rejects the
+key on a constructor of a boxed type, a render node or an expression.
 
 ### `[[method.parameter]]` — per-parameter overrides
 

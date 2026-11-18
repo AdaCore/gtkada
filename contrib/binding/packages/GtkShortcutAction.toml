@@ -9,3 +9,4 @@ asbitfield = true
 [[method]]
 id = "gtk_shortcut_action_parse_string"
 ada = "Gtk_New"
+polymorphic = true
