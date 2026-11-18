@@ -2,6 +2,18 @@
 # #   GtkEntry
 # # ============================================================
 
+[[method]]
+id = "gtk_entry_set_extra_menu"
+
+[[method.parameter]]
+name = "model"
+# GTK refs the model unconditionally despite the GIR's nullable annotation.
+allow_none = "0"
+
+[method.doc]
+extend = true
+text = "Model must be non-null. Passing null raises Constraint_Error before calling GTK."
+
 [[virtual_method]]
 id = "gtk_editable_get_alignment"
 bind = false

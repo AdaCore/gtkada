@@ -90,12 +90,9 @@ package body Gtk.Builder_CScope is
       pragma Import (C, Internal, "gtk_builder_cscope_add_callback_symbol");
 
       Tmp_Callback_Name : Gtkada.Types.Chars_Ptr := New_String (Callback_Name);
-      Cbk_Symbol        : constant System.Address :=
-        (if Callback_Symbol = null
-         then System.Null_Address
-         else To_Address (Callback_Symbol));
    begin
-      Internal (Get_Object (Self), Tmp_Callback_Name, Cbk_Symbol);
+      Internal (Get_Object (Self), Tmp_Callback_Name,
+                To_Address (Callback_Symbol));
       Free (Tmp_Callback_Name);
    end Add_Callback_Symbol;
 

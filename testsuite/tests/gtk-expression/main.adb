@@ -26,6 +26,7 @@ with Gtk.String_Filter;
 with Gtk.Try_Expression;
 with Gtk.Window;
 with Gtkada.Types;
+with Optional_Callbacks;
 
 procedure Main is
 
@@ -170,6 +171,8 @@ procedure Main is
    procedure Test_Try_Bind with Convention => C;
    procedure Test_Bind with Convention => C;
    procedure Test_Watch_User_Data with Convention => C;
+   procedure Test_Watch_Required_Callback with Convention => C;
+   procedure Test_Watch_User_Data_Required_Callback with Convention => C;
    procedure Test_Dummy_Wrapper with Convention => C;
    procedure Test_Cclosure with Convention => C;
    procedure Test_Closure with Convention => C;
@@ -575,6 +578,65 @@ procedure Main is
 
    end Test_Watch_User_Data;
 
+   --  gtk-expression.required-watch-callback-nullable: GIR requires Notify
+   --  for both Watch wrappers. Ada must reject a null callback before calling
+   --  GTK, whose notify != NULL critical is fatal under Glib.Test.
+   procedure Test_Watch_Required_Callback is
+      Filter : constant Gtk.String_Filter.Gtk_String_Filter :=
+        Gtk.String_Filter.Gtk_String_Filter_New (null);
+      Expr : constant Gtk.Property_Expression.Gtk_Property_Expression :=
+        Gtk.Property_Expression.Gtk_Property_Expression_New
+          (Gtk.String_Filter.Get_Type, null, "search");
+      --  Convert a nullable application callback at run time: this remains
+      --  legal when Gtk_Expression_Notify becomes a null-excluding type, and
+      --  its null check (or the Watch parameter's) must raise Constraint_Error.
+      Notify : Optional_Callbacks.Notify := null;
+      Watch : Gtk.Expression_Watch.Gtk_Expression_Watch;
+      pragma Unreferenced (Watch);
+      Rejected : Boolean := False;
+   begin
+      begin
+         Watch := Gtk.Expression.Watch
+           (Gtk.Expression.Gtk_Expression (Expr),
+            Glib.Object.Get_Object (Filter),
+            Gtk.Expression.Gtk_Expression_Notify (Notify));
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+      Glib.Test.Assert_True
+        (Rejected, "Watch must reject a null required callback in Ada");
+      Glib.Object.Unref (Glib.Object.GObject (Filter));
+   end Test_Watch_Required_Callback;
+
+   procedure Test_Watch_User_Data_Required_Callback is
+      Filter : constant Gtk.String_Filter.Gtk_String_Filter :=
+        Gtk.String_Filter.Gtk_String_Filter_New (null);
+      Expr : constant Gtk.Property_Expression.Gtk_Property_Expression :=
+        Gtk.Property_Expression.Gtk_Property_Expression_New
+          (Gtk.String_Filter.Get_Type, null, "search");
+      --  The generic instance has its own callback type; use the same checked
+      --  conversion idiom to test its required Notify independently of Watch.
+      Notify : Optional_Callbacks.Notify_With_Data := null;
+      Watch : Gtk.Expression_Watch.Gtk_Expression_Watch;
+      pragma Unreferenced (Watch);
+      Rejected : Boolean := False;
+   begin
+      begin
+         Watch := Watch_With_Data.Watch
+           (Gtk.Expression.Gtk_Expression (Expr),
+            Glib.Object.Get_Object (Filter),
+            Watch_With_Data.Gtk_Expression_Notify (Notify), 42);
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+      Glib.Test.Assert_True
+        (Rejected,
+         "Watch_User_Data.Watch must reject a null required callback in Ada");
+      Glib.Object.Unref (Glib.Object.GObject (Filter));
+   end Test_Watch_User_Data_Required_Callback;
+
    -------------------
    -- Test_Cclosure --
    -------------------
@@ -741,5 +803,11 @@ begin
    Glib.Test.Add_Func ("/expression/cclosure", Test_Cclosure'Unrestricted_Access);
    Glib.Test.Add_Func ("/expression/closure", Test_Closure'Unrestricted_Access);
    Glib.Test.Add_Func ("/expression/dummy-wrapper", Test_Dummy_Wrapper'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/expression/watch-required-callback",
+      Test_Watch_Required_Callback'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/expression/watch-user-data-required-callback",
+      Test_Watch_User_Data_Required_Callback'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

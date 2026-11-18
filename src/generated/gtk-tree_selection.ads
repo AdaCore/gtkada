@@ -230,7 +230,7 @@ package Gtk.Tree_Selection is
 
    procedure Selected_Foreach
       (Self : not null access Gtk_Tree_Selection_Record;
-       Func : Gtk_Tree_Selection_Foreach_Func);
+       Func : not null Gtk_Tree_Selection_Foreach_Func);
    pragma Obsolescent (Selected_Foreach);
    --  Calls a function for each selected node. Note that you cannot modify
    --  the tree or selection from within this function. As a result,
@@ -257,7 +257,7 @@ package Gtk.Tree_Selection is
 
       procedure Selected_Foreach
          (Self : not null access Gtk.Tree_Selection.Gtk_Tree_Selection_Record'Class;
-          Func : Gtk_Tree_Selection_Foreach_Func;
+          Func : not null Gtk_Tree_Selection_Foreach_Func;
           Data : User_Data_Type);
       pragma Obsolescent (Selected_Foreach);
       --  Calls a function for each selected node. Note that you cannot modify

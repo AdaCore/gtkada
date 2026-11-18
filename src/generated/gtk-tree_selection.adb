@@ -351,14 +351,10 @@ package body Gtk.Tree_Selection is
 
    procedure Selected_Foreach
       (Self : not null access Gtk_Tree_Selection_Record;
-       Func : Gtk_Tree_Selection_Foreach_Func)
+       Func : not null Gtk_Tree_Selection_Foreach_Func)
    is
    begin
-      if Func = null then
-         C_Gtk_Tree_Selection_Selected_Foreach (Get_Object (Self), System.Null_Address, System.Null_Address);
-      else
-         C_Gtk_Tree_Selection_Selected_Foreach (Get_Object (Self), Internal_Gtk_Tree_Selection_Foreach_Func'Address, To_Address (Func));
-      end if;
+      C_Gtk_Tree_Selection_Selected_Foreach (Get_Object (Self), Internal_Gtk_Tree_Selection_Foreach_Func'Address, To_Address (Func));
    end Selected_Foreach;
 
    package body Selected_Foreach_User_Data is
@@ -408,18 +404,14 @@ package body Gtk.Tree_Selection is
 
       procedure Selected_Foreach
          (Self : not null access Gtk.Tree_Selection.Gtk_Tree_Selection_Record'Class;
-          Func : Gtk_Tree_Selection_Foreach_Func;
+          Func : not null Gtk_Tree_Selection_Foreach_Func;
           Data : User_Data_Type)
       is
          D : System.Address;
       begin
-         if Func = null then
-            C_Gtk_Tree_Selection_Selected_Foreach (Get_Object (Self), System.Null_Address, System.Null_Address);
-         else
-            D := Users.Build (To_Address (Func), Data);
-            C_Gtk_Tree_Selection_Selected_Foreach (Get_Object (Self), Internal_Cb'Address, D);
-            Users.Free_Data (D);
-         end if;
+         D := Users.Build (To_Address (Func), Data);
+         C_Gtk_Tree_Selection_Selected_Foreach (Get_Object (Self), Internal_Cb'Address, D);
+         Users.Free_Data (D);
       end Selected_Foreach;
 
    end Selected_Foreach_User_Data;

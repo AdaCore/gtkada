@@ -249,7 +249,7 @@ package Gtk.Tree_Model_Filter is
    procedure Set_Modify_Func
       (Self  : not null access Gtk_Tree_Model_Filter_Record;
        Types : GType_Array;
-       Func  : Gtk_Tree_Model_Filter_Modify_Func);
+       Func  : not null Gtk_Tree_Model_Filter_Modify_Func);
    pragma Obsolescent (Set_Modify_Func);
    --  With the N_Columns and Types parameters, you give an array of column
    --  types for this model (which will be exposed to the parent model/view).
@@ -291,7 +291,7 @@ package Gtk.Tree_Model_Filter is
       procedure Set_Modify_Func
          (Self  : not null access Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter_Record'Class;
           Types : GType_Array;
-          Func  : Gtk_Tree_Model_Filter_Modify_Func;
+          Func  : not null Gtk_Tree_Model_Filter_Modify_Func;
           Data  : User_Data_Type);
       pragma Obsolescent (Set_Modify_Func);
       --  With the N_Columns and Types parameters, you give an array of column
@@ -327,7 +327,7 @@ package Gtk.Tree_Model_Filter is
 
    procedure Set_Visible_Func
       (Self : not null access Gtk_Tree_Model_Filter_Record;
-       Func : Gtk_Tree_Model_Filter_Visible_Func);
+       Func : not null Gtk_Tree_Model_Filter_Visible_Func);
    pragma Obsolescent (Set_Visible_Func);
    --  Sets the visible function used when filtering the Filter to be Func.
    --  The function should return True if the given row should be visible and
@@ -369,7 +369,7 @@ package Gtk.Tree_Model_Filter is
 
       procedure Set_Visible_Func
          (Self : not null access Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter_Record'Class;
-          Func : Gtk_Tree_Model_Filter_Visible_Func;
+          Func : not null Gtk_Tree_Model_Filter_Visible_Func;
           Data : User_Data_Type);
       pragma Obsolescent (Set_Visible_Func);
       --  Sets the visible function used when filtering the Filter to be Func.
@@ -399,7 +399,7 @@ package Gtk.Tree_Model_Filter is
 
    procedure Foreach
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
-       Func       : Gtk_Tree_Model_Foreach_Func);
+       Func       : not null Gtk_Tree_Model_Foreach_Func);
    pragma Obsolescent (Foreach);
    --  Calls Func on each node in model in a depth-first fashion.
    --  If Func returns True, then the tree ceases to be walked, and
@@ -427,7 +427,7 @@ package Gtk.Tree_Model_Filter is
 
       procedure Foreach
          (Tree_Model : not null access Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter_Record'Class;
-          Func       : Gtk_Tree_Model_Foreach_Func;
+          Func       : not null Gtk_Tree_Model_Foreach_Func;
           User_Data  : User_Data_Type);
       pragma Obsolescent (Foreach);
       --  Calls Func on each node in model in a depth-first fashion.

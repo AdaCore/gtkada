@@ -19,6 +19,8 @@ with Gtk.Builder_List_Item_Factory;
 with Gtk.Builder_Scope;
 with Gtk.Main;
 
+with Optional_Callbacks;
+
 procedure Main is
    use type Glib.GType;
    use type Glib.Error.GError;
@@ -39,6 +41,7 @@ procedure Main is
    procedure Test_Bytes_Constructors with Convention => C;
    procedure Test_Resource_Constructors with Convention => C;
    procedure Test_C_Scope_Callbacks with Convention => C;
+   procedure Test_C_Scope_Null_Callback with Convention => C;
 
    --  GtkBuilder stores a C closure after resolving this registered name.
    procedure Registered_Callback;
@@ -207,6 +210,32 @@ procedure Main is
       Glib.Object.Unref (Glib.Object.GObject (Scope));
    end Test_C_Scope_Callbacks;
 
+   --  Regression for gtk-builder_cscope.callback-symbol-nullability:
+   --  the GIR requires a non-null callback. Ada must reject null before
+   --  passing it to GTK, where it would trigger a fatal critical instead.
+   procedure Test_C_Scope_Null_Callback is
+      Scope : constant Gtk.Builder_CScope.Gtk_Builder_C_Scope :=
+        Gtk.Builder_CScope.Gtk_Builder_C_Scope_New;
+      Callback : Optional_Callbacks.Callback := null;
+      pragma Volatile (Callback);
+      Rejected : Boolean := False;
+   begin
+      --  Convert rather than pass a null literal: this remains legal when
+      --  G_Callback excludes null, and its null-exclusion check then raises
+      --  Constraint_Error here. Volatile keeps that check at run time.
+      begin
+         Scope.Add_Callback_Symbol
+           ("null_callback", Gtk.Builder_CScope.G_Callback (Callback));
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+
+      Glib.Object.Unref (Glib.Object.GObject (Scope));
+      Assert_True
+        (Rejected, "Add_Callback_Symbol must reject a null callback in Ada");
+   end Test_C_Scope_Null_Callback;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
@@ -219,5 +248,8 @@ begin
    Glib.Test.Add_Func
      ("/gtk-builder-list-item-factory/c-scope-callbacks",
       Test_C_Scope_Callbacks'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gtk-builder-list-item-factory/c-scope-null-callback",
+      Test_C_Scope_Null_Callback'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

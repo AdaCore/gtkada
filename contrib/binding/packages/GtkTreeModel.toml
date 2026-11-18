@@ -11,6 +11,15 @@ ctype = "GtkTreeModelFlags"
 ada = "Tree_Model_Flags"
 
 [[method]]
+id = "gtk_tree_model_foreach"
+
+[[method.parameter]]
+name = "func"
+allow_none = "0"
+# GTK requires a function to traverse the model; the GIR leaves this
+# callback's nullability unannotated.
+
+[[method]]
 id = "gtk_tree_model_get"
 bind = false
 # varargs

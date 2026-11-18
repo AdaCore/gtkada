@@ -35,6 +35,15 @@ limited = true
 pkg = "Gtk.Event_Controller"
 
 [[method]]
+id = "gtk_widget_add_tick_callback"
+
+[[method.parameter]]
+name = "callback"
+allow_none = "0"
+# GTK requires a function to register a tick callback; the GIR leaves
+# this callback's nullability unannotated.
+
+[[method]]
 id = "gtk_widget_get_allocation"
 
 [[method.parameter]]

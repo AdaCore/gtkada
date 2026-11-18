@@ -22,12 +22,9 @@ body = '''
       pragma Import (C, Internal, "gtk_builder_cscope_add_callback_symbol");
 
       Tmp_Callback_Name : Gtkada.Types.Chars_Ptr := New_String (Callback_Name);
-      Cbk_Symbol        : constant System.Address :=
-        (if Callback_Symbol = null
-         then System.Null_Address
-         else To_Address (Callback_Symbol));
    begin
-      Internal (Get_Object (Self), Tmp_Callback_Name, Cbk_Symbol);
+      Internal (Get_Object (Self), Tmp_Callback_Name,
+                To_Address (Callback_Symbol));
       Free (Tmp_Callback_Name);
 '''
 
@@ -47,10 +44,11 @@ text = '''
   -- Callbacks --
   ---------------
 
-  type G_Callback is access procedure;
+  type G_Callback is not null access procedure;
   --  The type used for callback functions in structure definitions and
   --  function signatures. This doesn't mean that all callback functions must
   --  take no parameters and return void. The required signature of a callback
   --  function is determined by the context in which is used (e.g. the signal
   --  to which it is connected).
+  --  A callback registered with Add_Callback_Symbol must not be null.
 '''

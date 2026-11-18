@@ -49,6 +49,12 @@ procedure Main is
    procedure Test_Selection_Api
    with Convention => C;
 
+   procedure Test_Required_Foreach_Callback
+   with Convention => C;
+
+   procedure Test_Required_Foreach_Callback_With_Data
+   with Convention => C;
+
    use type Gtk.Tree_Model.Gtk_Tree_Model;
    use type Gtk.Tree_Model.Gtk_Tree_Iter;
    use type Gtk.Widget.Gtk_Widget;
@@ -609,6 +615,55 @@ procedure Main is
       Path_Free (Path_2);
    end Test_Selection_Api;
 
+   --  Regression for gtk-tree_selection.required-foreach-callback: GIR
+   --  requires a visiting function for both Selected_Foreach variants.
+   --  A nullable callback variable models a caller that has no function yet.
+   --  The Ada boundary must raise Constraint_Error for a not-null parameter,
+   --  before GTK sees the invalid pointer. An empty model lets us check this
+   --  contract without relying on GTK diagnosing the missing callback.
+   --  Use variables rather than null literals so the calls remain legal when
+   --  the parameter gains its null exclusion and are checked at run time.
+   procedure Check_Required_Foreach_Callback (With_Data : Boolean) is
+      Store         : Gtk_List_Store;
+      View          : Gtk_Tree_View;
+      Selection     : Gtk_Tree_Selection;
+      Callback      : Gtk_Tree_Selection_Foreach_Func := null;
+      Data_Callback : Foreach_With_Data.Gtk_Tree_Selection_Foreach_Func := null;
+      Rejected      : Boolean := False;
+   begin
+      Gtk_New (Store, (0 => GType_String));
+      View := Gtk_Tree_View_New_With_Model (+Store);
+      --  Sink the floating widget reference; the selection is borrowed from
+      --  the view and must not be unreferenced independently.
+      View.Ref_Sink;
+      Selection := View.Get_Selection;
+      begin
+         if With_Data then
+            Foreach_With_Data.Selected_Foreach (Selection, Data_Callback, 5);
+         else
+            Selection.Selected_Foreach (Callback);
+         end if;
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+      View.Unref;
+      Store.Unref;
+      Assert_True
+        (Rejected,
+         "Selected_Foreach must reject a null callback before calling GTK");
+   end Check_Required_Foreach_Callback;
+
+   procedure Test_Required_Foreach_Callback is
+   begin
+      Check_Required_Foreach_Callback (With_Data => False);
+   end Test_Required_Foreach_Callback;
+
+   procedure Test_Required_Foreach_Callback_With_Data is
+   begin
+      Check_Required_Foreach_Callback (With_Data => True);
+   end Test_Required_Foreach_Callback_With_Data;
+
 begin
    Glib.Test.Init;
 
@@ -629,6 +684,12 @@ begin
      ("/tree-view/selection/empty", Test_Selection_Empty'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/tree-view/selection/api", Test_Selection_Api'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/tree-view/selection/required-foreach-callback",
+      Test_Required_Foreach_Callback'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/tree-view/selection/required-foreach-callback-with-data",
+      Test_Required_Foreach_Callback_With_Data'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

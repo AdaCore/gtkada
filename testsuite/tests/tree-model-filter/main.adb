@@ -59,6 +59,7 @@ procedure Main is
    procedure Test_Callbacks with Convention => C;
    procedure Test_Row_Changed with Convention => C;
    procedure Test_Signal_Emitters with Convention => C;
+   procedure Test_Required_Callbacks with Convention => C;
 
    function Visible_Twenty
      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -682,6 +683,81 @@ procedure Main is
       Unref (Store);
    end Test_Callbacks;
 
+   -----------------------------
+   -- Test_Required_Callbacks --
+   -----------------------------
+
+   --  Regression for gtk-tree_model_filter.required-callbacks: the GIR
+   --  requires callbacks for traversal and both filter setters. A missing
+   --  callback must be rejected by Ada, rather than forwarded to GTK as NULL
+   --  (which Glib.Test turns into a fatal critical). Test the direct and
+   --  user-data forms; Test_Callbacks above checks their valid callbacks.
+   procedure Test_Required_Callbacks is
+      type Callback_Kind is
+        (Visible, Visible_User_Data, Modify, Modify_User_Data,
+         Traversal, Traversal_User_Data);
+
+      Store    : Gtk_Tree_Store;
+      Iter     : Gtk_Tree_Iter;
+      Filter   : Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter;
+      Rejected : Boolean;
+
+      --  Use nullable callback variables, rather than literal null actuals:
+      --  after the fix these remain legal declarations, and passing them to
+      --  a not-null formal raises Constraint_Error at the Ada call boundary.
+      Missing_Visible : Gtk_Tree_Model_Filter_Visible_Func := null;
+      Missing_Modify  : Gtk_Tree_Model_Filter_Modify_Func := null;
+      Missing_Visit   : Gtk.Tree_Model_Filter.Gtk_Tree_Model_Foreach_Func :=
+        null;
+      Missing_Visible_Data :
+        Visible_With_Data.Gtk_Tree_Model_Filter_Visible_Func := null;
+      Missing_Modify_Data :
+        Modify_With_Data.Gtk_Tree_Model_Filter_Modify_Func := null;
+      Missing_Visit_Data :
+        Foreach_With_Data.Gtk_Tree_Model_Foreach_Func := null;
+   begin
+      Gtk_New (Store, (0 => GType_Int));
+      Store.Append (Iter, Null_Iter);
+      Store.Set (Iter, 0, 42);
+
+      for Kind in Callback_Kind loop
+         --  Setters may only be installed once on a filter, so give each
+         --  entry point a fresh object. Unary + selects its model interface.
+         Gtk.Tree_Model_Filter.Gtk_New (Filter, +Store);
+         Rejected := False;
+         begin
+            case Kind is
+               when Visible =>
+                  Gtk.Tree_Model_Filter.Set_Visible_Func
+                    (Filter, Missing_Visible);
+               when Visible_User_Data =>
+                  Visible_With_Data.Set_Visible_Func
+                    (Filter, Missing_Visible_Data, 10);
+               when Modify =>
+                  Gtk.Tree_Model_Filter.Set_Modify_Func
+                    (Filter, (0 => GType_Int), Missing_Modify);
+               when Modify_User_Data =>
+                  Modify_With_Data.Set_Modify_Func
+                    (Filter, (0 => GType_Int), Missing_Modify_Data, 5);
+               when Traversal =>
+                  Gtk.Tree_Model_Filter.Foreach (Filter, Missing_Visit);
+               when Traversal_User_Data =>
+                  Foreach_With_Data.Foreach
+                    (Filter, Missing_Visit_Data, 37);
+            end case;
+         exception
+            when Constraint_Error =>
+               Rejected := True;
+         end;
+         Unref (Glib.Object.GObject (Filter));
+         Assert_True
+           (Rejected, "gtk-tree_model_filter.required-callbacks: "
+            & Callback_Kind'Image (Kind)
+            & " must reject a null callback before calling GTK");
+      end loop;
+      Unref (Store);
+   end Test_Required_Callbacks;
+
    -----------------------
    -- Test_Row_Changed --
    -----------------------
@@ -806,5 +882,8 @@ begin
    Glib.Test.Add_Func
      ("/tree-model-filter/signal-emitters",
       Test_Signal_Emitters'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/tree-model-filter/required-callbacks",
+      Test_Required_Callbacks'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

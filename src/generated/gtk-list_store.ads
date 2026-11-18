@@ -369,7 +369,7 @@ package Gtk.List_Store is
 
    procedure Foreach
       (Tree_Model : not null access Gtk_List_Store_Record;
-       Func       : Gtk_Tree_Model_Foreach_Func);
+       Func       : not null Gtk_Tree_Model_Foreach_Func);
    pragma Obsolescent (Foreach);
    --  Calls Func on each node in model in a depth-first fashion.
    --  If Func returns True, then the tree ceases to be walked, and
@@ -397,7 +397,7 @@ package Gtk.List_Store is
 
       procedure Foreach
          (Tree_Model : not null access Gtk.List_Store.Gtk_List_Store_Record'Class;
-          Func       : Gtk_Tree_Model_Foreach_Func;
+          Func       : not null Gtk_Tree_Model_Foreach_Func;
           User_Data  : User_Data_Type);
       pragma Obsolescent (Foreach);
       --  Calls Func on each node in model in a depth-first fashion.

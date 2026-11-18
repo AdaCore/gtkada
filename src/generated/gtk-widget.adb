@@ -302,14 +302,10 @@ package body Gtk.Widget is
 
    function Add_Tick_Callback
       (Widget   : not null access Gtk_Widget_Record;
-       Callback : Gtk_Tick_Callback) return Guint
+       Callback : not null Gtk_Tick_Callback) return Guint
    is
    begin
-      if Callback = null then
-         return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), System.Null_Address, System.Null_Address, System.Null_Address);
-      else
-         return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Gtk_Tick_Callback'Address, To_Address (Callback), System.Null_Address);
-      end if;
+      return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Gtk_Tick_Callback'Address, To_Address (Callback), System.Null_Address);
    end Add_Tick_Callback;
 
    package body Add_Tick_Callback_User_Data is
@@ -343,17 +339,13 @@ package body Gtk.Widget is
 
       function Add_Tick_Callback
          (Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Callback  : Gtk_Tick_Callback;
+          Callback  : not null Gtk_Tick_Callback;
           User_Data : User_Data_Type) return Guint
       is
          D : System.Address;
       begin
-         if Callback = null then
-            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
-         else
-            D := Users.Build (To_Address (Callback), User_Data);
-            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Cb'Address, D, Users.Free_Data'Address);
-         end if;
+         D := Users.Build (To_Address (Callback), User_Data);
+         return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Cb'Address, D, Users.Free_Data'Address);
       end Add_Tick_Callback;
 
       -----------------

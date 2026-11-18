@@ -16,6 +16,15 @@ If `self`'s evaluation fails, `target`'s `property` is not updated. Use
 a [classGtk.TryExpression] to provide a fallback for this case.
 '''
 
+[[method]]
+id = "gtk_expression_watch"
+
+[[method.parameter]]
+name = "notify"
+allow_none = "0"
+# GTK requires notify even though the generator defaults callbacks with
+# no GIR nullability annotation to nullable.
+
 [[extra.spec]]
 text = '''
 

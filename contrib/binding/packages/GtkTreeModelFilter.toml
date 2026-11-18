@@ -45,6 +45,11 @@ return = "void"
 id = "gtk_tree_model_filter_set_modify_func"
 
 [[method.parameter]]
+name = "func"
+allow_none = "0"
+# GTK requires a modify callback; the GIR leaves nullability unannotated.
+
+[[method.parameter]]
 name = "types"
 type = "GType_Array"
 
@@ -52,3 +57,11 @@ type = "GType_Array"
 name = "n_columns"
 ada = ""
 default = "Types'Length"
+
+[[method]]
+id = "gtk_tree_model_filter_set_visible_func"
+
+[[method.parameter]]
+name = "func"
+allow_none = "0"
+# GTK requires a visible callback; the GIR leaves nullability unannotated.

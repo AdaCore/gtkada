@@ -74,6 +74,8 @@ procedure Gtk_Widget is
    procedure Test_Hierarchy with Convention => C;
    procedure Test_Mapped_Widget with Convention => C;
    procedure Test_Inherited_Vfuncs with Convention => C;
+   procedure Test_Required_Tick_Callback with Convention => C;
+   procedure Test_Required_Data_Tick_Callback with Convention => C;
 
    procedure Test_Widget_Class_Init (Self : GObject_Class);
    pragma Convention (C, Test_Widget_Class_Init);
@@ -805,6 +807,63 @@ procedure Gtk_Widget is
       Window.Destroy;
    end Test_Mapped_Widget;
 
+   --  Regression for gtk-widget.required-tick-callback: the GIR callback
+   --  parameter is required. A null callback held in an Ada access variable
+   --  must raise Constraint_Error at the binding boundary, before GTK can
+   --  register it. Using a variable keeps this a runtime null-exclusion check
+   --  after the profile is fixed, rather than a statically invalid null call.
+   procedure Test_Required_Tick_Callback is
+      Label : constant Gtk_Label := Gtk_Label_New ("required tick callback");
+      Callback : Gtk_Tick_Callback := null;
+      pragma Volatile (Callback);
+      Id : Guint := 0;
+      Rejected : Boolean := False;
+   begin
+      --  Sink the widget's floating reference so Unref owns its cleanup.
+      --  Leave it unmapped: a wrongly accepted callback must not run.
+      Label.Ref_Sink;
+      begin
+         Id := Add_Tick_Callback (Label, Callback);
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+      if Id /= 0 then
+         Remove_Tick_Callback (Label, Id);
+      end if;
+      Label.Unref;
+      Assert_True
+        (Rejected,
+         "gtk-widget.required-tick-callback: Add_Tick_Callback accepted null");
+   end Test_Required_Tick_Callback;
+
+   --  The generic user-data overload has the same required callback contract
+   --  and the same gtk-widget.required-tick-callback defect. Catch only the
+   --  registration call's Constraint_Error; unrelated cleanup errors must not
+   --  count as rejecting the callback. No event loop or real frame is needed.
+   procedure Test_Required_Data_Tick_Callback is
+      Label : constant Gtk_Label := Gtk_Label_New ("required data tick callback");
+      Callback : Tick_With_Data.Gtk_Tick_Callback := null;
+      pragma Volatile (Callback);
+      Id : Guint := 0;
+      Rejected : Boolean := False;
+   begin
+      Label.Ref_Sink;
+      begin
+         Id := Tick_With_Data.Add_Tick_Callback (Label, Callback, 17);
+      exception
+         when Constraint_Error =>
+            Rejected := True;
+      end;
+      if Id /= 0 then
+         Remove_Tick_Callback (Label, Id);
+      end if;
+      Label.Unref;
+      Assert_True
+        (Rejected,
+         "gtk-widget.required-tick-callback: user-data overload accepted null");
+   end Test_Required_Data_Tick_Callback;
+
    --------------------------
    -- Test_Inherited_Vfuncs --
    --------------------------
@@ -877,6 +936,12 @@ begin
    Glib.Test.Add_Func ("/gtk-widget/mapped", Test_Mapped_Widget'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/gtk-widget/inherited-vfuncs", Test_Inherited_Vfuncs'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gtk-widget/required-tick-callback",
+      Test_Required_Tick_Callback'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gtk-widget/required-data-tick-callback",
+      Test_Required_Data_Tick_Callback'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Gtk_Widget;

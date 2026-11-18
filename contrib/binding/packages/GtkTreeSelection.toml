@@ -31,6 +31,15 @@ id = "gtk_tree_selection_get_tree_view"
 return = "Gtk_Widget"
 # avoid circular dep
 
+[[method]]
+id = "gtk_tree_selection_selected_foreach"
+
+[[method.parameter]]
+name = "func"
+allow_none = "0"
+# GTK requires a function to visit selected rows; the GIR leaves this
+# callback's nullability unannotated.
+
 [extra]
 body = '''
 
