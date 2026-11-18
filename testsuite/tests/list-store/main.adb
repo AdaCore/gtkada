@@ -75,6 +75,9 @@ procedure Main is
    procedure Test_Row_Editing
    with Convention => C;
 
+   procedure Test_Remove_Updated_Iter
+   with Convention => C;
+
    procedure Test_Drag_And_Drop
    with Convention => C;
 
@@ -611,8 +614,7 @@ procedure Main is
    ----------------------
 
    --  Port the C insertion, movement, swapping, reorder, and clear checks.
-   --  Remove is intentionally omitted because its Ada wrapper discards GTK's
-   --  updated iterator; that binding defect is recorded in the work notes.
+   --  Remove's iterator behavior is checked in Test_Remove_Updated_Iter.
    procedure Test_Row_Editing is
       Store : Gtk.List_Store.Gtk_List_Store;
       A, B, C, D, E, F, G, H, I : Gtk_Tree_Iter;
@@ -844,6 +846,61 @@ procedure Main is
         (Gtk.Tree_Model.Gtk_Root_Tree_Model_Record (Store.all)'Access);
    end Test_Model_Notifications;
 
+   --  Regression for gtk-list_store.remove-discards-updated-iter: GTK updates
+   --  the in-out iterator to the successor, allowing removal to continue
+   --  without fetching another iterator. Removing the last row invalidates it.
+   procedure Test_Remove_Updated_Iter is
+      Store : Gtk.List_Store.Gtk_List_Store;
+      First, Middle, Last, Iter : Gtk_Tree_Iter;
+   begin
+      Store := Gtk.List_Store.Gtk_List_Store_Newv ((0 => GType_Int));
+      Gtk.List_Store.Append (Store, First);
+      Gtk.List_Store.Set (Store, First, 0, 10);
+      Gtk.List_Store.Append (Store, Middle);
+      Gtk.List_Store.Set (Store, Middle, 0, 20);
+      Gtk.List_Store.Append (Store, Last);
+      Gtk.List_Store.Set (Store, Last, 0, 30);
+
+      Iter := Middle;
+      Gtk.List_Store.Remove (Store, Iter);
+      Assert_Cmpint_Eq (Gtk.List_Store.N_Children (Store), 2);
+      Assert_True
+        (Gtk.List_Store.Iter_Is_Valid (Store, Iter),
+         "Remove must preserve the next valid iterator");
+      --  Assertion reporting can return; keep the failure above from causing
+      --  a second error when the value getter receives an invalid iterator.
+      if not Gtk.List_Store.Iter_Is_Valid (Store, Iter) then
+         Gtk.Tree_Model.Unref
+           (Gtk.Tree_Model.Gtk_Root_Tree_Model_Record (Store.all)'Access);
+         return;
+      end if;
+      Assert_True
+        (Iter = Last, "Remove must advance the iterator to the successor");
+      --  Unary + supplies the GtkTreeModel interface for the value getter.
+      Assert_Cmpint_Eq (Get_Int (+Store, Iter, 0), 30);
+      Assert_Cmpstr_Eq (Gtk.List_Store.Get_String_From_Iter (Store, Iter), "1");
+
+      --  Reuse the updated iterator directly, as in a row-deletion loop.
+      Gtk.List_Store.Remove (Store, Iter);
+      Assert_Cmpint_Eq (Gtk.List_Store.N_Children (Store), 1);
+      Assert_False
+        (Gtk.List_Store.Iter_Is_Valid (Store, Iter),
+         "Remove must invalidate the iterator when no successor exists");
+      --  GtkAda's Null_Iter comparison recognizes GTK's invalidated stamp.
+      Assert_True (Iter = Null_Iter);
+      Assert_True (Gtk.List_Store.Get_Iter_First (Store) = First);
+      Assert_Cmpint_Eq (Get_Int (+Store, First, 0), 10);
+
+      Iter := First;
+      Gtk.List_Store.Remove (Store, Iter);
+      Assert_Cmpint_Eq (Gtk.List_Store.N_Children (Store), 0);
+      Assert_True (Iter = Null_Iter);
+
+      --  Release through the root model view, as in the other Gtk cases.
+      Gtk.Tree_Model.Unref
+        (Gtk.Tree_Model.Gtk_Root_Tree_Model_Record (Store.all)'Access);
+   end Test_Remove_Updated_Iter;
+
 begin
    Glib.Test.Init;
 
@@ -872,6 +929,9 @@ begin
    Glib.Test.Add_Func
      ("/gtk-list-store/model-notifications",
       Test_Model_Notifications'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gtk-list-store/remove-updated-iter",
+      Test_Remove_Updated_Iter'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
