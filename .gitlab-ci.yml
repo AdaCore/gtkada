@@ -63,7 +63,11 @@ build:
       else
         target_subdir=$CI_COMMIT_BRANCH
       fi
-    - publish-pages $gnatcov_report_dir/html --target-subdir $target_subdir --expires 30
+
+    # Publishing the coverage report is long, around 7 minutes
+    # (being investigated in IT-4693).
+    # Deactivate publication for now, to speed up the CIs.
+    # - publish-pages $gnatcov_report_dir/html --target-subdir $target_subdir --expires 30
 
     # Compute coverage precentage
     - cobertura=$CI_PROJECT_DIR/gnatcov_report/cobertura/cobertura.xml
@@ -84,6 +88,7 @@ build:
         path: gnatcov_report/cobertura/cobertura.xml
     paths:
       - gnatcov_report/cobertura/cobertura.xml
+      - gnatcov_report/summary.txt
 
 build-doc:
   services:
