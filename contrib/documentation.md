@@ -254,6 +254,8 @@ GIR node is matched.
 | `transfer_ownership` | string | `"full"` if the return value must be freed by the caller; `"none"` if the C library owns it.                                                                |
 | `return_as_param`    | string | Replace the function's return value with an `out` parameter of this name.                    |
 | `return`             | string | Override the C type of the return value. Use `"void"` to turn a function into a procedure. To override the GIR's `@return` documentation use `[method.doc]` `extend` block (see `GtkListItem.toml`). |
+default_return
+| `default_return`     | string | Default return value |
 | `classwide`          | bool   | When `true`, declare the subprogram class-wide rather than as a primitive operation.                                                                        |
 | `polymorphic`        | bool   | When `true`, this GObject constructor may return a subtype of its class; see [Polymorphic constructors](#polymorphic-constructors).                         |
 | `body`               | string | Hand-written body inserted after the `is` keyword (use `'''...'''`). Use `%(auto)s` inside the string to splice the automatic body in.                       |

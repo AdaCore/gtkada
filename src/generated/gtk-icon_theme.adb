@@ -147,10 +147,8 @@ package body Gtk.Icon_Theme is
        Icon_Name : UTF8_String) return Gint_Array
    is
       use Interfaces.C;
-      type Aliased_Gint_Array is array (Natural range <>) of aliased Gint;
-      pragma Convention (C, Aliased_Gint_Array);
       package P is new Interfaces.C.Pointers
-        (Natural, Gint, Aliased_Gint_Array, 0);
+        (Natural, Gint, Gint_Array, 0);
       use P;
       
       function Internal
@@ -163,7 +161,7 @@ package body Gtk.Icon_Theme is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
       declare
-         Arr : constant Gint_Array := Gint_Array (P.Value (Tmp_Return));
+         Arr : constant Gint_Array := P.Value (Tmp_Return);
       begin
          Glib.g_free (Tmp_Return.all'Address);
          return Arr;

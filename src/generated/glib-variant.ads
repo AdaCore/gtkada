@@ -80,7 +80,7 @@
 --  Glib.Variant.Gvariant_Type for exceptions. (However,
 --  Glib.Variant.Gvariant's serialization format is not the same as the
 --  serialization format of a D-Bus message body: use
---  Gdbus.Message.Gdbus_Message, in the gio library, for those.)
+--  Glib.GDBusMessage.Gdbus_Message, in the gio library, for those.)
 --
 --  For space-efficiency, the Glib.Variant.Gvariant serialization format does
 --  not automatically include the variant's length, type or endianness, which

@@ -99,26 +99,43 @@ package Glib is
    -- Some Array types --
    ----------------------
 
-   type Gboolean_Array is array (Natural range <>) of Gboolean;
-   type Gshort_Array   is array (Natural range <>) of Gshort;
-   type Glong_Array    is array (Natural range <>) of Glong;
-   type Gint_Array     is array (Natural range <>) of Gint;
-   type Guint_Array    is array (Natural range <>) of Guint;
-   type Guint8_Array   is array (Natural range <>) of Guint8;
-   type Guint32_Array  is array (Natural range <>) of Guint32;
-   type Gushort_Array  is array (Natural range <>) of Gushort;
-   type Gulong_Array   is array (Natural range <>) of Gulong;
-   type Gfloat_Array   is array (Natural range <>) of Gfloat;
-   type Gchar_Array    is array (Natural range <>) of Gchar;
-   type Guchar_Array   is array (Natural range <>) of Guchar;
-   type Gdouble_Array  is array (Natural range <>) of Gdouble;
+   type Gboolean_Array is array (Natural range <>) of aliased Gboolean
+    with Convention => C;
+   type Gshort_Array   is array (Natural range <>) of aliased Gshort
+    with Convention => C;
+   type Glong_Array    is array (Natural range <>) of aliased Glong
+    with Convention => C;
+   type Gint_Array     is array (Natural range <>) of aliased Gint
+    with Convention => C;
+   type Guint_Array    is array (Natural range <>) of aliased Guint
+    with Convention => C;
+   type Guint8_Array   is array (Natural range <>) of aliased Guint8
+    with Convention => C;
+   type Guint32_Array  is array (Natural range <>) of aliased Guint32
+    with Convention => C;
+   type Gushort_Array  is array (Natural range <>) of aliased Gushort
+    with Convention => C;
+   type Gulong_Array   is array (Natural range <>) of aliased Gulong
+    with Convention => C;
+   type Gfloat_Array   is array (Natural range <>) of aliased Gfloat
+    with Convention => C;
+   type Gchar_Array    is array (Natural range <>) of aliased Gchar
+    with Convention => C;
+   type Guchar_Array   is array (Natural range <>) of aliased Guchar
+    with Convention => C;
+   type Gdouble_Array  is array (Natural range <>) of aliased Gdouble
+    with Convention => C;
 
-   type Boolean_Array  is array (Natural range <>) of Boolean;
+   type Boolean_Array  is array (Natural range <>) of aliased Boolean
+    with Convention => C;
 
-   type Short_Array    is array (Natural range <>) of C.short;
-   type Long_Array     is array (Natural range <>) of C.long;
+   type Short_Array    is array (Natural range <>) of aliased C.short
+    with Convention => C;
+   type Long_Array     is array (Natural range <>) of aliased C.long
+    with Convention => C;
 
-   type Gpointer_Array is array (Natural range <>) of System.Address;
+   type Gpointer_Array is array (Natural range <>) of aliased System.Address
+    with Convention => C;
 
    -------------------------
    -- Conversion services --

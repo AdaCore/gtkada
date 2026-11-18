@@ -47,3 +47,24 @@ prefix = "G_FILE_ATTRIBUTE_TYPE_"
 [[enum]]
 ctype = "GFileAttributeStatus"
 prefix = "G_FILE_ATTRIBUTE_STATUS_"
+
+[[enum]]
+ctype = "GDBusCapabilityFlags"
+asbitfield = true
+
+[[enum]]
+ctype = "GDBusMessageByteOrder"
+prefix = "G_DBUS_MESSAGE_BYTE_ORDER_"
+
+[[enum]]
+ctype = "GDBusMessageFlags"
+asbitfield = true
+
+[[enum]]
+ctype = "GDBusMessageHeaderField"
+prefix = "G_DBUS_MESSAGE_HEADER_"
+
+[[enum]]
+ctype = "GDBusMessageType"
+prefix = "G_DBUS_MESSAGE_TYPE_"
+

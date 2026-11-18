@@ -162,7 +162,7 @@ binding = (
     "--Gio.DBusInterfaceInfo",  # Not tested yet, from Gio
     "--Gio.DBusInterfaceSkeleton",  # Not tested yet, from Gio
     "--Gio.DBusMenuModel",  # Not tested yet, from Gio
-    "--Gio.DBusMessage",  # Not tested yet, from Gio
+    "Gio.DBusMessage",
     "--Gio.DBusMethodInfo",  # Not tested yet, from Gio
     "--Gio.DBusMethodInvocation",  # Not tested yet, from Gio
     "--Gio.DBusNodeInfo",  # Not tested yet, from Gio
@@ -284,7 +284,7 @@ binding = (
     "--Gio.TlsPassword",  # Not tested yet, from Gio
     "--Gio.UnixConnection",  # Not tested yet, from Gio
     "--Gio.UnixCredentialsMessage",  # Not tested yet, from Gio
-    "--Gio.UnixFDList",  # Not tested yet, from Gio
+    "Gio.UnixFDList",
     "--Gio.UnixFDMessage",  # Not tested yet, from Gio
     "--Gio.UnixInputStream",  # Not tested yet, from Gio
     "--Gio.UnixMountMonitor",  # Not tested yet, from Gio
@@ -813,6 +813,7 @@ naming.exceptions = {
     "Uri": "URI",
     "In": "Gtk_In",
     "Interface": "Iface",
+    "Body": "The_Body",
     # Regular renamings
     "Gtk_Imcontext": "Gtk_IM_Context",
     "Gtk_Imcontext_Simple": "Gtk_IM_Context_Simple",

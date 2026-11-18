@@ -135,6 +135,55 @@ package Glib.GEnums is
    --  Used by Glib.GFile.Set_Attributes_From_Info when setting file
    --  attributes.
 
+   type GDBus_Capability_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, GDBus_Capability_Flags);
+   --  Capabilities negotiated with the remote peer.
+
+   G_Dbus_Capability_Flags_None : constant GDBus_Capability_Flags := 0;
+   G_Dbus_Capability_Flags_Unix_Fd_Passing : constant GDBus_Capability_Flags := 1;
+
+   type GDBus_Message_Byte_Order is (
+      Big_Endian,
+      Little_Endian);
+   pragma Convention (C, GDBus_Message_Byte_Order);
+   --  Enumeration used to describe the byte order of a D-Bus message.
+
+   for GDBus_Message_Byte_Order use (
+      Big_Endian => 66,
+      Little_Endian => 108);
+
+   type GDBus_Message_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, GDBus_Message_Flags);
+   --  Message flags used in Glib.GDBusMessage.Gdbus_Message.
+
+   G_Dbus_Message_Flags_None : constant GDBus_Message_Flags := 0;
+   G_Dbus_Message_Flags_No_Reply_Expected : constant GDBus_Message_Flags := 1;
+   G_Dbus_Message_Flags_No_Auto_Start : constant GDBus_Message_Flags := 2;
+   G_Dbus_Message_Flags_Allow_Interactive_Authorization : constant GDBus_Message_Flags := 4;
+
+   type GDBus_Message_Header_Field is (
+      Field_Invalid,
+      Field_Path,
+      Field_Interface,
+      Field_Member,
+      Field_Error_Name,
+      Field_Reply_Serial,
+      Field_Destination,
+      Field_Sender,
+      Field_Signature,
+      Field_Num_Unix_Fds);
+   pragma Convention (C, GDBus_Message_Header_Field);
+   --  Header fields used in Glib.GDBusMessage.Gdbus_Message.
+
+   type GDBus_Message_Type is (
+      Invalid,
+      Method_Call,
+      Method_Return,
+      Error,
+      Signal);
+   pragma Convention (C, GDBus_Message_Type);
+   --  Message types used in Glib.GDBusMessage.Gdbus_Message.
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -182,5 +231,25 @@ package Glib.GEnums is
    package GFile_Attribute_Status_Properties is
       new Generic_Internal_Discrete_Property (GFile_Attribute_Status);
    type Property_GFile_Attribute_Status is new GFile_Attribute_Status_Properties.Property;
+
+   package GDBus_Capability_Flags_Properties is
+      new Generic_Internal_Flags_Property (GDBus_Capability_Flags);
+   type Property_GDBus_Capability_Flags is new GDBus_Capability_Flags_Properties.Property;
+
+   package GDBus_Message_Byte_Order_Properties is
+      new Generic_Internal_Discrete_Property (GDBus_Message_Byte_Order);
+   type Property_GDBus_Message_Byte_Order is new GDBus_Message_Byte_Order_Properties.Property;
+
+   package GDBus_Message_Flags_Properties is
+      new Generic_Internal_Flags_Property (GDBus_Message_Flags);
+   type Property_GDBus_Message_Flags is new GDBus_Message_Flags_Properties.Property;
+
+   package GDBus_Message_Header_Field_Properties is
+      new Generic_Internal_Discrete_Property (GDBus_Message_Header_Field);
+   type Property_GDBus_Message_Header_Field is new GDBus_Message_Header_Field_Properties.Property;
+
+   package GDBus_Message_Type_Properties is
+      new Generic_Internal_Discrete_Property (GDBus_Message_Type);
+   type Property_GDBus_Message_Type is new GDBus_Message_Type_Properties.Property;
 
 end Glib.GEnums;

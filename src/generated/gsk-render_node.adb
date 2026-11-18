@@ -192,11 +192,8 @@ package body Gsk.Render_Node is
       (Self : Gsk_Render_Node) return Gsk_Render_Node_Array
    is
       use Interfaces.C;
-      type Aliased_Address_Array is
-        array (Positive range <>) of aliased System.Address
-        with Convention => C;
       package P is new Interfaces.C.Pointers
-        (Positive, System.Address, Aliased_Address_Array, System.Null_Address);
+        (Natural, System.Address, Gpointer_Array, System.Null_Address);
 
       function Internal
          (Self           : System.Address;
@@ -208,7 +205,7 @@ package body Gsk.Render_Node is
       Tmp_Return := Internal (Get_Object (Self), Acc_N_Children'Access);
       declare
          Result : Gsk_Render_Node_Array (1 .. Natural (Acc_N_Children));
-         Arr    : constant Aliased_Address_Array :=
+         Arr    : constant Gpointer_Array :=
            P.Value (Tmp_Return, Result'Length);
          I      : Positive := 1;
       begin
