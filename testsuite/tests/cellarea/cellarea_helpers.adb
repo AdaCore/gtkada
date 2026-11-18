@@ -100,19 +100,27 @@ package body Cellarea_Helpers is
    --  Focus callbacks receive the focused renderer and tree-path string.
    procedure On_Focus
      (Self     : access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
-      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Path     : UTF8_String) is
    begin
       Focus_Calls := Focus_Calls + 1;
+      --  Clearing focus must reach this handler with an actual null value.
+      if Renderer = null then
+         Null_Focus_Calls := Null_Focus_Calls + 1;
+      end if;
    end On_Focus;
 
    --  This variant covers the slot marshaller's GObject instance conversion.
    procedure On_Focus_Slot
      (Self     : access Glib.Object.GObject_Record'Class;
-      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Path     : UTF8_String) is
    begin
       Focus_Slot_Calls := Focus_Slot_Calls + 1;
+      --  The GObject-slot marshaller has the same nullable renderer contract.
+      if Renderer = null then
+         Null_Focus_Slot_Calls := Null_Focus_Slot_Calls + 1;
+      end if;
    end On_Focus_Slot;
 
    --  The add signal includes the renderer, editable interface and rectangle.

@@ -1219,24 +1219,24 @@ package Gtk.Cell_Area is
    --    --  @param Is_Expanded whether the view is currently showing the children
    --    --  of this row
 
-   type Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void is not null access procedure
+   type Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Or_Null_UTF8_String_Void is not null access procedure
      (Self     : access Gtk_Cell_Area_Record'Class;
-      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Path     : UTF8_String);
 
-   type Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void is not null access procedure
+   type Cb_GObject_Gtk_Cell_Renderer_Or_Null_UTF8_String_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
-      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Path     : UTF8_String);
 
    Signal_Focus_Changed : constant Glib.Signal_Name := "focus-changed";
    procedure On_Focus_Changed
       (Self  : not null access Gtk_Cell_Area_Record;
-       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Or_Null_UTF8_String_Void;
        After : Boolean := False);
    procedure On_Focus_Changed
       (Self  : not null access Gtk_Cell_Area_Record;
-       Call  : Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void;
+       Call  : Cb_GObject_Gtk_Cell_Renderer_Or_Null_UTF8_String_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Indicates that focus changed on this Area. This signal is emitted
@@ -1245,6 +1245,8 @@ package Gtk.Cell_Area is
    --  It's possible that the signal is emitted even if the currently focused
    --  renderer did not change, this is because focus may change to the same
    --  renderer in the same cell area for a different row of data.
+   --
+   --  The renderer is null when focus is cleared.
    -- 
    --  Callback parameters:
    --    --  @param Renderer the `GtkCellRenderer` that has focus
