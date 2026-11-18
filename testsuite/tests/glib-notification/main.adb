@@ -118,10 +118,27 @@ procedure Main is
       Glib.Object.Unref (Glib.Object.GObject (Item));
    end Test_Actions_And_Icon;
 
+   --  Regression for glib-notification.empty-body-null: an empty Ada body
+   --  must be accepted as empty text, including when replacing a nonempty
+   --  body. The binding currently passes NULL and GLib rejects it. There is
+   --  no public body getter; Glib.Test.Init makes the unexpected critical
+   --  fatal, so simply completing Set_Body checks this regression without
+   --  sending a notification to a desktop service.
+   procedure Test_Empty_Body with Convention => C;
+   procedure Test_Empty_Body is
+      Item : constant Gnotification := Gnotification_New ("Empty body");
+   begin
+      Set_Body (Item, "Body to replace");
+      Set_Body (Item, "");
+      Assert_Notification (Item);
+      Glib.Object.Unref (Glib.Object.GObject (Item));
+   end Test_Empty_Body;
+
 begin
    Glib.Test.Init;
    Add_Func ("/glib-notification/constructors", Test_Constructors'Unrestricted_Access);
    Add_Func ("/glib-notification/text-priority", Test_Text_And_Priority'Unrestricted_Access);
    Add_Func ("/glib-notification/actions-icon", Test_Actions_And_Icon'Unrestricted_Access);
+   Add_Func ("/glib-notification/empty-body", Test_Empty_Body'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;
