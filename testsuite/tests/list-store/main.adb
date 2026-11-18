@@ -10,6 +10,7 @@ with Glib.Simple_Action;  use Glib.Simple_Action;
 with Glib.Test;           use Glib.Test;
 with Ada.Exceptions;
 with Ada.Command_Line;
+with Equal_Func_Tests;
 with Gdk.Content_Provider;
 with Glib.List_Model;      use Glib.List_Model;
 with Gtk.Enums;           use Gtk.Enums;
@@ -67,6 +68,12 @@ procedure Main is
    with Convention => C;
 
    procedure Test_Glib_List_Store
+   with Convention => C;
+
+   procedure Test_Splice_Array_Marshalling
+   with Convention => C;
+
+   procedure Test_Splice_Array_Bounds
    with Convention => C;
 
    procedure Test_Model_And_Values
@@ -412,8 +419,8 @@ procedure Main is
       Assert_True (Name_At (1) = "bravo");
       Assert_True (Name_At (2) = "charlie");
 
-      --  Find_With_Equal_Func is omitted: its public Equal_Func type lacks
-      --  Convention C, so it cannot represent GLib's callback safely.
+      --  Find_With_Equal_Func has its own callback ABI regression case in
+      --  Equal_Func_Tests (glib-list_store.equal-func-callback-abi).
 
       --  Sort normalizes the rows, and sorted insertion reports its index.
       Store.Sort (Compare_Action_Names'Unrestricted_Access);
@@ -465,8 +472,7 @@ procedure Main is
       Store.Items_Changed (1, 0, 0);
       Assert_Cmpuint_Eq (Guint (Items_Exception_Count), 2);
 
-      --  Non-empty Splice is omitted because its array binding passed NULL
-      --  elements to GLib; this issue is documented in the run notes.
+      --  Non-empty Splice has its own array-marshalling regression case.
 
       --  Remove deletes one position; Remove_All empties the model.
       Store.Remove (2);
@@ -489,6 +495,98 @@ procedure Main is
       Glib.Object.Unref
         (Glib.Object.GObject_Record (Slot.all)'Access);
    end Test_Glib_List_Store;
+
+   --  Regression for glib-list_store.splice-array-marshalling: Splice must
+   --  marshal Ada GObject wrappers to C object pointers. Replacing one item
+   --  with two valid actions must preserve their identity and order, keep the
+   --  surrounding items, and emit just one items-changed notification.
+   procedure Test_Splice_Array_Marshalling is
+      Store : constant Glist_Store :=
+        Glist_Store_New (Glib.Simple_Action.Get_Type);
+      A : constant Gsimple_Action := New_Action ("alpha");
+      B : constant Gsimple_Action := New_Action ("bravo");
+      C : constant Gsimple_Action := New_Action ("charlie");
+      D : constant Gsimple_Action := New_Action ("delta");
+      Old : constant Gsimple_Action := New_Action ("replaced");
+
+      --  Array_GObject contains Ada handles, not raw C addresses. A normal
+      --  access-type conversion upcasts each action to its GObject view.
+      Additions : constant Array_GObject :=
+        (Glib.Object.GObject (B), Glib.Object.GObject (C));
+      Expected : constant Array_GObject :=
+        (Glib.Object.GObject (A), Glib.Object.GObject (B),
+         Glib.Object.GObject (C), Glib.Object.GObject (D));
+      Item : Glib.Object.GObject;
+   begin
+      Store.Append (A);
+      Store.Append (Old);
+      Store.Append (D);
+      On_Items_Changed (+Store, Capture_Items_Changed'Unrestricted_Access);
+      Items_Event_Count := 0;
+      Items_Event_Position := Guint'Last;
+      Items_Event_Removed := Guint'Last;
+      Items_Event_Added := Guint'Last;
+
+      --  These are non-null objects of the store's declared item type. The
+      --  defective wrapper passes their Ada handles directly and GLib aborts
+      --  here; after the fix, the content and notification checks must pass.
+      Store.Splice (Position => 1, N_Removals => 1, Additions => Additions);
+      Assert_Cmpuint_Eq (Store.Get_N_Items, 4);
+      for J in Expected'Range loop
+         --  Get_Item owns a full reference; compare the wrapper identity and
+         --  release that reference independently of the constructor's ref.
+         Item := Store.Get_Item (Guint (J - Expected'First));
+         Assert_True
+           (Item = Expected (J),
+            "Splice must preserve surrounding items and additions in order");
+         Glib.Object.Unref (Item);
+      end loop;
+      Assert_Cmpuint_Eq (Guint (Items_Event_Count), 1);
+      Assert_Cmpuint_Eq (Items_Event_Position, 1);
+      Assert_Cmpuint_Eq (Items_Event_Removed, 1);
+      Assert_Cmpuint_Eq (Items_Event_Added, 2);
+
+      --  The store takes its own references to the additions. Release those
+      --  with the store, then release each constructor-owned reference.
+      Unref (Store);
+      for Value of Expected loop
+         Glib.Object.Unref (Value);
+      end loop;
+      Unref (Old);
+   end Test_Splice_Array_Marshalling;
+
+   --  Array bounds are Ada indices, independent of the insertion position.
+   --  Empty additions must also permit removal without indexing the array.
+   procedure Test_Splice_Array_Bounds is
+      Store : constant Glist_Store :=
+        Glist_Store_New (Glib.Simple_Action.Get_Type);
+      A : constant Gsimple_Action := New_Action ("alpha");
+      B : constant Gsimple_Action := New_Action ("bravo");
+      Additions : constant Array_GObject :=
+        (7 => Glib.Object.GObject (A), 8 => Glib.Object.GObject (B));
+      Empty : constant Array_GObject (7 .. 6) := (others => null);
+      Item : Glib.Object.GObject;
+   begin
+      Store.Splice (0, 0, Additions);
+      Assert_Cmpuint_Eq (Store.Get_N_Items, 2);
+      for J in Additions'Range loop
+         Item := Store.Get_Item (Guint (J - Additions'First));
+         Assert_True (Item = Additions (J));
+         Glib.Object.Unref (Item);
+      end loop;
+
+      Store.Splice (0, 1, Empty);
+      Assert_Cmpuint_Eq (Store.Get_N_Items, 1);
+      Item := Store.Get_Item (0);
+      Assert_True (Item = Glib.Object.GObject (B));
+      Glib.Object.Unref (Item);
+
+      Store.Splice (0, 1, Empty);
+      Assert_Cmpuint_Eq (Store.Get_N_Items, 0);
+      Unref (Store);
+      Unref (A);
+      Unref (B);
+   end Test_Splice_Array_Bounds;
 
    ---------------------------
    -- Test_Model_And_Values --
@@ -914,6 +1012,15 @@ begin
    Glib.Test.Add_Func
      ("/list-store/glib-list-store",
       Test_Glib_List_Store'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/list-store/find-with-equal-func",
+      Equal_Func_Tests.Test_Find_With_Equal_Func'Access);
+   Glib.Test.Add_Func
+     ("/list-store/splice-array-marshalling",
+      Test_Splice_Array_Marshalling'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/list-store/splice-array-bounds",
+      Test_Splice_Array_Bounds'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/gtk-list-store/model-and-values",
       Test_Model_And_Values'Unrestricted_Access);

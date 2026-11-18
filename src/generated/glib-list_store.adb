@@ -32,6 +32,26 @@ package body Glib.List_Store is
    function To_Address is new Ada.Unchecked_Conversion
      (Equal_Func, System.Address);
 
+   function To_Equal_Func is new Ada.Unchecked_Conversion
+     (System.Address, Equal_Func);
+
+   function Internal_Equal_Func
+     (A, B      : System.Address;
+      User_Data : System.Address) return Glib.Gboolean;
+   pragma Convention (C, Internal_Equal_Func);
+
+   function Internal_Equal_Func
+     (A, B      : System.Address;
+      User_Data : System.Address) return Glib.Gboolean
+   is
+      Func : constant Equal_Func := To_Equal_Func (User_Data);
+      Stub_A, Stub_B : GObject_Record;
+   begin
+      return Func
+        (Glib.Object.Get_User_Data (A, Stub_A),
+         Glib.Object.Get_User_Data (B, Stub_B));
+   end Internal_Equal_Func;
+
    --  Compare_Data_Func handling
    function To_Address is new Ada.Unchecked_Conversion
      (Compare_Data_Func, System.Address);
@@ -162,18 +182,24 @@ package body Glib.List_Store is
    is
       Fn_Equal : constant System.Address :=
         (if Func = null then System.Null_Address else To_Address (Func));
+      Wrapper : constant System.Address :=
+        (if Func = null
+         then System.Null_Address
+         else Internal_Equal_Func'Address);
       function Internal
-        (Self     : System.Address;
-         Obj_Ptr  : System.Address;
-         Func     : System.Address;
-         Position : access Guint) return Glib.Gboolean;
-      pragma Import (C, Internal, "g_list_store_find_with_equal_func");
+        (Self      : System.Address;
+         Obj_Ptr   : System.Address;
+         Func      : System.Address;
+         User_Data : System.Address;
+         Position  : access Guint) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_list_store_find_with_equal_func_full");
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return :=
         Internal
           (Get_Object (Self),
            Get_Object (Item),
+           Wrapper,
            Fn_Equal,
            Position);
       return Tmp_Return /= 0;
@@ -288,15 +314,28 @@ package body Glib.List_Store is
        N_Removals : Guint;
        Additions  : Array_GObject)
    is
+      type Address_Array is array (Natural range <>) of System.Address
+        with Convention => C;
+      Objects : Address_Array (Additions'Range);
+
       procedure Internal
-         (Self        : System.Address;
-          Position    : Guint;
-          N_Removals  : Guint;
-          Additions   : Array_GObject;
-          N_Additions : Guint);
+        (Self        : System.Address;
+         Position    : Guint;
+         N_Removals  : Guint;
+         Additions   : System.Address;
+         N_Additions : Guint);
       pragma Import (C, Internal, "g_list_store_splice");
    begin
-      Internal (Get_Object (Self), Position, N_Removals, Additions, Additions'Length);
+      --  Ada handles point to wrappers; GLib needs the C object pointers.
+      for J in Additions'Range loop
+         Objects (J) := Get_Object (Additions (J));
+      end loop;
+
+      Internal
+        (Get_Object (Self), Position, N_Removals,
+         (if Objects'Length = 0 then System.Null_Address
+          else Objects (Objects'First)'Address),
+         Guint (Objects'Length));
    end Splice;
 
    --------------
