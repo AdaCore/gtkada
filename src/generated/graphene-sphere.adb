@@ -78,10 +78,10 @@ package body Graphene.Sphere is
       function Internal
          (Self  : access Graphene_Sphere_T;
           Point : access Graphene.Point3d.Graphene_Point3D_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_sphere_contains_point");
    begin
-      return Internal (Self, Point) /= 0;
+      return Boolean (Internal (Self, Point));
    end Contains_Point;
 
    -----------
@@ -94,10 +94,10 @@ package body Graphene.Sphere is
    is
       function Internal
          (Self : access Graphene_Sphere_T;
-          B    : access Graphene_Sphere_T) return Glib.Gboolean;
+          B    : access Graphene_Sphere_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_sphere_equal");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal;
 
    --------------
@@ -108,10 +108,10 @@ package body Graphene.Sphere is
       (Self : not null access Graphene_Sphere_T) return Boolean
    is
       function Internal
-         (Self : access Graphene_Sphere_T) return Glib.Gboolean;
+         (Self : access Graphene_Sphere_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_sphere_is_empty");
    begin
-      return Internal (Self) /= 0;
+      return Boolean (Internal (Self));
    end Is_Empty;
 
    ----------------------

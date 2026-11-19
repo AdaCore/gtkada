@@ -36,10 +36,10 @@ package body Graphene.Point is
    is
       function Internal
          (Self : access Graphene_Point_T;
-          B    : access Graphene_Point_T) return Glib.Gboolean;
+          B    : access Graphene_Point_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_point_equal");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal;
 
    ----------
@@ -54,10 +54,10 @@ package body Graphene.Point is
       function Internal
          (Self    : access Graphene_Point_T;
           B       : access Graphene_Point_T;
-          Epsilon : Interfaces.C.C_float) return Glib.Gboolean;
+          Epsilon : Interfaces.C.C_float) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_point_near");
    begin
-      return Internal (Self, B, Epsilon) /= 0;
+      return Boolean (Internal (Self, B, Epsilon));
    end Near;
 
    ----------------------

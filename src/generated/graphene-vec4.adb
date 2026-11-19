@@ -36,10 +36,10 @@ package body Graphene.Vec4 is
    is
       function Internal
          (Self : access Graphene_Vec4_T;
-          V2   : access Graphene_Vec4_T) return Glib.Gboolean;
+          V2   : access Graphene_Vec4_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_vec4_equal");
    begin
-      return Internal (Self, V2) /= 0;
+      return Boolean (Internal (Self, V2));
    end Equal;
 
    ----------
@@ -54,10 +54,10 @@ package body Graphene.Vec4 is
       function Internal
          (Self    : access Graphene_Vec4_T;
           V2      : access Graphene_Vec4_T;
-          Epsilon : Interfaces.C.C_float) return Glib.Gboolean;
+          Epsilon : Interfaces.C.C_float) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_vec4_near");
    begin
-      return Internal (Self, V2, Epsilon) /= 0;
+      return Boolean (Internal (Self, V2, Epsilon));
    end Near;
 
    ----------------------

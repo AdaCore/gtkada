@@ -87,10 +87,10 @@ package body Graphene.Box is
    is
       function Internal
          (Self : access Graphene_Box_T;
-          B    : access Graphene_Box_T) return Glib.Gboolean;
+          B    : access Graphene_Box_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_box_contains_box");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Contains_Box;
 
    --------------------
@@ -105,10 +105,10 @@ package body Graphene.Box is
       function Internal
          (Self  : access Graphene_Box_T;
           Point : access Graphene.Point3d.Graphene_Point3D_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_box_contains_point");
    begin
-      return Internal (Self, Point) /= 0;
+      return Boolean (Internal (Self, Point));
    end Contains_Point;
 
    -----------
@@ -121,10 +121,10 @@ package body Graphene.Box is
    is
       function Internal
          (Self : access Graphene_Box_T;
-          B    : access Graphene_Box_T) return Glib.Gboolean;
+          B    : access Graphene_Box_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_box_equal");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal;
 
    ------------------
@@ -139,10 +139,10 @@ package body Graphene.Box is
       function Internal
          (Self : access Graphene_Box_T;
           B    : access Graphene_Box_T;
-          Res  : access Graphene_Box_T) return Glib.Gboolean;
+          Res  : access Graphene_Box_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_box_intersection");
    begin
-      return Internal (Self, B, Res) /= 0;
+      return Boolean (Internal (Self, B, Res));
    end Intersection;
 
    ----------------------

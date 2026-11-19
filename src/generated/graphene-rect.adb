@@ -54,10 +54,10 @@ package body Graphene.Rect is
       function Internal
          (Self : access Graphene_Rect_T;
           P    : access Graphene.Point.Graphene_Point_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_rect_contains_point");
    begin
-      return Internal (Self, P) /= 0;
+      return Boolean (Internal (Self, P));
    end Contains_Point;
 
    -------------------
@@ -70,10 +70,10 @@ package body Graphene.Rect is
    is
       function Internal
          (Self : access Graphene_Rect_T;
-          B    : access Graphene_Rect_T) return Glib.Gboolean;
+          B    : access Graphene_Rect_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_rect_contains_rect");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Contains_Rect;
 
    -----------
@@ -86,10 +86,10 @@ package body Graphene.Rect is
    is
       function Internal
          (Self : access Graphene_Rect_T;
-          B    : access Graphene_Rect_T) return Glib.Gboolean;
+          B    : access Graphene_Rect_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_rect_equal");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal;
 
    ------------------
@@ -104,10 +104,10 @@ package body Graphene.Rect is
       function Internal
          (Self : access Graphene_Rect_T;
           B    : access Graphene_Rect_T;
-          Res  : access Graphene_Rect_T) return Glib.Gboolean;
+          Res  : access Graphene_Rect_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_rect_intersection");
    begin
-      return Internal (Self, B, Res) /= 0;
+      return Boolean (Internal (Self, B, Res));
    end Intersection;
 
    ----------------------

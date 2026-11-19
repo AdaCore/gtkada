@@ -36,10 +36,10 @@ package body Graphene.Plane is
    is
       function Internal
          (Self : access Graphene_Plane_T;
-          B    : access Graphene_Plane_T) return Glib.Gboolean;
+          B    : access Graphene_Plane_T) return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_plane_equal");
    begin
-      return Internal (Self, B) /= 0;
+      return Boolean (Internal (Self, B));
    end Equal;
 
    ----------------------

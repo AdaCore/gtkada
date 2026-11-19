@@ -23,6 +23,7 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Interfaces.C;
 
 package body Graphene.Quad is
 
@@ -38,10 +39,10 @@ package body Graphene.Quad is
       function Internal
          (Self : access Graphene_Quad_T;
           P    : access Graphene.Point.Graphene_Point_T)
-          return Glib.Gboolean;
+          return Interfaces.C.C_bool;
       pragma Import (C, Internal, "graphene_quad_contains");
    begin
-      return Internal (Self, P) /= 0;
+      return Boolean (Internal (Self, P));
    end Contains;
 
    ----------------------
