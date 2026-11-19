@@ -741,15 +741,12 @@ procedure Pixbuf is
          function G_Malloc (Size : Gsize) return Address;
          pragma Import (C, G_Malloc, "g_malloc");
 
-         --  Round the record sizes up to whole bytes for g_malloc.
+         --  Allocate whole objects, trailing padding included, since
+         --  From_Object_Free copies that much.
          Format_Bytes : constant Gsize :=
-           Gsize
-             ((Gdk_Pixbuf_Format'Size + System.Storage_Unit - 1)
-              / System.Storage_Unit);
+           Gsize (Gdk_Pixbuf_Format'Max_Size_In_Storage_Elements);
          Pattern_Bytes : constant Gsize :=
-           Gsize
-             ((Gdk_Pixbuf_Module_Pattern'Size + System.Storage_Unit - 1)
-              / System.Storage_Unit);
+           Gsize (Gdk_Pixbuf_Module_Pattern'Max_Size_In_Storage_Elements);
          Format_Wrapper : constant Format_Access :=
            To_Format_Access (G_Malloc (Format_Bytes));
          Pattern_Wrapper : constant Pattern_Access :=

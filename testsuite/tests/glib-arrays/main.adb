@@ -30,7 +30,8 @@ procedure Main is
    procedure Test_Copy_And_Free is
       Data : Gtkada.Types.Chars_Ptr := Gtkada.Types.New_String ("payload");
       Raw  : constant System.Address := G_Malloc
-        (Interfaces.C.size_t (Glib.Arrays.Garray'Size / System.Storage_Unit));
+        (Interfaces.C.size_t
+           (Glib.Arrays.Garray'Max_Size_In_Storage_Elements));
       Source : constant Glib.Arrays.Garray_Access := To_Garray_Access (Raw);
       Result : Glib.Arrays.Garray;
    begin

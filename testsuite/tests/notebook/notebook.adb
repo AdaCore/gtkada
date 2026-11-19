@@ -477,8 +477,10 @@ procedure Notebook is
       Assert_True (N.Get_Current_Page = 3);
       N.Remove_Page (-1);
       Assert_True (N.Get_N_Pages = 3 and then Get_N_Items (Model) = 3);
+      C.Ref; -- Keep a reference across detach_tab, which drops the last one.
       N.Detach_Tab (C);
       Assert_True (N.Page_Num (C) = -1 and then N.Get_N_Pages = 2);
+      C.Unref;
 
       --  Per-page flags and notebook-wide properties have inverse checks.
       --  These settings are read back before toggling to the opposite value.

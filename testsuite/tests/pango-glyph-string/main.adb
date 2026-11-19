@@ -159,17 +159,13 @@ procedure Main is
    procedure Test_Wrapper_Conversions is
       --  Allocate enough C storage for each record, including its padding.
       Vis_Bytes : constant Gsize :=
-        Gsize ((Pango_Glyph_Vis_Attr'Size + System.Storage_Unit - 1)
-               / System.Storage_Unit);
+        Gsize (Pango_Glyph_Vis_Attr'Max_Size_In_Storage_Elements);
       Geometry_Bytes : constant Gsize :=
-        Gsize ((Pango_Glyph_Geometry'Size + System.Storage_Unit - 1)
-               / System.Storage_Unit);
+        Gsize (Pango_Glyph_Geometry'Max_Size_In_Storage_Elements);
       Info_Bytes : constant Gsize :=
-        Gsize ((Pango_Glyph_Info'Size + System.Storage_Unit - 1)
-               / System.Storage_Unit);
+        Gsize (Pango_Glyph_Info'Max_Size_In_Storage_Elements);
       String_Bytes : constant Gsize :=
-        Gsize ((Pango_Glyph_String'Size + System.Storage_Unit - 1)
-               / System.Storage_Unit);
+        Gsize (Pango_Glyph_String'Max_Size_In_Storage_Elements);
       Vis_Wrapper : constant Vis_Attr_Access :=
         To_Vis_Attr (G_Malloc (Vis_Bytes));
       Geometry_Wrapper : constant Geometry_Access :=
@@ -218,11 +214,9 @@ procedure Main is
    --  the returned shallow record copies own no external allocations.
    procedure Test_Pango_Item is
       Analysis_Bytes : constant Gsize :=
-        Gsize ((Pango.Item.Pango_Analysis'Size + System.Storage_Unit - 1)
-               / System.Storage_Unit);
+        Gsize (Pango.Item.Pango_Analysis'Max_Size_In_Storage_Elements);
       Item_Bytes : constant Gsize :=
-        Gsize ((Pango.Item.Pango_Item'Size + System.Storage_Unit - 1)
-               / System.Storage_Unit);
+        Gsize (Pango.Item.Pango_Item'Max_Size_In_Storage_Elements);
       Analysis_Wrapper : constant Analysis_Access :=
         To_Analysis (G_Malloc (Analysis_Bytes));
       Item_Wrapper : constant Item_Access := To_Item (G_Malloc (Item_Bytes));

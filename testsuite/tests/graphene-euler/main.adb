@@ -21,7 +21,7 @@ procedure Main is
    procedure Test_Copy_And_Free with Convention => C;
    procedure Test_Copy_And_Free is
       Bytes : constant size_t :=
-        size_t (Graphene_Euler_T'Size / System.Storage_Unit);
+        size_t (Graphene_Euler_T'Max_Size_In_Storage_Elements);
       Heap_Euler : constant Euler_Access :=
         To_Euler_Access (G_Malloc (Bytes));
       Ignored : access Graphene_Euler_T;

@@ -79,7 +79,7 @@ procedure Main is
       Origin : aliased Graphene_Point3D_T := (0.0, 0.0, 0.0);
       Source : aliased Graphene_Sphere_T;
       Bytes : constant size_t :=
-        size_t (Graphene_Sphere_T'Size / System.Storage_Unit);
+        size_t (Graphene_Sphere_T'Max_Size_In_Storage_Elements);
       Heap_Sphere : constant Sphere_Access :=
         To_Sphere_Access (G_Malloc (Bytes));
       Ignored : access Graphene_Sphere_T;
