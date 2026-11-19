@@ -1483,11 +1483,14 @@ package body Gtk.Print_Operation is
       pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_GObject := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased System.Address := Glib.Object.Get_Object_Or_Null (H (Obj));
+      V   : aliased System.Address;
    begin
+      V := Glib.Object.Get_Object_Or_Null (H (Obj));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_GObject;
 
    ---------------------------------------------
@@ -1505,11 +1508,14 @@ package body Gtk.Print_Operation is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Print_Context_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gtk_Print_Context_Boolean;
 
    --------------------------------------------------------------
@@ -1590,11 +1596,14 @@ package body Gtk.Print_Operation is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Or_Null_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview (Unchecked_To_Interface (Params, 1)), Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 2)), Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 3)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview (Unchecked_To_Interface (Params, 1)), Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 2)), Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 3)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Or_Null_Boolean;
 
    ---------------------------------------------------
@@ -1696,11 +1705,14 @@ package body Gtk.Print_Operation is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_GObject := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
-      V   : aliased System.Address := Glib.Object.Get_Object_Or_Null (H (Obj));
+      V   : aliased System.Address;
    begin
+      V := Glib.Object.Get_Object_Or_Null (H (Obj));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Print_Operation_GObject;
 
    ---------------------------------------------------------
@@ -1718,11 +1730,14 @@ package body Gtk.Print_Operation is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Context_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Print_Operation_Gtk_Print_Context_Boolean;
 
    --------------------------------------------------------------------------
@@ -1803,11 +1818,14 @@ package body Gtk.Print_Operation is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Or_Null_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview (Unchecked_To_Interface (Params, 1)), Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 2)), Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 3)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview (Unchecked_To_Interface (Params, 1)), Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 2)), Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 3)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Or_Null_Boolean;
 
    ---------------------------------------------------------------

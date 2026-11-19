@@ -547,11 +547,14 @@ package body Gtk.Drop_Target is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_GValue_Gdouble_Gdouble_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Unchecked_To_GValue (Params, 1), Unchecked_To_Gdouble (Params, 2), Unchecked_To_Gdouble (Params, 3));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_GValue (Params, 1), Unchecked_To_Gdouble (Params, 2), Unchecked_To_Gdouble (Params, 3));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_GValue_Gdouble_Gdouble_Boolean;
 
    ------------------------------------
@@ -569,11 +572,14 @@ package body Gtk.Drop_Target is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_Drop_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Gdk.Drop.Gdk_Drop (Unchecked_To_Object (Params, 1)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gdk.Drop.Gdk_Drop (Unchecked_To_Object (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gdk_Drop_Boolean;
 
    -----------------------------------------------
@@ -591,11 +597,14 @@ package body Gtk.Drop_Target is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdouble_Gdouble_Drag_Action := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Gdk.Drag.Drag_Action := H (Obj, Unchecked_To_Gdouble (Params, 1), Unchecked_To_Gdouble (Params, 2));
+      V   : aliased Gdk.Drag.Drag_Action;
    begin
+      V := H (Obj, Unchecked_To_Gdouble (Params, 1), Unchecked_To_Gdouble (Params, 2));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gdouble_Gdouble_Drag_Action;
 
    ------------------------
@@ -634,11 +643,14 @@ package body Gtk.Drop_Target is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Drop_Target_GValue_Gdouble_Gdouble_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Drop_Target := Gtk_Drop_Target (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Unchecked_To_GValue (Params, 1), Unchecked_To_Gdouble (Params, 2), Unchecked_To_Gdouble (Params, 3));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_GValue (Params, 1), Unchecked_To_Gdouble (Params, 2), Unchecked_To_Gdouble (Params, 3));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Drop_Target_GValue_Gdouble_Gdouble_Boolean;
 
    --------------------------------------------
@@ -656,11 +668,14 @@ package body Gtk.Drop_Target is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Drop_Target_Gdk_Drop_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Drop_Target := Gtk_Drop_Target (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Gdk.Drop.Gdk_Drop (Unchecked_To_Object (Params, 1)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gdk.Drop.Gdk_Drop (Unchecked_To_Object (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Drop_Target_Gdk_Drop_Boolean;
 
    -------------------------------------------------------
@@ -678,11 +693,14 @@ package body Gtk.Drop_Target is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Drop_Target_Gdouble_Gdouble_Drag_Action := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Drop_Target := Gtk_Drop_Target (Unchecked_To_Object (Params, 0));
-      V   : aliased Gdk.Drag.Drag_Action := H (Obj, Unchecked_To_Gdouble (Params, 1), Unchecked_To_Gdouble (Params, 2));
+      V   : aliased Gdk.Drag.Drag_Action;
    begin
+      V := H (Obj, Unchecked_To_Gdouble (Params, 1), Unchecked_To_Gdouble (Params, 2));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_Drop_Target_Gdouble_Gdouble_Drag_Action;
 
    --------------------------------

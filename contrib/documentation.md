@@ -106,6 +106,26 @@ signals differing only in nullability, such as `Gtk.List_Box`'s
 `row-activated` and `row-selected`, get distinct handler types: `access`
 for the nullable parameter, `not null access` for the other.
 
+Both typed and GObject-slot signal marshallers contain callback exceptions
+and report them through `Gtkada.Bindings.Process_Exception`. A return-valued
+callback is assigned to its result in the marshaller's statements, not in
+the result's initializer, which the marshaller's handler would not cover.
+On failure, the return `GValue` is reset to its type's default before
+reporting the exception: `False` for Boolean results, zero for flags such as
+`Gdk.Drag.Drag_Action`, and null for object results. No uninitialized Ada
+result is passed back to C. The reset matters for signals without an
+accumulator, such as `Gtk.Paned`'s action signals, whose handlers all write
+the same return value: without it, a raising handler would leave an earlier
+handler's result in place. With an accumulator, GLib resets the value
+between handlers itself.
+
+Keep a signal's generic GObject argument when its concrete type depends on
+the caller. For example, `GtkSignalListItemFactory`'s four lifecycle
+signals can receive `GtkListItem`, `GtkColumnViewCell`, or
+`GtkColumnViewRow` objects. Narrowing them to `GtkListItem*` in an override
+would make the marshaller reject column-view rows before invoking the Ada
+handler. Let the handler convert the GObject to its factory's item type.
+
 For an input signal array whose GIR `length` names a separate parameter,
 select a C-compatible, integer-indexed Ada array with a `type` override.
 The generated marshaller views the borrowed C storage with bounds

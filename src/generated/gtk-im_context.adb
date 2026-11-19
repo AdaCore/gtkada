@@ -686,11 +686,14 @@ package body Gtk.IM_Context is
       pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj);
+      V   : aliased Boolean;
    begin
+      V := H (Obj);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Boolean;
 
    -------------------------------------
@@ -708,11 +711,14 @@ package body Gtk.IM_Context is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gint_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gint_Gint_Boolean;
 
    ---------------------------------------
@@ -730,11 +736,14 @@ package body Gtk.IM_Context is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_UTF8_String (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_UTF8_String_Boolean;
 
    ------------------------------------
@@ -794,11 +803,14 @@ package body Gtk.IM_Context is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_IM_Context_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_IM_Context := Gtk_IM_Context (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj);
+      V   : aliased Boolean;
    begin
+      V := H (Obj);
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_IM_Context_Boolean;
 
    --------------------------------------------
@@ -816,11 +828,14 @@ package body Gtk.IM_Context is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_IM_Context_Gint_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_IM_Context := Gtk_IM_Context (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_IM_Context_Gint_Gint_Boolean;
 
    ----------------------------------------------
@@ -838,11 +853,14 @@ package body Gtk.IM_Context is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_IM_Context_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_IM_Context := Gtk_IM_Context (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Unchecked_To_UTF8_String (Params, 1));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_IM_Context_UTF8_String_Boolean;
 
    -------------------------------------------

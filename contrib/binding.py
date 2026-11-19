@@ -3121,32 +3121,36 @@ See Glib.Properties for more information on properties)"""
 
         if profile.returns is None:
             marsh_body = "%s;" % call
-
-        elif isinstance(profile.returns, GObject):
-            # A GObject result must reach the GValue as the C object pointer,
-            # not as the Ada access value that designates its wrapper. It must
-            # also stay nullable: returning NULL is how a handler declines to
-            # provide an object (GIR nullable="1"), and "not null access" would
-            # raise Constraint_Error before the value was ever stored.
-            self.pkg.add_with("Glib.Object", specs=False, do_use=False)
-            marsh_local += [
-                Local_Var(
-                    "V",
-                    "System.Address",
-                    aliased=True,
-                    default="Glib.Object.Get_Object_Or_Null (%s)"
-                    % call,
-                )
-            ]
-            marsh_body = "Set_Value (Return_Value, V'Address);"
+            marsh_body += "exception when E : others => Process_Exception (E);"
 
         else:
-            marsh_local.append(
-                Local_Var("V", profile.returns, aliased=True, default=call)
-            )
-            marsh_body = "Set_Value (Return_Value, V'Address);"
+            # Initializers are outside their own subprogram's exception
+            # handler: declare the result without one and assign it in the
+            # protected statements, so that the marshaller catches failures
+            # in the callback and in its result conversion. Set_Value only
+            # accepts scalars and pointers, which are all definite types.
+            if isinstance(profile.returns, GObject):
+                # A GObject result must reach the GValue as the C object
+                # pointer, not as the Ada access value that designates its
+                # wrapper. It must also stay nullable: returning NULL is how a
+                # handler declines to provide an object (GIR nullable="1"),
+                # and "not null access" would raise Constraint_Error before the
+                # value was ever stored.
+                self.pkg.add_with("Glib.Object", specs=False, do_use=False)
+                marsh_local.append(Local_Var("V", "System.Address", aliased=True))
+                call = "Glib.Object.Get_Object_Or_Null (%s)" % call
+            else:
+                marsh_local.append(Local_Var("V", profile.returns, aliased=True))
 
-        marsh_body += "exception when E : others => Process_Exception (E);"
+            # Reset the GValue to its type's default, even if another handler
+            # has already written a result. No uninitialized Ada value is read.
+            marsh_body = (
+                "V := %s;\n"
+                "Set_Value (Return_Value, V'Address);\n"
+                "exception when E : others =>\n"
+                "Set_Value (Return_Value, System.Null_Address);\n"
+                "Process_Exception (E);" % call
+            )
 
         return marsh_local, marsh_body
 

@@ -68,6 +68,10 @@ procedure Drop_Target is
    procedure Test_Constructors_And_Properties with Convention => C;
    procedure Test_Signal_Handlers with Convention => C;
    procedure Test_Callback_Exceptions with Convention => C;
+   procedure Test_Drop_Typed_Exception with Convention => C;
+   procedure Test_Drop_Slot_Exception with Convention => C;
+   procedure Test_Motion_Typed_Exception with Convention => C;
+   procedure Test_Motion_Slot_Exception with Convention => C;
 
    --  Keep each C string alive through its synchronous signal emission only.
    procedure Emit_Drop
@@ -386,8 +390,8 @@ procedure Drop_Target is
       Expected_Slot := System.Null_Address;
    end Test_Signal_Handlers;
 
-   --  Exercise the typed void marshaller's exception handler. Exceptions from
-   --  callbacks with a signal return value are left to a live drag context.
+   --  Exercise the typed void marshaller's exception handler independently of
+   --  the return-valued callbacks checked by the regression cases below.
    procedure Test_Callback_Exceptions is
       Typed_Target : constant Gtk_Drop_Target :=
         Gtk_Drop_Target_New (GType_Int, Gdk_Action_Copy);
@@ -399,6 +403,132 @@ procedure Drop_Target is
       Assert_Cmpuint_Eq (Guint (Caught_Exceptions), 1);
       Unref (Typed_Target);
    end Test_Callback_Exceptions;
+
+   --  Regression for gtk-drop_target.return-callback-exceptions: Boolean and
+   --  Drag_Action callbacks must report exceptions to Set_On_Exception, return
+   --  a safe rejection, and never unwind through GLib's C signal machinery.
+   --  Drop and motion exercise the two return profiles without a live GdkDrop;
+   --  enter shares motion's marshaller, but its default handler needs a drag.
+   --  GTK gives these signals the first-wins accumulator: GLib resets each
+   --  handler's return value itself, and the first handler ends the emission.
+   --  So no raising handler here can follow one that already set a result;
+   --  the paned test checks that case, on signals without an accumulator.
+   procedure Test_Return_Callback_Exception
+     (Slot_Callback : Boolean;
+      Drop_Signal   : Boolean)
+   is
+      Callback_Error : exception;
+      Target : constant Gtk_Drop_Target :=
+        Gtk_Drop_Target_New (GType_Int, Gdk_Action_Copy);
+      Slot : constant Gtk_Drop_Target :=
+        Gtk_Drop_Target_New (GType_Int, Gdk_Action_Copy);
+      Value : GValue;
+      Result : aliased Gboolean := 1;
+      Action : aliased Drag_Action := Gdk_Action_Copy;
+      Escaped : Boolean := False;
+
+      --  Separate callback profiles select the typed and GObject-slot overloads.
+      --  Unrestricted_Access is the existing test idiom for these synchronous
+      --  nested callbacks; the targets are released before this scope ends.
+      function Raise_Drop_Typed
+        (Self : access Gtk_Drop_Target_Record'Class;
+         Value : GValue; X, Y : Gdouble) return Boolean is
+         pragma Unreferenced (Self, Value, X, Y);
+      begin
+         return (raise Callback_Error with
+           "expected typed drop callback exception");
+      end Raise_Drop_Typed;
+
+      function Raise_Drop_Slot
+        (Self : access GObject_Record'Class;
+         Value : GValue; X, Y : Gdouble) return Boolean is
+         pragma Unreferenced (Self, Value, X, Y);
+      begin
+         return (raise Callback_Error with
+           "expected slot drop callback exception");
+      end Raise_Drop_Slot;
+
+      function Raise_Motion_Typed
+        (Self : access Gtk_Drop_Target_Record'Class;
+         X, Y : Gdouble) return Drag_Action is
+         pragma Unreferenced (Self, X, Y);
+      begin
+         return (raise Callback_Error with
+           "expected typed motion callback exception");
+      end Raise_Motion_Typed;
+
+      function Raise_Motion_Slot
+        (Self : access GObject_Record'Class;
+         X, Y : Gdouble) return Drag_Action is
+         pragma Unreferenced (Self, X, Y);
+      begin
+         return (raise Callback_Error with
+           "expected slot motion callback exception");
+      end Raise_Motion_Slot;
+   begin
+      Caught_Exceptions := 0;
+      Init_Set_Int (Value, 42);
+      if Drop_Signal then
+         if Slot_Callback then
+            Target.On_Drop (Raise_Drop_Slot'Unrestricted_Access, Slot);
+         else
+            Target.On_Drop (Raise_Drop_Typed'Unrestricted_Access);
+         end if;
+      elsif Slot_Callback then
+         Target.On_Motion (Raise_Motion_Slot'Unrestricted_Access, Slot);
+      else
+         Target.On_Motion (Raise_Motion_Typed'Unrestricted_Access);
+      end if;
+
+      --  Catch only the deliberate callback exception to turn the defect into
+      --  an explicit assertion; unrelated exceptions still fail normally.
+      begin
+         if Drop_Signal then
+            Emit_Drop (Target, Value, Result'Access);
+         else
+            Emit_Action_For (Target, "motion", Action'Access);
+         end if;
+      exception
+         when Callback_Error => Escaped := True;
+      end;
+      Assert_False
+        (Escaped,
+         "return-valued drop-target callback exception escaped containment");
+      Assert_True
+        (Caught_Exceptions = 1,
+         "return-valued drop-target callback must reach exception hook once");
+      if Drop_Signal then
+         Assert_True (Result = 0, "throwing drop callback must reject the drop");
+      else
+         Assert_True
+           (Action = Gdk_Action_None,
+            "throwing motion callback must return no drag action");
+      end if;
+      Unset (Value);
+      Unref (Target);
+      Unref (Slot);
+   end Test_Return_Callback_Exception;
+
+   --  Separate Glib.Test cases identify the signal and closure form at fault.
+   procedure Test_Drop_Typed_Exception is
+   begin
+      Test_Return_Callback_Exception (False, True);
+   end Test_Drop_Typed_Exception;
+
+   procedure Test_Drop_Slot_Exception is
+   begin
+      Test_Return_Callback_Exception (True, True);
+   end Test_Drop_Slot_Exception;
+
+   procedure Test_Motion_Typed_Exception is
+   begin
+      Test_Return_Callback_Exception (False, False);
+   end Test_Motion_Typed_Exception;
+
+   procedure Test_Motion_Slot_Exception is
+   begin
+      Test_Return_Callback_Exception (True, False);
+   end Test_Motion_Slot_Exception;
 
 begin
    Glib.Test.Init;
@@ -414,5 +544,17 @@ begin
    Add_Func
      ("/droptarget/callback-exceptions",
       Test_Callback_Exceptions'Unrestricted_Access);
+   Add_Func
+     ("/droptarget/return-callback-exceptions/drop-typed",
+      Test_Drop_Typed_Exception'Unrestricted_Access);
+   Add_Func
+     ("/droptarget/return-callback-exceptions/drop-slot",
+      Test_Drop_Slot_Exception'Unrestricted_Access);
+   Add_Func
+     ("/droptarget/return-callback-exceptions/motion-typed",
+      Test_Motion_Typed_Exception'Unrestricted_Access);
+   Add_Func
+     ("/droptarget/return-callback-exceptions/motion-slot",
+      Test_Motion_Slot_Exception'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Drop_Target;

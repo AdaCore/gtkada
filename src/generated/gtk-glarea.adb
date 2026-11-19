@@ -857,11 +857,14 @@ package body Gtk.GLArea is
       pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_GLContext := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased System.Address := Glib.Object.Get_Object_Or_Null (H (Obj));
+      V   : aliased System.Address;
    begin
+      V := Glib.Object.Get_Object_Or_Null (H (Obj));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gdk_GLContext;
 
    -----------------------------------------
@@ -879,11 +882,14 @@ package body Gtk.GLArea is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdk_GLContext_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Gdk.GLContext.Gdk_GLContext (Unchecked_To_Object (Params, 1)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gdk.GLContext.Gdk_GLContext (Unchecked_To_Object (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_GObject_Gdk_GLContext_Boolean;
 
    ----------------------------------
@@ -922,11 +928,14 @@ package body Gtk.GLArea is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_GLArea_Gdk_GLContext := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_GLArea := Gtk_GLArea (Unchecked_To_Object (Params, 0));
-      V   : aliased System.Address := Glib.Object.Get_Object_Or_Null (H (Obj));
+      V   : aliased System.Address;
    begin
+      V := Glib.Object.Get_Object_Or_Null (H (Obj));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_GLArea_Gdk_GLContext;
 
    --------------------------------------------
@@ -944,11 +953,14 @@ package body Gtk.GLArea is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_GLArea_Gdk_GLContext_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_GLArea := Gtk_GLArea (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Gdk.GLContext.Gdk_GLContext (Unchecked_To_Object (Params, 1)));
+      V   : aliased Boolean;
    begin
+      V := H (Obj, Gdk.GLContext.Gdk_GLContext (Unchecked_To_Object (Params, 1)));
       Set_Value (Return_Value, V'Address);
    exception
-      when E : others => Process_Exception (E);
+      when E : others =>
+         Set_Value (Return_Value, System.Null_Address);
+         Process_Exception (E);
    end Marsh_Gtk_GLArea_Gdk_GLContext_Boolean;
 
    -------------------------------------
