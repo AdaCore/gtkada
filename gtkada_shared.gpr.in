@@ -25,8 +25,22 @@ with "gtk.gpr";
 
 project GtkAda_Shared is
 
-   type Build_Type is ("Debug", "Production");
+   --  "AddressSanitizer" is the Debug build, with GtkAda's sources compiled
+   --  with -fsanitize=address. This instruments the library only: projects
+   --  that use it get the sanitizer's runtime linked in (see Linker_Options
+   --  in gtkada.gpr), but must add the switch to their own compiler switches
+   --  to instrument their sources as well.
+   type Build_Type is ("Debug", "Production", "AddressSanitizer");
    Build : Build_Type := external ("BUILD", "@BUILD_TYPE@");
+
+   --  Switches to compile and link with for the AddressSanitizer build
+   Sanitizer_Switches := ();
+   case Build is
+      when "AddressSanitizer" =>
+         Sanitizer_Switches := ("-fsanitize=address");
+      when "Debug" | "Production" =>
+         null;
+   end case;
 
    type Yes_No is ("yes", "no");
    Need_Objective_C : Yes_No := "@NEED_OBJECTIVE_C@";
@@ -61,7 +75,7 @@ project GtkAda_Shared is
       for PIC_Option ("C") use ("-fPIC");
 
       case Build is
-         when "Debug" =>
+         when "Debug" | "AddressSanitizer" =>
              for Switches ("Ada") use
                 ("-gnatQ", "-gnatwae", "-gnatwJ", "-gnatayM200", "-g", "-O0");
                 --  TODO: gnatwJ disables warnings for obsolescent features
@@ -76,17 +90,19 @@ project GtkAda_Shared is
       for Switches ("C") use Compiler'Switches ("C") & Gtk_Include;
       for Switches ("Objective-C") use Compiler'Switches ("Objective-C") & Gtk_Include;
 
-      for Switches ("Ada") use Compiler'Switches ("Ada") & Adaflags;
-      for Switches ("C") use Compiler'Switches ("C") & Cflags & Cppflags;
+      for Switches ("Ada") use Compiler'Switches ("Ada")
+        & Sanitizer_Switches & Adaflags;
+      for Switches ("C") use Compiler'Switches ("C")
+        & Sanitizer_Switches & Cflags & Cppflags;
       for Switches ("Objective-C") use Compiler'Switches ("Objective-C")
-        & Objcflags & Cppflags;
+        & Sanitizer_Switches & Objcflags & Cppflags;
    end Compiler;
 
    package Builder is
       for Switches ("Ada") use ("-m");
 
       case Build is
-         when "Debug" =>
+         when "Debug" | "AddressSanitizer" =>
             for Global_Configuration_Pragmas use
               GtkAda_Shared'Project_Dir & "src/gnat_debug.adc";
          when "Production" =>
@@ -97,7 +113,7 @@ project GtkAda_Shared is
 
    package Binder is
       case Build is
-         when "Debug" =>
+         when "Debug" | "AddressSanitizer" =>
              for Default_Switches ("Ada") use ("-E");
          when "Production" =>
              null;
