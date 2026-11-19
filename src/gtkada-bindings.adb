@@ -75,12 +75,29 @@ package body Gtkada.Bindings is
       return To_String_List (C, Gint (Count));
    end To_String_List;
 
+   --------------------
+   -- To_String_List --
+   --------------------
+
+   function To_String_List
+     (C : chars_ptr_array_access) return String_List
+   is
+      Empty : constant String_List (1 .. 0) := (others => null);
+   begin
+      if C = null then
+         return Empty;
+      else
+         return To_String_List (C.all);
+      end if;
+   end To_String_List;
+
    -----------------------------
    -- To_String_List_And_Free --
    -----------------------------
 
    function To_String_List_And_Free
-     (C : chars_ptr_array_access) return String_List
+     (C : chars_ptr_array_access; Free_Elements : Boolean := True)
+      return String_List
    is
       Empty : constant String_List (1 .. 0) := (others => null);
    begin
@@ -90,7 +107,11 @@ package body Gtkada.Bindings is
          declare
             Result : constant String_List := To_String_List (C.all);
          begin
-            g_strfreev (C);
+            if Free_Elements then
+               g_strfreev (C);
+            else
+               g_free (C);
+            end if;
             return Result;
          end;
       end if;

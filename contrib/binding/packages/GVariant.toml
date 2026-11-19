@@ -7,6 +7,54 @@ ada = "Glib.Variant"
 ctype = "GVariantClass"
 prefix = "G_VARIANT_"
 
+[[method]]
+id = "g_variant_get_strv"
+
+[method.doc]
+text = '''
+Gets the contents of a GVariant array of strings as an Ada string list.
+If Length is non-null, the number of elements is stored there. An empty
+variant array returns an empty list.
+
+GtkAda copies the strings and frees only the temporary C pointer array.
+The returned strings remain valid after the variant is released. Free each
+returned Ada string with GNAT.Strings.Free when it is no longer needed.
+
+@return independent Ada copies of the strings
+'''
+
+[[method]]
+id = "g_variant_get_objv"
+
+[method.doc]
+text = '''
+Gets the contents of a GVariant array of object paths as an Ada string list.
+If Length is non-null, the number of elements is stored there. An empty
+variant array returns an empty list.
+
+GtkAda copies the strings and frees only the temporary C pointer array.
+The returned strings remain valid after the variant is released. Free each
+returned Ada string with GNAT.Strings.Free when it is no longer needed.
+
+@return independent Ada copies of the object paths
+'''
+
+[[method]]
+id = "g_variant_get_bytestring_array"
+
+[method.doc]
+text = '''
+Gets the contents of a GVariant array of byte strings as an Ada string list.
+If Length is non-null, the number of elements is stored there. An empty
+variant array returns an empty list.
+
+GtkAda copies the strings and frees only the temporary C pointer array.
+The returned strings remain valid after the variant is released. Free each
+returned Ada string with GNAT.Strings.Free when it is no longer needed.
+
+@return independent Ada copies of the byte strings
+'''
+
 # The GIR marks string as transfer-none, but GLib takes ownership and
 # releases it with g_free. Hand over the binding's allocated C copy.
 [[method]]

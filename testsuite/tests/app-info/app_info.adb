@@ -14,6 +14,7 @@ with Glib.Main;
 with Glib.Object; use Glib.Object;
 with Glib.Types;
 with Glib.Test; use Glib.Test;
+with GNAT.Strings;
 with Gtk.Enums;
 
 procedure App_Info is
@@ -44,6 +45,7 @@ procedure App_Info is
    procedure Test_Launch_Errors with Convention => C;
    procedure Test_Async with Convention => C;
    procedure Test_Async_User_Data_Lifetime with Convention => C;
+   procedure Test_Supported_Types_Empty with Convention => C;
 
    procedure Release (App : in out Glib.App_Info.Gapp_Info);
    procedure Release_List (Apps : in out App_Info_List.Glist);
@@ -346,6 +348,47 @@ procedure App_Info is
       Release (App);
    end Test_Methods;
 
+   --------------------------------
+   -- Test_Supported_Types_Empty --
+   --------------------------------
+
+   procedure Test_Supported_Types_Empty is
+      Error : Glib.Error.GError;
+      App   : Glib.App_Info.Gapp_Info := Create_From_Commandline
+        ("gtkada-test-command %f", "GtkAda supported types test",
+         G_App_Info_Create_None, Error);
+   begin
+      Assert_True (Error = null);
+      Assert_True (App /= Null_Gapp_Info);
+
+      --  Regression for glib-app_info.supported-types-null-deref: a newly
+      --  created command-line app exports no content types. GIO documents a
+      --  NULL result here; GtkAda must return an empty Ada array instead of
+      --  dereferencing NULL. Creating the app neither launches it nor changes
+      --  the host's application associations.
+      begin
+         declare
+            Types : GNAT.Strings.String_List := Get_Supported_Types (App);
+         begin
+            Assert_True
+              (Types'Length = 0,
+               "Get_Supported_Types must return an empty list for "
+               & "unavailable types");
+            --  GtkAda's String_List owns its individual allocated Ada strings.
+            for Item of Types loop
+               GNAT.Strings.Free (Item);
+            end loop;
+         end;
+      exception
+         when Constraint_Error =>
+            Release (App);
+            Assert_True
+              (False, "Get_Supported_Types raised Constraint_Error for "
+               & "documented NULL supported types");
+      end;
+      Release (App);
+   end Test_Supported_Types_Empty;
+
    --------------------
    -- Test_Catalogue --
    --------------------
@@ -591,5 +634,8 @@ begin
    Add_Func
      ("/app-info/async-user-data-lifetime",
       Test_Async_User_Data_Lifetime'Unrestricted_Access);
+   Add_Func
+     ("/app-info/supported-types-empty",
+      Test_Supported_Types_Empty'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Run);
 end App_Info;

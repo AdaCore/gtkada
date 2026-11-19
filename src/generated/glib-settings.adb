@@ -1064,7 +1064,7 @@ package body Glib.Settings is
       function Internal return chars_ptr_array_access;
       pragma Import (C, Internal, "g_settings_list_relocatable_schemas");
    begin
-      return To_String_List (Internal.all);
+      return To_String_List (Internal);
    end List_Relocatable_Schemas;
 
    ------------------
@@ -1075,7 +1075,7 @@ package body Glib.Settings is
       function Internal return chars_ptr_array_access;
       pragma Import (C, Internal, "g_settings_list_schemas");
    begin
-      return To_String_List (Internal.all);
+      return To_String_List (Internal);
    end List_Schemas;
 
    ----------

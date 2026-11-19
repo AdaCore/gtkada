@@ -45,6 +45,10 @@ procedure Main is
    procedure Serialized_And_Refs with Convention => C;
    procedure Take_String_Procedure with Convention => C;
    procedure Take_String_Function with Convention => C;
+   procedure Shallow_Strv with Convention => C;
+   procedure Shallow_Objv with Convention => C;
+   procedure Shallow_Bytestring_Array with Convention => C;
+   procedure Empty_Shallow_Arrays with Convention => C;
 
    --  GNAT.Strings lists returned by Dup_* and the string-vector accessors
    --  own each element, so release every allocated string after checking it.
@@ -371,6 +375,116 @@ procedure Main is
       Free (T);
    end String_Vector_And_Types;
 
+   --  Regression for glib-variant.shallow-string-arrays: the C Get_* array
+   --  getters borrow their element strings from the variant. The Ada binding
+   --  must copy them without freeing them, so repeated reads remain valid.
+   --  Two elements also exercise strings inside the same serialized buffer;
+   --  freeing those borrowed pointers currently aborts inside the getter.
+   type String_Array_Kind is (Strings, Object_Paths, Byte_Strings);
+
+   procedure Check_Shallow_Array (Kind : String_Array_Kind) is
+      Source : GNAT.Strings.String_List :=
+        (1 => new String'("/one"), 2 => new String'("/two"));
+      V      : Gvariant;
+      Count  : aliased Gsize := 0;
+
+      function Read_Array return GNAT.Strings.String_List is
+      begin
+         --  An aliased Gsize supplies the optional C length output through
+         --  'Access. The returned Ada list owns its copied String elements.
+         case Kind is
+            when Strings =>
+               return Get_Strv (V, Count'Access);
+            when Object_Paths =>
+               return Get_Objv (V, Count'Access);
+            when Byte_Strings =>
+               return Get_Bytestring_Array (V, Count'Access);
+         end case;
+      end Read_Array;
+   begin
+      case Kind is
+         when Strings =>
+            V := Gvariant_New_Strv (Source, Source'Length);
+         when Object_Paths =>
+            V := Gvariant_New_Objv (Source, Source'Length);
+         when Byte_Strings =>
+            V := Gvariant_New_Bytestring_Array (Source, Source'Length);
+      end case;
+      --  Constructors copy the input; only the variant now owns C strings.
+      Free_List (Source);
+      declare
+         Items : GNAT.Strings.String_List := Read_Array;
+      begin
+         Assert_True
+           (Count = 2 and then Items'Length = 2,
+            "shallow string-array getter must return both elements");
+         Assert_Cmpstr_Eq (Items (Items'First).all, "/one");
+         Assert_Cmpstr_Eq (Items (Items'Last).all, "/two");
+         Free_List (Items);
+      end;
+
+      --  Releasing the first Ada list must leave the variant readable, and
+      --  releasing the variant must leave the second Ada list readable.
+      declare
+         Items : GNAT.Strings.String_List := Read_Array;
+      begin
+         Assert_True
+           (Count = 2 and then Items'Length = 2,
+            "shallow string-array getter must preserve the variant");
+         Unref (V);
+         Assert_Cmpstr_Eq (Items (Items'First).all, "/one");
+         Assert_Cmpstr_Eq (Items (Items'Last).all, "/two");
+         Free_List (Items);
+      end;
+   end Check_Shallow_Array;
+
+   procedure Shallow_Strv is
+   begin
+      Check_Shallow_Array (Strings);
+   end Shallow_Strv;
+
+   procedure Shallow_Objv is
+   begin
+      Check_Shallow_Array (Object_Paths);
+   end Shallow_Objv;
+
+   procedure Shallow_Bytestring_Array is
+   begin
+      Check_Shallow_Array (Byte_Strings);
+   end Shallow_Bytestring_Array;
+
+   --  Empty container-transfer arrays still own their C pointer array.
+   --  Also check the getters without requesting the optional length.
+   procedure Empty_Shallow_Arrays is
+      V     : Gvariant;
+      Count : aliased Gsize := 99;
+
+      procedure Check_Empty (Items : GNAT.Strings.String_List) is
+      begin
+         Assert_True (Items'Length = 0);
+      end Check_Empty;
+   begin
+      V := Gvariant_New_Strv (Empty_List, 0);
+      Check_Empty (Get_Strv (V, Count'Access));
+      Assert_True (Count = 0);
+      Check_Empty (Get_Strv (V));
+      Unref (V);
+
+      V := Gvariant_New_Objv (Empty_List, 0);
+      Count := 99;
+      Check_Empty (Get_Objv (V, Count'Access));
+      Assert_True (Count = 0);
+      Check_Empty (Get_Objv (V));
+      Unref (V);
+
+      V := Gvariant_New_Bytestring_Array (Empty_List, 0);
+      Count := 99;
+      Check_Empty (Get_Bytestring_Array (V, Count'Access));
+      Assert_True (Count = 0);
+      Check_Empty (Get_Bytestring_Array (V));
+      Unref (V);
+   end Empty_Shallow_Arrays;
+
    -------------------------
    -- Parsed_And_Containers --
    -------------------------
@@ -619,5 +733,15 @@ begin
    Add_Func
      ("/glib-variant/take-string-function",
       Take_String_Function'Unrestricted_Access);
+   Add_Func
+     ("/glib-variant/shallow-strv", Shallow_Strv'Unrestricted_Access);
+   Add_Func
+     ("/glib-variant/shallow-objv", Shallow_Objv'Unrestricted_Access);
+   Add_Func
+     ("/glib-variant/shallow-bytestring-array",
+      Shallow_Bytestring_Array'Unrestricted_Access);
+   Add_Func
+     ("/glib-variant/empty-shallow-arrays",
+      Empty_Shallow_Arrays'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

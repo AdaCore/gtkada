@@ -167,7 +167,7 @@ package body Gdk.Content_Formats is
           N_Mime_Types : access Gsize) return chars_ptr_array_access;
       pragma Import (C, Internal, "gdk_content_formats_get_mime_types");
    begin
-      return To_String_List (Internal (Get_Object (Self), N_Mime_Types).all);
+      return To_String_List (Internal (Get_Object (Self), N_Mime_Types));
    end Get_Mime_Types;
 
    --------------

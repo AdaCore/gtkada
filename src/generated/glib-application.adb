@@ -317,7 +317,7 @@ package body Glib.Application is
          (Self : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "g_application_command_line_get_environ");
    begin
-      return To_String_List (Internal (Get_Object (Self)).all);
+      return To_String_List (Internal (Get_Object (Self)));
    end Get_Environ;
 
    ---------------------

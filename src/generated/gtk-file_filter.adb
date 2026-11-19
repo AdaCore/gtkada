@@ -210,7 +210,7 @@ package body Gtk.File_Filter is
          (Self : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_file_filter_get_attributes");
    begin
-      return To_String_List (Internal (Get_Object (Self)).all);
+      return To_String_List (Internal (Get_Object (Self)));
    end Get_Attributes;
 
    --------------

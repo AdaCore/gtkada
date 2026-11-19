@@ -505,7 +505,7 @@ def _get_clean_doc(node):
 def _get_type(
     nodeOrType,
     allow_none=False,
-    transfer_ownership=False,
+    transfer_ownership="none",
     userecord=True,
     pkg=None,
 ):
@@ -1027,10 +1027,12 @@ class SubprogramProfile(object):
             # returnvar will already have the free call embedded
             # but we need to add it explicitly for null_val
 
-            if return_type.transfer_ownership and call_obj.tmpvars:
+            if return_type.transfer_ownership != "none" and call_obj.tmpvars:
                 cleanup_func = 'g_strfreev (%s);'
                 if isinstance(return_type, UTF8):
                     cleanup_func = return_type.cleanup
+                elif return_type.transfer_ownership == "container":
+                    cleanup_func = 'Gtkada.Bindings.g_free (%s);'
 
                 # Work one step backwards:
                 # Subprogram.call will append a temporary variable
@@ -1288,7 +1290,7 @@ class SubprogramProfile(object):
                 # after copying them into the unbounded Ada value.
                 type = UTF8_Output()
                 type.allow_none = allow_none
-                type.transfer_ownership = ownership
+                type.transfer_ownership = "full" if ownership else "none"
                 if default == '""':
                     default = type.null_value
                 if pkg:
@@ -1367,12 +1369,7 @@ class SubprogramProfile(object):
                 if self.returns_doc:
                     self.returns_doc = "@return %s" % self.returns_doc
 
-        owner = ""
         ownership = gtkmethod.transfer_ownership(ret)
-        if ownership:
-            owner = "full"
-        else:
-            owner = "none"
         result = None
 
         if returns is None:
@@ -1392,7 +1389,7 @@ class SubprogramProfile(object):
             if self.returns_doc != "":
                 if not self.returns_doc.endswith("."):
                     self.returns_doc += "."
-                self.returns_doc += " Has transfer-ownership='%s'." % owner
+                self.returns_doc += " Has transfer-ownership='%s'." % ownership
 
         return result
 
