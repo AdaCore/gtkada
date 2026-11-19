@@ -626,39 +626,39 @@ void gtkada_App_Info_set_supports_uris(GAppInfoIface* iface, void* handler) {
     iface->supports_uris = handler;
 }
 
-void gtkada_DBus_Interfaces_set_dup_object(GDBusInterfaceIface* iface, void* handler) {
+void gtkada_GDBus_Interfaces_set_dup_object(GDBusInterfaceIface* iface, void* handler) {
     iface->dup_object = handler;
 }
 
-void gtkada_DBus_Interfaces_set_get_info(GDBusInterfaceIface* iface, void* handler) {
+void gtkada_GDBus_Interfaces_set_get_info(GDBusInterfaceIface* iface, void* handler) {
     iface->get_info = handler;
 }
 
-void gtkada_DBus_Interfaces_set_get_object(GDBusInterfaceIface* iface, void* handler) {
+void gtkada_GDBus_Interfaces_set_get_object(GDBusInterfaceIface* iface, void* handler) {
     iface->get_object = handler;
 }
 
-void gtkada_DBus_Interfaces_set_set_object(GDBusInterfaceIface* iface, void* handler) {
+void gtkada_GDBus_Interfaces_set_set_object(GDBusInterfaceIface* iface, void* handler) {
     iface->set_object = handler;
 }
 
-void gtkada_DBus_Objects_set_get_interface(GDBusObjectIface* iface, void* handler) {
+void gtkada_GDBus_Objects_set_get_interface(GDBusObjectIface* iface, void* handler) {
     iface->get_interface = handler;
 }
 
-void gtkada_DBus_Objects_set_get_interfaces(GDBusObjectIface* iface, void* handler) {
+void gtkada_GDBus_Objects_set_get_interfaces(GDBusObjectIface* iface, void* handler) {
     iface->get_interfaces = handler;
 }
 
-void gtkada_DBus_Objects_set_get_object_path(GDBusObjectIface* iface, void* handler) {
+void gtkada_GDBus_Objects_set_get_object_path(GDBusObjectIface* iface, void* handler) {
     iface->get_object_path = handler;
 }
 
-void gtkada_DBus_Objects_set_interface_added(GDBusObjectIface* iface, void* handler) {
+void gtkada_GDBus_Objects_set_interface_added(GDBusObjectIface* iface, void* handler) {
     iface->interface_added = handler;
 }
 
-void gtkada_DBus_Objects_set_interface_removed(GDBusObjectIface* iface, void* handler) {
+void gtkada_GDBus_Objects_set_interface_removed(GDBusObjectIface* iface, void* handler) {
     iface->interface_removed = handler;
 }
 

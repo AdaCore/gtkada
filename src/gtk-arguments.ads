@@ -45,7 +45,6 @@ with Glib.Object;
 with Glib.Types;
 with GLib.GEnums;
 with Glib.Arrays;
-with Glib.DBus_Interfaces;
 --  with Gdk.Drag_Contexts;
 with Gdk.Drag;
 with Gdk.Enums;
@@ -257,9 +256,6 @@ package Gtk.Arguments is
       return Gtkada.Bindings.chars_ptr_array_access;
    function Unchecked_To_GFile_Monitor_Event is new
      Glib.Values.Unsafe_Enum_Nth (Glib.GEnums.GFile_Monitor_Event);
-   function Unchecked_To_Gdbus_Interface
-     (Args : Glib.Values.C_GValues; Num : Guint)
-      return Glib.DBus_Interfaces.Gdbus_Interface;
 
    --   function Unchecked_To_Gtk_Allocation
    --     (Args : Glib.Values.C_GValues; Num : Guint)

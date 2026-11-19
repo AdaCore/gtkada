@@ -24,21 +24,35 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 
-package body Glib.DBus_Interfaces is
+package body Glib.GDBus_Interfaces is
 
-   function Convert (R : Glib.DBus_Interfaces.Gdbus_Interface) return System.Address is
+   function Convert (R : Glib.GDBus_Interfaces.Gdbus_Interface) return System.Address is
    begin
       return System.Address (R);
    end Convert;
 
-   function Convert (R : System.Address) return Glib.DBus_Interfaces.Gdbus_Interface is
+   function Convert (R : System.Address) return Glib.GDBus_Interfaces.Gdbus_Interface is
    begin
-      return Glib.DBus_Interfaces.Gdbus_Interface (R);
+      return Glib.GDBus_Interfaces.Gdbus_Interface (R);
    end Convert;
+
+   ----------------------------------
+   -- Unchecked_To_Gdbus_Interface --
+   ----------------------------------
+
+   function Unchecked_To_Gdbus_Interface
+     (Args : Glib.Values.C_GValues; Num : Guint)
+   return Gdbus_Interface
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Glib.GDBus_Interfaces.Gdbus_Interface (Get_Address (Val));
+   end Unchecked_To_Gdbus_Interface;
 
    function "+" (W : Gdbus_Interface) return Gdbus_Interface is
    begin
       return W;
    end "+";
 
-end Glib.DBus_Interfaces;
+end Glib.GDBus_Interfaces;

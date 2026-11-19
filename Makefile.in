@@ -145,6 +145,7 @@ docs:
 # Generate the binding automatically, through a python script
 generate:
 	${RM} src/generated/*.ad?
+	${RM} -rf src/generated/gdbus
 	${PYTHON} contrib/binding.py \
 	   --gir-file=contrib/GLib-2.0.gir \
 	   --gir-file=contrib/GObject-2.0.gir \
@@ -159,6 +160,8 @@ generate:
 	   --ada-output=src/generated/tmp.ada \
 	   --c-output=src/misc_generated.c
 	cd src/generated; gnatchop -gnat2012 -q -w tmp.ada
+	mkdir src/generated/gdbus
+	mv src/generated/glib-gdbus* src/generated/gdbus
 
 clean-generic:
 	-${RM} core

@@ -1,7 +1,7 @@
 # ============================================================
 #   GIOBusMessage
 # ============================================================
-ada = "Glib.GDBusMessage"
+ada = "Glib.GDBus_Message"
 
 [[extra.with_body]]
 pkg = "Interfaces.C.Pointers"
