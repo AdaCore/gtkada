@@ -434,27 +434,6 @@ package Pango.Font is
    --  units in one device unit. For an output backend where a device unit is a
    --  pixel, a Size value of 10 * PANGO_SCALE gives a 10 pixel font.
 
-   procedure Set_Family_Static
-      (Self   : Pango_Font_Description;
-       Family : UTF8_String);
-   --  Like Pango.Font.Set_Family, except that no copy of Family is made. The
-   --  caller must make sure that the string passed in stays around until Desc
-   --  has been freed or the name is set again. This function can be used if
-   --  Family is a static string such as a C string literal, or if Desc is only
-   --  needed temporarily.
-   --  @param Family a string representing the family name.
-
-   procedure Set_Variations_Static
-      (Self       : Pango_Font_Description;
-       Variations : UTF8_String);
-   --  Like Pango.Font.Set_Variations, except that no copy of Variations is
-   --  made. The caller must make sure that the string passed in stays around
-   --  until Desc has been freed or the name is set again. This function can be
-   --  used if Variations is a static string such as a C string literal, or if
-   --  Desc is only needed temporarily.
-   --  Since: gtk+ 1.42
-   --  @param Variations a string representing the variations
-
    function To_Filename (Self : Pango_Font_Description) return UTF8_String;
    --  Creates a filename representation of a font description. The filename
    --  is identical to the result from calling Pango.Font.To_String, but with

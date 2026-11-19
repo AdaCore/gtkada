@@ -4,6 +4,22 @@
 into = "PangoFont"
 
 [[method]]
+id = "pango_font_description_set_family_static"
+bind = false
+# The "_static" variant means "this should take a C string
+# which should not be freed" - this is awkward to bind.
+# This functionality can instead be accessed through
+# pango_font_description_set_family.
+
+[[method]]
+id = "pango_font_description_set_variations_static"
+bind = false
+# The "_static" variant means "this should take a C string
+# which should not be freed" - this is awkward to bind.
+# This functionality can instead be accessed through
+# pango_font_description_set_variations.
+
+[[method]]
 id = "pango_font_description_free"
 bind = false
 # manual binding below
