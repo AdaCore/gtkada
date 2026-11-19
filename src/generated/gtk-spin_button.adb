@@ -352,14 +352,14 @@ package body Gtk.Spin_Button is
 
    procedure Set_Adjustment
       (Self       : not null access Gtk_Spin_Button_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
          (Self       : System.Address;
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_spin_button_set_adjustment");
    begin
-      Internal (Get_Object (Self), Get_Object (Adjustment));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Adjustment)));
    end Set_Adjustment;
 
    --------------------
