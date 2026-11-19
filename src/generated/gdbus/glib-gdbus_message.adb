@@ -33,7 +33,7 @@ pragma Warnings(On);
 
 use type Glib.Error.GError;
 
-package body Glib.GDBusMessage is
+package body Glib.GDBus_Message is
 
    use Interfaces.C;
    package P is new Interfaces.C.Pointers
@@ -50,7 +50,7 @@ package body Glib.GDBusMessage is
    procedure G_New (Self : out Gdbus_Message) is
    begin
       Self := new Gdbus_Message_Record;
-      Glib.GDBusMessage.Initialize (Self);
+      Glib.GDBus_Message.Initialize (Self);
    end G_New;
 
    ---------------------
@@ -66,7 +66,7 @@ package body Glib.GDBusMessage is
    is
    begin
       Self := new Gdbus_Message_Record;
-      Glib.GDBusMessage.Initialize_From_Blob (Self, Blob, Blob_Len, Capabilities, Error);
+      Glib.GDBus_Message.Initialize_From_Blob (Self, Blob, Blob_Len, Capabilities, Error);
       if Error /= null then
          Self.Deallocate;
          Self := null;
@@ -86,7 +86,7 @@ package body Glib.GDBusMessage is
    is
    begin
       Self := new Gdbus_Message_Record;
-      Glib.GDBusMessage.Initialize_Method_Call (Self, Name, Path, Iface, Method);
+      Glib.GDBus_Message.Initialize_Method_Call (Self, Name, Path, Iface, Method);
    end G_New_Method_Call;
 
    ------------------
@@ -101,7 +101,7 @@ package body Glib.GDBusMessage is
    is
    begin
       Self := new Gdbus_Message_Record;
-      Glib.GDBusMessage.Initialize_Signal (Self, Path, Iface, Signal);
+      Glib.GDBus_Message.Initialize_Signal (Self, Path, Iface, Signal);
    end G_New_Signal;
 
    -----------------------
@@ -111,7 +111,7 @@ package body Glib.GDBusMessage is
    function Gdbus_Message_New return Gdbus_Message is
       Self : constant Gdbus_Message := new Gdbus_Message_Record;
    begin
-      Glib.GDBusMessage.Initialize (Self);
+      Glib.GDBus_Message.Initialize (Self);
       return Self;
    end Gdbus_Message_New;
 
@@ -127,7 +127,7 @@ package body Glib.GDBusMessage is
    is
       Self : Gdbus_Message := new Gdbus_Message_Record;
    begin
-      Glib.GDBusMessage.Initialize_From_Blob (Self, Blob, Blob_Len, Capabilities, Error);
+      Glib.GDBus_Message.Initialize_From_Blob (Self, Blob, Blob_Len, Capabilities, Error);
       if Error /= null then
          Self.Deallocate;
          Self := null;
@@ -147,7 +147,7 @@ package body Glib.GDBusMessage is
    is
       Self : constant Gdbus_Message := new Gdbus_Message_Record;
    begin
-      Glib.GDBusMessage.Initialize_Method_Call (Self, Name, Path, Iface, Method);
+      Glib.GDBus_Message.Initialize_Method_Call (Self, Name, Path, Iface, Method);
       return Self;
    end Gdbus_Message_New_Method_Call;
 
@@ -162,7 +162,7 @@ package body Glib.GDBusMessage is
    is
       Self : constant Gdbus_Message := new Gdbus_Message_Record;
    begin
-      Glib.GDBusMessage.Initialize_Signal (Self, Path, Iface, Signal);
+      Glib.GDBus_Message.Initialize_Signal (Self, Path, Iface, Signal);
       return Self;
    end Gdbus_Message_New_Signal;
 
@@ -299,7 +299,7 @@ package body Glib.GDBusMessage is
       Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
       Error := Acc_Error;
       if Error = null then
-         Return_Obj := Glib.GDBusMessage.Gdbus_Message (Get_User_Data (Tmp_Return, Stub_Gdbus_Message));
+         Return_Obj := Glib.GDBus_Message.Gdbus_Message (Get_User_Data (Tmp_Return, Stub_Gdbus_Message));
       end if;
       return Return_Obj;
    end Copy;
@@ -631,7 +631,7 @@ package body Glib.GDBusMessage is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Error_Name, Tmp_Error_Message);
       Free (Tmp_Error_Message);
       Free (Tmp_Error_Name);
-      return Glib.GDBusMessage.Gdbus_Message (Get_User_Data (Tmp_Return, Stub_Gdbus_Message));
+      return Glib.GDBus_Message.Gdbus_Message (Get_User_Data (Tmp_Return, Stub_Gdbus_Message));
    end New_Method_Error_Literal;
 
    ----------------------
@@ -645,7 +645,7 @@ package body Glib.GDBusMessage is
       pragma Import (C, Internal, "g_dbus_message_new_method_reply");
       Stub_Gdbus_Message : Gdbus_Message_Record;
    begin
-      return Glib.GDBusMessage.Gdbus_Message (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdbus_Message));
+      return Glib.GDBus_Message.Gdbus_Message (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdbus_Message));
    end New_Method_Reply;
 
    -----------
@@ -1037,4 +1037,4 @@ package body Glib.GDBusMessage is
       return Return_Obj;
    end Bytes_Needed;
 
-end Glib.GDBusMessage;
+end Glib.GDBus_Message;

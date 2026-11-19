@@ -24,11 +24,11 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
-with Glib.DBus_Interfaces;     use Glib.DBus_Interfaces;
+with Glib.GDBus_Interfaces;    use Glib.GDBus_Interfaces;
 with Glib.Values;              use Glib.Values;
 with Gtk.Arguments;            use Gtk.Arguments;
 
-package body Glib.DBus_Objects is
+package body Glib.GDBus_Objects is
 
    -------------------
    -- Get_Interface --
@@ -37,15 +37,15 @@ package body Glib.DBus_Objects is
    function Get_Interface
       (Self           : Gdbus_Object;
        Interface_Name : UTF8_String)
-       return Glib.DBus_Interfaces.Gdbus_Interface
+       return Glib.GDBus_Interfaces.Gdbus_Interface
    is
       function Internal
          (Self           : Gdbus_Object;
           Interface_Name : Gtkada.Types.Chars_Ptr)
-          return Glib.DBus_Interfaces.Gdbus_Interface;
+          return Glib.GDBus_Interfaces.Gdbus_Interface;
       pragma Import (C, Internal, "g_dbus_object_get_interface");
       Tmp_Interface_Name : Gtkada.Types.Chars_Ptr := New_String (Interface_Name);
-      Tmp_Return         : Glib.DBus_Interfaces.Gdbus_Interface;
+      Tmp_Return         : Glib.GDBus_Interfaces.Gdbus_Interface;
    begin
       Tmp_Return := Internal (Self, Tmp_Interface_Name);
       Free (Tmp_Interface_Name);
@@ -245,4 +245,4 @@ package body Glib.DBus_Objects is
       return W;
    end "+";
 
-end Glib.DBus_Objects;
+end Glib.GDBus_Objects;

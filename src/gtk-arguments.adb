@@ -336,20 +336,6 @@ package body Gtk.Arguments is
       return Glib.Types.GType_Interface (Get_Address (Val));
    end Unchecked_To_Interface;
 
-   ----------------------------------
-   -- Unchecked_To_Gdbus_Interface --
-   ----------------------------------
-
-   function Unchecked_To_Gdbus_Interface
-     (Args : Glib.Values.C_GValues; Num : Guint)
-      return Glib.DBus_Interfaces.Gdbus_Interface
-   is
-      Val : GValue;
-   begin
-      Unsafe_Nth (Args, Num, Val);
-      return Glib.DBus_Interfaces.Gdbus_Interface (Get_Address (Val));
-   end Unchecked_To_Gdbus_Interface;
-
 --   -----------------------------
 --   -- Unchecked_To_Context_Id --
 --   -----------------------------

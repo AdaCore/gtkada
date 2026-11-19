@@ -154,7 +154,7 @@ package Glib.GEnums is
 
    type GDBus_Message_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, GDBus_Message_Flags);
-   --  Message flags used in Glib.GDBusMessage.Gdbus_Message.
+   --  Message flags used in Glib.GDBus_Message.Gdbus_Message.
 
    G_Dbus_Message_Flags_None : constant GDBus_Message_Flags := 0;
    G_Dbus_Message_Flags_No_Reply_Expected : constant GDBus_Message_Flags := 1;
@@ -173,7 +173,7 @@ package Glib.GEnums is
       Field_Signature,
       Field_Num_Unix_Fds);
    pragma Convention (C, GDBus_Message_Header_Field);
-   --  Header fields used in Glib.GDBusMessage.Gdbus_Message.
+   --  Header fields used in Glib.GDBus_Message.Gdbus_Message.
 
    type GDBus_Message_Type is (
       Invalid,
@@ -182,7 +182,7 @@ package Glib.GEnums is
       Error,
       Signal);
    pragma Convention (C, GDBus_Message_Type);
-   --  Message types used in Glib.GDBusMessage.Gdbus_Message.
+   --  Message types used in Glib.GDBus_Message.Gdbus_Message.
 
    ----------------------------
    -- Enumeration Properties --

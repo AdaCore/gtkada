@@ -32,7 +32,7 @@ with Glib.Object;      use Glib.Object;
 with Glib.Properties;  use Glib.Properties;
 with Glib.Variant;     use Glib.Variant;
 
-package Glib.GDBusMessage is
+package Glib.GDBus_Message is
 
    type Gdbus_Message_Record is new GObject_Record with null record;
    type Gdbus_Message is access all Gdbus_Message_Record'Class;
@@ -42,17 +42,17 @@ package Glib.GDBusMessage is
    ------------------
 
    procedure G_New (Self : out Gdbus_Message);
-   --  Creates a new empty Glib.GDBusMessage.Gdbus_Message.
+   --  Creates a new empty Glib.GDBus_Message.Gdbus_Message.
    --  Since: gtk+ 2.26
 
    procedure Initialize (Self : not null access Gdbus_Message_Record'Class);
-   --  Creates a new empty Glib.GDBusMessage.Gdbus_Message.
+   --  Creates a new empty Glib.GDBus_Message.Gdbus_Message.
    --  Since: gtk+ 2.26
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
 
    function Gdbus_Message_New return Gdbus_Message;
-   --  Creates a new empty Glib.GDBusMessage.Gdbus_Message.
+   --  Creates a new empty Glib.GDBus_Message.Gdbus_Message.
    --  Since: gtk+ 2.26
 
    procedure G_New_From_Blob
@@ -61,9 +61,9 @@ package Glib.GDBusMessage is
        Blob_Len     : Gsize;
        Capabilities : Glib.GEnums.GDBus_Capability_Flags;
        Error        : out Glib.Error.GError);
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message from the data stored at
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message from the data stored at
    --  Blob. The byte order that the message was in can be retrieved using
-   --  Glib.GDBusMessage.Get_Byte_Order.
+   --  Glib.GDBus_Message.Get_Byte_Order.
    --  If the Blob cannot be parsed, contains invalid fields, or contains
    --  invalid headers, G_IO_ERROR_INVALID_ARGUMENT will be returned.
    --  Since: gtk+ 2.26
@@ -79,9 +79,9 @@ package Glib.GDBusMessage is
        Blob_Len     : Gsize;
        Capabilities : Glib.GEnums.GDBus_Capability_Flags;
        Error        : out Glib.Error.GError);
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message from the data stored at
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message from the data stored at
    --  Blob. The byte order that the message was in can be retrieved using
-   --  Glib.GDBusMessage.Get_Byte_Order.
+   --  Glib.GDBus_Message.Get_Byte_Order.
    --  If the Blob cannot be parsed, contains invalid fields, or contains
    --  invalid headers, G_IO_ERROR_INVALID_ARGUMENT will be returned.
    --  Since: gtk+ 2.26
@@ -98,9 +98,9 @@ package Glib.GDBusMessage is
        Blob_Len     : Gsize;
        Capabilities : Glib.GEnums.GDBus_Capability_Flags;
        Error        : out Glib.Error.GError) return Gdbus_Message;
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message from the data stored at
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message from the data stored at
    --  Blob. The byte order that the message was in can be retrieved using
-   --  Glib.GDBusMessage.Get_Byte_Order.
+   --  Glib.GDBus_Message.Get_Byte_Order.
    --  If the Blob cannot be parsed, contains invalid fields, or contains
    --  invalid headers, G_IO_ERROR_INVALID_ARGUMENT will be returned.
    --  Since: gtk+ 2.26
@@ -116,7 +116,7 @@ package Glib.GDBusMessage is
        Path   : UTF8_String;
        Iface  : UTF8_String := "";
        Method : UTF8_String);
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message for a method call.
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message for a method call.
    --  Since: gtk+ 2.26
    --  @param Name A valid D-Bus name or null.
    --  @param Path A valid object path.
@@ -129,7 +129,7 @@ package Glib.GDBusMessage is
        Path   : UTF8_String;
        Iface  : UTF8_String := "";
        Method : UTF8_String);
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message for a method call.
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message for a method call.
    --  Since: gtk+ 2.26
    --  Initialize_Method_Call does nothing if the object was already created
    --  with another call to Initialize* or G_New.
@@ -143,7 +143,7 @@ package Glib.GDBusMessage is
        Path   : UTF8_String;
        Iface  : UTF8_String := "";
        Method : UTF8_String) return Gdbus_Message;
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message for a method call.
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message for a method call.
    --  Since: gtk+ 2.26
    --  @param Name A valid D-Bus name or null.
    --  @param Path A valid object path.
@@ -155,7 +155,7 @@ package Glib.GDBusMessage is
        Path   : UTF8_String;
        Iface  : UTF8_String;
        Signal : UTF8_String);
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message for a signal emission.
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message for a signal emission.
    --  Since: gtk+ 2.26
    --  @param Path A valid object path.
    --  @param Iface A valid D-Bus interface name.
@@ -166,7 +166,7 @@ package Glib.GDBusMessage is
        Path   : UTF8_String;
        Iface  : UTF8_String;
        Signal : UTF8_String);
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message for a signal emission.
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message for a signal emission.
    --  Since: gtk+ 2.26
    --  Initialize_Signal does nothing if the object was already created with
    --  another call to Initialize* or G_New.
@@ -178,7 +178,7 @@ package Glib.GDBusMessage is
       (Path   : UTF8_String;
        Iface  : UTF8_String;
        Signal : UTF8_String) return Gdbus_Message;
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message for a signal emission.
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message for a signal emission.
    --  Since: gtk+ 2.26
    --  @param Path A valid object path.
    --  @param Iface A valid D-Bus interface name.
@@ -195,13 +195,13 @@ package Glib.GDBusMessage is
       (Self  : not null access Gdbus_Message_Record;
        Error : out Glib.Error.GError) return Gdbus_Message;
    --  Copies Message. The copy is a deep copy and the returned
-   --  Glib.GDBusMessage.Gdbus_Message is completely identical except that it
+   --  Glib.GDBus_Message.Gdbus_Message is completely identical except that it
    --  is guaranteed to not be locked.
    --  This operation can fail if e.g. Message contains file descriptors and
    --  the per-process or system-wide open files limit is reached.
    --  Since: gtk+ 2.26
    --  @param Error the return location for a recoverable error
-   --  @return A new Glib.GDBusMessage.Gdbus_Message or null if Error is set.
+   --  @return A new Glib.GDBus_Message.Gdbus_Message or null if Error is set.
    --  Free with g_object_unref. Has transfer-ownership='full'.
 
    function Get_Arg0
@@ -336,7 +336,7 @@ package Glib.GDBusMessage is
       (Self : not null access Gdbus_Message_Record) return Boolean;
    --  Checks whether Message is locked. To monitor changes to this value,
    --  conncet to the Glib.Object.GObject::notify signal to listen for changes
-   --  on the Glib.GDBusMessage.Gdbus_Message:locked property.
+   --  on the Glib.GDBus_Message.Gdbus_Message:locked property.
    --  Since: gtk+ 2.26
    --  @return True if Message is locked, False otherwise.
 
@@ -485,20 +485,20 @@ package Glib.GDBusMessage is
       (Self          : not null access Gdbus_Message_Record;
        Error_Name    : UTF8_String;
        Error_Message : UTF8_String) return Gdbus_Message;
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message that is an error reply to
-   --  Method_Call_Message.
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message that is an error reply
+   --  to Method_Call_Message.
    --  Since: gtk+ 2.26
    --  @param Error_Name A valid D-Bus error name.
    --  @param Error_Message The D-Bus error message.
-   --  @return A Glib.GDBusMessage.Gdbus_Message. Free with g_object_unref.
+   --  @return A Glib.GDBus_Message.Gdbus_Message. Free with g_object_unref.
    --  Has transfer-ownership='full'.
 
    function New_Method_Reply
       (Self : not null access Gdbus_Message_Record) return Gdbus_Message;
-   --  Creates a new Glib.GDBusMessage.Gdbus_Message that is a reply to
+   --  Creates a new Glib.GDBus_Message.Gdbus_Message that is a reply to
    --  Method_Call_Message.
    --  Since: gtk+ 2.26
-   --  @return Glib.GDBusMessage.Gdbus_Message. Free with g_object_unref. Has
+   --  @return Glib.GDBus_Message.Gdbus_Message. Free with g_object_unref. Has
    --  transfer-ownership='full'.
 
    function Print
@@ -544,7 +544,7 @@ package Glib.GDBusMessage is
        Capabilities : Glib.GEnums.GDBus_Capability_Flags;
        Error        : out Glib.Error.GError) return Guint8_Array;
    --  Serializes Message to a blob. The byte order returned by
-   --  Glib.GDBusMessage.Get_Byte_Order will be used.
+   --  Glib.GDBus_Message.Get_Byte_Order will be used.
    --  Since: gtk+ 2.26
    --  @param Capabilities A Glib.GEnums.GDBus_Capability_Flags describing
    --  what protocol features are supported.
@@ -594,4 +594,4 @@ package Glib.GDBusMessage is
 private
    Locked_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("locked");
-end Glib.GDBusMessage;
+end Glib.GDBus_Message;

@@ -1,28 +1,28 @@
 # ============================================================
-#   GDBusObject
+#   GIODBusObject
 # ============================================================
-ada = "Glib.DBus_Objects"
+ada = "Glib.GDBus_Objects"
 
 [[extra.with_spec]]
-pkg = "Glib.DBus_Interfaces"
+pkg = "Glib.GDBus_Interfaces"
 limited = true
 
 [[extra.with_body]]
-pkg = "Glib.DBus_Interfaces"
+pkg = "Glib.GDBus_Interfaces"
 
 [[method]]
 id = "::interface-added"
 
 [[method.parameter]]
 name = "interface"
-ctype = "Glib.DBus_Interfaces.Gdbus_Interface"
+ctype = "Glib.GDBus_Interfaces.Gdbus_Interface"
 
 [[method]]
 id = "::interface-removed"
 
 [[method.parameter]]
 name = "interface"
-ctype = "Glib.DBus_Interfaces.Gdbus_Interface"
+ctype = "Glib.GDBus_Interfaces.Gdbus_Interface"
 
 [[virtual_method]]
 id = "get_interfaces"
@@ -30,12 +30,12 @@ return = "System.Address"
 
 [[method]]
 id = "g_dbus_object_get_interfaces"
-bind = false # moved to Glib.DBus_Interfaces due to circular dependency
+bind = false # moved to Glib.GDBus_Interfaces due to circular dependency
 
 [[extra.spec]]
 text = '''
 --   function Get_Interfaces
 --      (Self : Gdbus_Object)
 --       return Gdbus_Interface_GList;
---  This method is moved to Glib.DBus_Interfaces due to circular dependency
+--  This method is moved to Glib.GDBus_Interfaces due to circular dependency
 '''
