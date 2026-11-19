@@ -160,12 +160,6 @@ package Glib.Object is
    --  Same as Get_User_Data, but does not try to guess the type of Obj,
    --  always default to Stub if Obj is unknown to GtkAda.
 
-   function Unchecked_Cast
-     (Obj  : access GObject_Record'Class;
-      Stub : GObject_Record'Class) return GObject;
-   --  Cast Obj in an object of tag Stub'Class.
-   --  Return the resulting object and free the memory pointed by Obj.
-
    -------------
    -- Signals --
    -------------

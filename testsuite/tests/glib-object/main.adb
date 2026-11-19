@@ -7,9 +7,9 @@ with Interfaces.C;
 with Interfaces.C.Strings;
 with System;
 
-with Glib;                   use Glib;
-with Glib.Object;            use Glib.Object;
-with Glib.Test;              use Glib.Test;
+with Glib;        use Glib;
+with Glib.Object; use Glib.Object;
+with Glib.Test;   use Glib.Test;
 with Glib.Types;
 with Gtk.Buildable;
 with Gtk.Main;
@@ -26,10 +26,26 @@ procedure Main is
    use type Glib.Signal_Id;
    use type System.Address;
 
+   --  Deallocate is a dispatching hook: GtkAda explicitly permits overriding
+   --  it for stack-backed wrappers. Count releases without freeing the stack
+   --  object, so a duplicate release is an assertion rather than heap damage.
+   type Tracked_Object_Record is new GObject_Record with record
+      Releases : Natural := 0;
+   end record;
+
+   overriding
+   procedure Deallocate (Object : access Tracked_Object_Record);
+
+   overriding
+   procedure Deallocate (Object : access Tracked_Object_Record) is
+   begin
+      Object.Releases := Object.Releases + 1;
+   end Deallocate;
+
    procedure Destroy_Closure_Data (Data : in out Integer);
    package Integer_Data is new Glib.Object.User_Data (Integer);
-   package Integer_Closure is new Glib.Object.User_Data_Closure
-     (Integer, Destroy_Closure_Data);
+   package Integer_Closure is new
+     Glib.Object.User_Data_Closure (Integer, Destroy_Closure_Data);
 
    --  The callbacks record observable cleanup without depending on timing.
    Destroyed_Count : Natural := 0;
@@ -58,14 +74,14 @@ procedure Main is
       Flags         : Interfaces.C.int) return Glib.Gulong;
    pragma Import (C, Signal_Connect, "g_signal_connect_data");
 
-   Test_Class : aliased Ada_GObject_Class := Uninitialized_Class;
+   Test_Class        : aliased Ada_GObject_Class := Uninitialized_Class;
    --  A private runtime type gives signal introspection a stable test signal.
-   Empty_Class : aliased Ada_GObject_Class := Uninitialized_Class;
+   Empty_Class       : aliased Ada_GObject_Class := Uninitialized_Class;
    --  A second runtime type verifies empty signal lists on valid object types.
-   Signal_Names : Interfaces.C.Strings.chars_ptr_array (1 .. 1);
+   Signal_Names      : Interfaces.C.Strings.chars_ptr_array (1 .. 1);
    Signal_Parameters : Signal_Parameter_Types (1 .. 1, 1 .. 1) :=
      (1 => (1 => GType_Int));
-   Signal_Returns : Signal_Return_Types (1 .. 1) := (1 => GType_None);
+   Signal_Returns    : Signal_Return_Types (1 .. 1) := (1 => GType_None);
 
    -----------------------
    -- On_Data_Destroyed --
@@ -98,7 +114,8 @@ procedure Main is
      (Object : System.Address; Spec : System.Address; Data : System.Address) is
    begin
       --  The signal callback counts a property notification emitted by Notify.
-      if Object /= System.Null_Address and then Spec /= System.Null_Address then
+      if Object /= System.Null_Address and then Spec /= System.Null_Address
+      then
          Notify_Count := Notify_Count + 1;
       end if;
    end On_Notify;
@@ -117,12 +134,13 @@ procedure Main is
    -- Test_Conversion --
    --------------------
 
-   procedure Test_Conversion with Convention => C;
+   procedure Test_Conversion
+   with Convention => C;
    procedure Test_Conversion is
-      Raw  : constant System.Address := New_C_Object (GType_Object);
-      Fast_Raw : constant System.Address := New_C_Object (GType_Object);
-      Stub : GObject_Record;
-      Ada_Object : GObject;
+      Raw         : constant System.Address := New_C_Object (GType_Object);
+      Fast_Raw    : constant System.Address := New_C_Object (GType_Object);
+      Stub        : GObject_Record;
+      Ada_Object  : GObject;
       Fast_Object : GObject;
    begin
       --  A C-created object has no GtkAda wrapper until conversion is asked.
@@ -150,10 +168,11 @@ procedure Main is
    -- Test_Fast_Cast --
    -------------------
 
-   procedure Test_Fast_Cast with Convention => C;
+   procedure Test_Fast_Cast
+   with Convention => C;
    procedure Test_Fast_Cast is
-      Raw  : constant System.Address := New_C_Object (GType_Object);
-      Stub : GObject_Record;
+      Raw        : constant System.Address := New_C_Object (GType_Object);
+      Stub       : GObject_Record;
       Ada_Object : GObject;
    begin
       --  Fast conversion creates the requested stub and caches it on the C object.
@@ -168,9 +187,10 @@ procedure Main is
    -- Test_Lifecycle --
    ------------------
 
-   procedure Test_Lifecycle with Convention => C;
+   procedure Test_Lifecycle
+   with Convention => C;
    procedure Test_Lifecycle is
-      Object : GObject := new GObject_Record;
+      Object    : GObject := new GObject_Record;
       No_Object : GObject := null;
    begin
       --  Initialize creates the base GObject; Ref and Ref_Sink balance extra refs.
@@ -195,11 +215,13 @@ procedure Main is
    -- Test_User_Data --
    -----------------
 
-   procedure Test_User_Data with Convention => C;
+   procedure Test_User_Data
+   with Convention => C;
    procedure Test_User_Data is
-      Object : GObject := new GObject_Record;
-      Key     : constant Glib.GQuark := Quark_From_String ("gtkada-test-data");
-      Caught  : Boolean := False;
+      Object       : GObject := new GObject_Record;
+      Key          : constant Glib.GQuark :=
+        Quark_From_String ("gtkada-test-data");
+      Caught       : Boolean := False;
       Quark_Caught : Boolean := False;
    begin
       --  Use the generic package with both string keys and quark keys.
@@ -220,13 +242,11 @@ procedure Main is
       end;
       Assert_True (Caught);
 
-      Integer_Data.Set
-        (Object, 21, "string-key", On_Data_Destroyed'Access);
+      Integer_Data.Set (Object, 21, "string-key", On_Data_Destroyed'Access);
       Assert_True (Integer_Data.Is_Set (Object, "string-key"));
       Assert_True (Integer_Data.Get (Object, "string-key") = 21);
       Assert_True (Integer_Data.Get (Object, "string-key", 99) = 21);
-      Integer_Data.Set
-        (Object, 22, "string-key", On_Data_Destroyed'Access);
+      Integer_Data.Set (Object, 22, "string-key", On_Data_Destroyed'Access);
       Assert_True (Destroyed_Count = 1 and then Destroyed_Value = 21);
       Assert_True (Integer_Data.Get (Object, "string-key") = 22);
       Integer_Data.Remove (Object, "string-key");
@@ -261,7 +281,8 @@ procedure Main is
    -- Test_Weak_Refs --
    ------------------
 
-   procedure Test_Weak_Refs with Convention => C;
+   procedure Test_Weak_Refs
+   with Convention => C;
    procedure Test_Weak_Refs is
       Object : GObject := new GObject_Record;
    begin
@@ -286,11 +307,12 @@ procedure Main is
    -- Test_Closure --
    -------------------
 
-   procedure Test_Closure with Convention => C;
+   procedure Test_Closure
+   with Convention => C;
    procedure Test_Closure is
       Data_Address : constant System.Address :=
         Integer_Closure.Build (System.Null_Address, 41);
-      Internal : constant Integer_Closure.Internal_Data_Access :=
+      Internal     : constant Integer_Closure.Internal_Data_Access :=
         Integer_Closure.Convert (Data_Address);
       use type Integer_Closure.Internal_Data_Access;
    begin
@@ -305,20 +327,22 @@ procedure Main is
    -- Test_Signal_Query --
    ----------------------
 
-   procedure Test_Signal_Query with Convention => C;
+   procedure Test_Signal_Query
+   with Convention => C;
    procedure Test_Signal_Query is
-      Created : Boolean;
+      Created       : Boolean;
       Empty_Created : Boolean;
-      Object  : GObject := new GObject_Record;
-      Info    : constant GInterface_Info_Access := new GInterface_Info;
-      Id      : Glib.Signal_Id;
-      Description : Signal_Query;
+      Object        : GObject := new GObject_Record;
+      Info          : constant GInterface_Info_Access := new GInterface_Info;
+      Id            : Glib.Signal_Id;
+      Description   : Signal_Query;
    begin
       --  Register an object type with no signals so GLib returns a null array.
-      Empty_Created := Initialize_Class_Record
-        (Ancestor => GType_Object,
-         Class_Record => Empty_Class'Access,
-         Type_Name => "GtkAdaCoverageEmptySignals");
+      Empty_Created :=
+        Initialize_Class_Record
+          (Ancestor     => GType_Object,
+           Class_Record => Empty_Class'Access,
+           Type_Name    => "GtkAdaCoverageEmptySignals");
       Assert_True (Empty_Created);
       declare
          No_Signal_Ids : constant Signal_Id_Array :=
@@ -330,26 +354,28 @@ procedure Main is
 
       --  Register a signal with one integer parameter and inspect its metadata.
       Signal_Names (1) := Interfaces.C.Strings.New_String ("coverage-ping");
-      Created := Initialize_Class_Record
-        (Ancestor => GType_Object,
-         Class_Record => Test_Class'Access,
-         Type_Name => "GtkAdaCoverageGlibObject",
-         Signals => Signal_Names,
-         Parameters => Signal_Parameters,
-         Returns => Signal_Returns);
+      Created :=
+        Initialize_Class_Record
+          (Ancestor     => GType_Object,
+           Class_Record => Test_Class'Access,
+           Type_Name    => "GtkAdaCoverageGlibObject",
+           Signals      => Signal_Names,
+           Parameters   => Signal_Parameters,
+           Returns      => Signal_Returns);
       Interfaces.C.Strings.Free (Signal_Names (1));
       Assert_True (Created);
       Assert_True
         (not Initialize_Class_Record
-           (Ancestor => GType_Object,
-            Class_Record => Test_Class'Access,
-            Type_Name => "GtkAdaCoverageGlibObject",
-            Signals => No_Signals));
+               (Ancestor     => GType_Object,
+                Class_Record => Test_Class'Access,
+                Type_Name    => "GtkAdaCoverageGlibObject",
+                Signals      => No_Signals));
       --  GtkBuildable has no interface properties to implement on this type.
       Add_Interface (Test_Class, Gtk.Buildable.Get_Type, Info);
       G_New (Object.all'Access, Test_Class);
       Assert_True (Get_Type (Object) = Test_Class.The_Type);
-      Assert_True (Glib.Types.Is_A (Test_Class.The_Type, Gtk.Buildable.Get_Type));
+      Assert_True
+        (Glib.Types.Is_A (Test_Class.The_Type, Gtk.Buildable.Get_Type));
       Id := Lookup (Test_Class.The_Type, "coverage-ping");
       Assert_True (Id /= Null_Signal_Id);
       Glib.Object.Query (Id, Description);
@@ -364,7 +390,8 @@ procedure Main is
            (Params'Length = 1 and then Params (Params'First) = GType_Int);
          Assert_True (Ids'Length = 1 and then Ids (Ids'First) = Id);
       end;
-      Assert_True (Lookup (Test_Class.The_Type, "missing-signal") = Null_Signal_Id);
+      Assert_True
+        (Lookup (Test_Class.The_Type, "missing-signal") = Null_Signal_Id);
       Unref (Object);
       Object := null;
    end Test_Signal_Query;
@@ -373,12 +400,14 @@ procedure Main is
    -- Test_Introspection --
    ------------------------
 
-   procedure Test_Introspection with Convention => C;
+   procedure Test_Introspection
+   with Convention => C;
    procedure Test_Introspection is
-      Class : constant GObject_Class := Glib.Types.Class_Ref (Gtk.Switch.Get_Type);
-      Object_Properties : constant Param_Spec_Array :=
+      Class                : constant GObject_Class :=
+        Glib.Types.Class_Ref (Gtk.Switch.Get_Type);
+      Object_Properties    : constant Param_Spec_Array :=
         Class_List_Properties (Class);
-      Vtable : constant Interface_Vtable :=
+      Vtable               : constant Interface_Vtable :=
         Glib.Types.Default_Interface_Ref (Gtk.Orientable.Get_Type);
       Interface_Properties : constant Param_Spec_Array :=
         Interface_List_Properties (Vtable);
@@ -393,12 +422,13 @@ procedure Main is
    -- Test_Bind_Notify --
    ---------------------
 
-   procedure Test_Bind_Notify with Convention => C;
+   procedure Test_Bind_Notify
+   with Convention => C;
    procedure Test_Bind_Notify is
-      Source : Gtk.Switch.Gtk_Switch;
-      Target : Gtk.Switch.Gtk_Switch;
+      Source  : Gtk.Switch.Gtk_Switch;
+      Target  : Gtk.Switch.Gtk_Switch;
       Binding : G_Binding;
-      Name : Interfaces.C.Strings.chars_ptr;
+      Name    : Interfaces.C.Strings.chars_ptr;
    begin
       --  Gtk widgets need GTK initialized even though the test never displays them.
       Gtk.Main.Init;
@@ -410,9 +440,11 @@ procedure Main is
       Gtk.Switch.Set_Active (Target, True);
 
       --  Sync_Create copies the source value and later changes follow the binding.
-      Binding := Glib.Object.Bind_Property
-        (Source, "active", Target, "active", Binding_Sync_Create);
-      Assert_True (Binding /= null and then not Gtk.Switch.Get_Active (Target));
+      Binding :=
+        Glib.Object.Bind_Property
+          (Source, "active", Target, "active", Binding_Sync_Create);
+      Assert_True
+        (Binding /= null and then not Gtk.Switch.Get_Active (Target));
       Gtk.Switch.Set_Active (Source, True);
       Assert_True (Gtk.Switch.Get_Active (Target));
 
@@ -420,9 +452,14 @@ procedure Main is
       Name := Interfaces.C.Strings.New_String ("notify::active");
       Notify_Count := 0;
       declare
-         Connected : constant Glib.Gulong := Signal_Connect
-           (Get_Object (Source), Name, On_Notify'Address,
-            System.Null_Address, System.Null_Address, 0);
+         Connected : constant Glib.Gulong :=
+           Signal_Connect
+             (Get_Object (Source),
+              Name,
+              On_Notify'Address,
+              System.Null_Address,
+              System.Null_Address,
+              0);
       begin
          Interfaces.C.Strings.Free (Name);
          Assert_True (Connected /= 0);
@@ -445,14 +482,23 @@ procedure Main is
 
 begin
    Glib.Test.Init;
-   Glib.Test.Add_Func ("/glib-object/conversion", Test_Conversion'Unrestricted_Access);
-   Glib.Test.Add_Func ("/glib-object/fast-cast", Test_Fast_Cast'Unrestricted_Access);
-   Glib.Test.Add_Func ("/glib-object/lifecycle", Test_Lifecycle'Unrestricted_Access);
-   Glib.Test.Add_Func ("/glib-object/user-data", Test_User_Data'Unrestricted_Access);
-   Glib.Test.Add_Func ("/glib-object/weak-refs", Test_Weak_Refs'Unrestricted_Access);
-   Glib.Test.Add_Func ("/glib-object/closure", Test_Closure'Unrestricted_Access);
-   Glib.Test.Add_Func ("/glib-object/signal-query", Test_Signal_Query'Unrestricted_Access);
-   Glib.Test.Add_Func ("/glib-object/introspection", Test_Introspection'Unrestricted_Access);
-   Glib.Test.Add_Func ("/glib-object/bind-notify", Test_Bind_Notify'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-object/conversion", Test_Conversion'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-object/fast-cast", Test_Fast_Cast'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-object/lifecycle", Test_Lifecycle'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-object/user-data", Test_User_Data'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-object/weak-refs", Test_Weak_Refs'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-object/closure", Test_Closure'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-object/signal-query", Test_Signal_Query'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-object/introspection", Test_Introspection'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/glib-object/bind-notify", Test_Bind_Notify'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

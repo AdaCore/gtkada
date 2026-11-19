@@ -278,31 +278,6 @@ package body Glib.Object is
       end if;
    end Set_Object;
 
-   --------------------
-   -- Unchecked_Cast --
-   --------------------
-
-   function Unchecked_Cast
-     (Obj  : access GObject_Record'Class;
-      Stub : GObject_Record'Class) return GObject
-   is
-      Result : constant GObject := new GObject_Record'Class'(Stub);
-
-      procedure Set_User_Data
-        (Obj     : System.Address;
-         Quark   : Glib.GQuark;
-         Data    : System.Address;
-         Destroy : System.Address);
-      pragma Import (C, Set_User_Data, "g_object_set_qdata_full");
-
-   begin
-      Result.Ptr := Obj.Ptr;
-      Set_User_Data
-        (Obj.Ptr, GtkAda_String_Quark, Result'Address, Free_User_Data'Address);
-      Deallocate (Obj);
-      return Result;
-   end Unchecked_Cast;
-
    -----------------------------
    -- Initialize_Class_Record --
    -----------------------------
