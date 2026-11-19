@@ -76,6 +76,7 @@ procedure Gtk_Widget is
    procedure Test_Inherited_Vfuncs with Convention => C;
    procedure Test_Required_Tick_Callback with Convention => C;
    procedure Test_Required_Data_Tick_Callback with Convention => C;
+   procedure Test_State_Flags_Changed with Convention => C;
 
    procedure Test_Widget_Class_Init (Self : GObject_Class);
    pragma Convention (C, Test_Widget_Class_Init);
@@ -864,6 +865,79 @@ procedure Gtk_Widget is
          "gtk-widget.required-tick-callback: user-data overload accepted null");
    end Test_Required_Data_Tick_Callback;
 
+   --  Regression for gtk-widget.state-flags-marshaller-uses-enum:
+   --  state-flags-changed carries the previous GtkStateFlags bitset, not an
+   --  enum value. Both handler overloads must preserve all its bits. Reading
+   --  that GValue through the enum path currently raises a fatal GLib critical.
+   procedure Test_State_Flags_Changed is
+      Label : constant Gtk_Label := Gtk_Label_New ("state flags sender");
+      Slot  : constant Gtk_Label := Gtk_Label_New ("state flags slot");
+      Typed_Calls, Slot_Calls : Natural := 0;
+      Typed_Flags, Slot_Flags, Previous : Gtk_State_Flags := 0;
+
+      procedure On_Typed
+        (Self : access Gtk_Widget_Record'Class; Flags : Gtk_State_Flags) is
+      begin
+         Assert_True
+           (Get_Object (Self) = Get_Object (Label),
+            "state-flags-changed typed handler must receive the sender");
+         Typed_Calls := Typed_Calls + 1;
+         Typed_Flags := Flags;
+      end On_Typed;
+
+      procedure On_Slot
+        (Self : access GObject_Record'Class; Flags : Gtk_State_Flags) is
+      begin
+         --  GtkAda's Slot overload substitutes the supplied object for Self.
+         Assert_True
+           (Get_Object (Self) = Get_Object (Slot),
+            "state-flags-changed slot handler must receive the slot object");
+         Slot_Calls := Slot_Calls + 1;
+         Slot_Flags := Flags;
+      end On_Slot;
+   begin
+      --  Sink these unparented widgets' floating references so Unref below
+      --  releases them and disconnects the nested callbacks before returning.
+      Ref_Sink (Label);
+      Ref_Sink (Slot);
+      Set_State_Flags
+        (Label, Gtk_State_Flag_Selected or Gtk_State_Flag_Prelight,
+         Clear => False);
+      Previous := Get_State_Flags (Label);
+
+      --  Unrestricted_Access is the usual GtkAda idiom for nested handlers;
+      --  both widgets and callbacks stay alive throughout these synchronous
+      --  state changes, which require neither mapping nor event-loop pumping.
+      On_State_Flags_Changed (Label, On_Typed'Unrestricted_Access);
+      On_State_Flags_Changed (Label, On_Slot'Unrestricted_Access, Slot);
+      Set_State_Flags (Label, Gtk_State_Flag_Active, Clear => False);
+      Assert_True
+        (Typed_Calls = 1 and Slot_Calls = 1,
+         "state-flags-changed must invoke both handlers once when adding flags");
+      Assert_True
+        (Typed_Flags = Previous and Slot_Flags = Previous,
+         "state-flags-changed must pass the complete previous flags to both handlers");
+      Assert_True
+        (Get_State_Flags (Label) = (Previous or Gtk_State_Flag_Active),
+         "adding a state flag must preserve the other bits");
+
+      --  Removing a bit must report the state before removal, including the
+      --  active bit added above, rather than the new state or a single enum.
+      Previous := Get_State_Flags (Label);
+      Unset_State_Flags (Label, Gtk_State_Flag_Selected);
+      Assert_True
+        (Typed_Calls = 2 and Slot_Calls = 2,
+         "state-flags-changed must invoke both handlers again when removing flags");
+      Assert_True
+        (Typed_Flags = Previous and Slot_Flags = Previous,
+         "state-flags-changed must preserve previous flags when removing a bit");
+      Assert_True
+        (Get_State_Flags (Label) = (Previous and not Gtk_State_Flag_Selected),
+         "removing a state flag must preserve the other bits");
+      Unref (Label);
+      Unref (Slot);
+   end Test_State_Flags_Changed;
+
    --------------------------
    -- Test_Inherited_Vfuncs --
    --------------------------
@@ -942,6 +1016,9 @@ begin
    Glib.Test.Add_Func
      ("/gtk-widget/required-data-tick-callback",
       Test_Required_Data_Tick_Callback'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gtk-widget/state-flags-changed",
+      Test_State_Flags_Changed'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Gtk_Widget;
