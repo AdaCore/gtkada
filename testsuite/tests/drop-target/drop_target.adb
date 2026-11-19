@@ -409,6 +409,10 @@ procedure Drop_Target is
    --  a safe rejection, and never unwind through GLib's C signal machinery.
    --  Drop and motion exercise the two return profiles without a live GdkDrop;
    --  enter shares motion's marshaller, but its default handler needs a drag.
+   --  GTK gives these signals the first-wins accumulator: GLib resets each
+   --  handler's return value itself, and the first handler ends the emission.
+   --  So no raising handler here can follow one that already set a result;
+   --  the paned test checks that case, on signals without an accumulator.
    procedure Test_Return_Callback_Exception
      (Slot_Callback : Boolean;
       Drop_Signal   : Boolean)

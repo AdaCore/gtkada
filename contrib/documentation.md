@@ -113,7 +113,11 @@ the result's initializer, which the marshaller's handler would not cover.
 On failure, the return `GValue` is reset to its type's default before
 reporting the exception: `False` for Boolean results, zero for flags such as
 `Gdk.Drag.Drag_Action`, and null for object results. No uninitialized Ada
-result is passed back to C.
+result is passed back to C. The reset matters for signals without an
+accumulator, such as `Gtk.Paned`'s action signals, whose handlers all write
+the same return value: without it, a raising handler would leave an earlier
+handler's result in place. With an accumulator, GLib resets the value
+between handlers itself.
 
 Keep a signal's generic GObject argument when its concrete type depends on
 the caller. For example, `GtkSignalListItemFactory`'s four lifecycle

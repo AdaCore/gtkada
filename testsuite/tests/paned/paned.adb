@@ -3,6 +3,7 @@
 --  GtkPaned C test exists in testsuite/c_tests/ to port.
 
 with Ada.Command_Line;
+with Ada.Exceptions;
 with Interfaces.C.Strings;
 with System;
 with Glib;                  use Glib;
@@ -23,6 +24,7 @@ with Gtk.Orientable;
 with Gtk.Paned;              use Gtk.Paned;
 with Gtk.Widget;
 with Gtk.Window;             use Gtk.Window;
+with Gtkada.Bindings;
 
 use type System.Address;
 use type Glib.C_Proxy;
@@ -41,6 +43,7 @@ procedure Paned is
    Toggle_Typed, Toggle_Slot : Natural := 0;
    Seen_Reversed             : Boolean := False;
    Seen_Scroll               : Gtk_Scroll_Type := Scroll_None;
+   Caught_Exceptions         : Natural := 0;
 
    --  g_signal_emit_by_name is used below for all variadic signal signatures.
    --  g_signal_emit_by_name is variadic. The result pointer follows the
@@ -65,6 +68,8 @@ procedure Paned is
    procedure Test_Children_And_Properties with Convention => C;
    procedure Test_Accessibility_And_Interfaces with Convention => C;
    procedure Test_Signals with Convention => C;
+   procedure Test_Typed_Exception_Resets_Result with Convention => C;
+   procedure Test_Slot_Exception_Resets_Result with Convention => C;
 
    --  Each callback records its invocation so the signal wrappers and their
    --  conversion of Ada arguments to the generated C marshallers are checked.
@@ -180,6 +185,31 @@ procedure Paned is
       Toggle_Slot := Toggle_Slot + 1;
       return True;
    end Toggle_Handle_Slot;
+
+   --  GtkAda reports callback exceptions through this hook instead of letting
+   --  an Ada exception unwind through GLib's C signal stack.
+   procedure Record_Exception
+     (Occurrence : Ada.Exceptions.Exception_Occurrence) is
+      pragma Unreferenced (Occurrence);
+   begin
+      Caught_Exceptions := Caught_Exceptions + 1;
+   end Record_Exception;
+
+   function Raise_Toggle_Handle
+     (Self : access Gtk_Paned_Record'Class) return Boolean is
+      pragma Unreferenced (Self);
+   begin
+      return (raise Program_Error with
+        "expected typed toggle callback exception");
+   end Raise_Toggle_Handle;
+
+   function Raise_Toggle_Handle_Slot
+     (Self : access GObject_Record'Class) return Boolean is
+      pragma Unreferenced (Self);
+   begin
+      return (raise Program_Error with
+        "expected slot toggle callback exception");
+   end Raise_Toggle_Handle_Slot;
 
    --  Constructors and setters are checked through their public getters and
    --  GObject properties, including nullable children and both Boolean values.
@@ -481,9 +511,72 @@ procedure Paned is
       Unref (Paned);
    end Test_Signals;
 
+   --  GtkPaned's action signals have no accumulator, so all their handlers
+   --  write the emission's single return value. A callback that raises must
+   --  reset the True an earlier handler stored there to False, rather than
+   --  leave it as the signal's result. Both callbacks are connected After, so
+   --  that toggle-handle-focus's class handler, which returns False, runs
+   --  before them instead of overwriting the result they leave.
+   procedure Test_Exception_Resets_Result (Slot_Callback : Boolean) is
+      Paned : constant Gtk_Paned := Gtk_Paned_New (Orientation_Horizontal);
+      Slot : constant Gtk_Button := Gtk_Button_New_With_Label ("callback slot");
+      Name : chars_ptr := New_String ("toggle-handle-focus");
+      Result : aliased Gboolean := 0;
+   begin
+      Ref_Sink (Paned);
+      Ref_Sink (Slot);
+      Toggle_Typed := 0; Toggle_Slot := 0;
+      Caught_Exceptions := 0;
+      if Slot_Callback then
+         Paned.On_Toggle_Handle_Focus
+           (Toggle_Handle_Slot'Unrestricted_Access, Slot, After => True);
+      else
+         Paned.On_Toggle_Handle_Focus
+           (Toggle_Handle'Unrestricted_Access, After => True);
+      end if;
+
+      --  Alone, the earlier handler's True is the result of the emission.
+      Emit_Boolean_Result (Paned.Get_Object, Name, Result'Access);
+      Assert_True (Result /= 0, "earlier handler must set the result");
+
+      if Slot_Callback then
+         Paned.On_Toggle_Handle_Focus
+           (Raise_Toggle_Handle_Slot'Unrestricted_Access, Slot, After => True);
+      else
+         Paned.On_Toggle_Handle_Focus
+           (Raise_Toggle_Handle'Unrestricted_Access, After => True);
+      end if;
+
+      Result := 1;
+      Emit_Boolean_Result (Paned.Get_Object, Name, Result'Access);
+      Free (Name);
+      Assert_Cmpuint_Eq (Guint (Toggle_Typed + Toggle_Slot), 2);
+      Assert_True
+        (Caught_Exceptions = 1,
+         "raising callback must reach the exception hook once");
+      Assert_True
+        (Result = 0,
+         "raising callback must reset the result an earlier handler set");
+
+      Unref (Slot);
+      Unref (Paned);
+   end Test_Exception_Resets_Result;
+
+   --  Separate Glib.Test cases identify the closure form at fault.
+   procedure Test_Typed_Exception_Resets_Result is
+   begin
+      Test_Exception_Resets_Result (Slot_Callback => False);
+   end Test_Typed_Exception_Resets_Result;
+
+   procedure Test_Slot_Exception_Resets_Result is
+   begin
+      Test_Exception_Resets_Result (Slot_Callback => True);
+   end Test_Slot_Exception_Resets_Result;
+
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
+   Gtkada.Bindings.Set_On_Exception (Record_Exception'Unrestricted_Access);
    Add_Func
      ("/paned/children-properties",
       Test_Children_And_Properties'Unrestricted_Access);
@@ -491,5 +584,11 @@ begin
      ("/paned/accessibility-interfaces",
       Test_Accessibility_And_Interfaces'Unrestricted_Access);
    Add_Func ("/paned/signals", Test_Signals'Unrestricted_Access);
+   Add_Func
+     ("/paned/callback-exception-resets-result/typed",
+      Test_Typed_Exception_Resets_Result'Unrestricted_Access);
+   Add_Func
+     ("/paned/callback-exception-resets-result/slot",
+      Test_Slot_Exception_Resets_Result'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Paned;
