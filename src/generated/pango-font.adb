@@ -421,24 +421,6 @@ package body Pango.Font is
       Free (Tmp_Family);
    end Set_Family;
 
-   -----------------------
-   -- Set_Family_Static --
-   -----------------------
-
-   procedure Set_Family_Static
-      (Self   : Pango_Font_Description;
-       Family : UTF8_String)
-   is
-      procedure Internal
-         (Self   : Pango_Font_Description;
-          Family : Gtkada.Types.Chars_Ptr);
-      pragma Import (C, Internal, "pango_font_description_set_family_static");
-      Tmp_Family : Gtkada.Types.Chars_Ptr := New_String (Family);
-   begin
-      Internal (Self, Tmp_Family);
-      Free (Tmp_Family);
-   end Set_Family_Static;
-
    --------------------
    -- Set_Variations --
    --------------------
@@ -456,24 +438,6 @@ package body Pango.Font is
       Internal (Self, Tmp_Variations);
       Free (Tmp_Variations);
    end Set_Variations;
-
-   ---------------------------
-   -- Set_Variations_Static --
-   ---------------------------
-
-   procedure Set_Variations_Static
-      (Self       : Pango_Font_Description;
-       Variations : UTF8_String)
-   is
-      procedure Internal
-         (Self       : Pango_Font_Description;
-          Variations : Gtkada.Types.Chars_Ptr);
-      pragma Import (C, Internal, "pango_font_description_set_variations_static");
-      Tmp_Variations : Gtkada.Types.Chars_Ptr := New_String (Variations);
-   begin
-      Internal (Self, Tmp_Variations);
-      Free (Tmp_Variations);
-   end Set_Variations_Static;
 
    -----------------
    -- To_Filename --
