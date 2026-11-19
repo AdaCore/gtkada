@@ -329,11 +329,8 @@ package body Glib.Variant is
          (String : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_variant_new_take_string");
       Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
-      Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_String);
-      Self.Set_Object (Tmp_Return);
-      Free (Tmp_String);
+      Self.Set_Object (Internal (Tmp_String));
    end G_New_Take_String;
 
    ------------------
@@ -654,11 +651,8 @@ package body Glib.Variant is
       pragma Import (C, Internal, "g_variant_new_take_string");
       Self       : Gvariant;
       Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
-      Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_String);
-      Self.Set_Object (Tmp_Return);
-      Free (Tmp_String);
+      Self.Set_Object (Internal (Tmp_String));
       return Self;
    end Gvariant_New_Take_String;
 

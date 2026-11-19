@@ -43,6 +43,8 @@ procedure Main is
    procedure String_Vector_And_Types with Convention => C;
    procedure Containers_And_Text with Convention => C;
    procedure Serialized_And_Refs with Convention => C;
+   procedure Take_String_Procedure with Convention => C;
+   procedure Take_String_Function with Convention => C;
 
    --  GNAT.Strings lists returned by Dup_* and the string-vector accessors
    --  own each element, so release every allocated string after checking it.
@@ -557,6 +559,47 @@ procedure Main is
 
    end Serialized_And_Refs;
 
+   --  Regression for glib-variant.take-string-ownership: GLib owns the
+   --  temporary C string after either take-string constructor returns. The
+   --  binding must leave that storage alive until the variant releases it.
+   --  GtkAda accepts an Ada string and allocates the C buffer internally;
+   --  callers only release the returned floating variant with Unref.
+   --  Assertions are nonfatal under the driver. If the string is already
+   --  corrupt, skip Unref to avoid a double free hiding later test results.
+   procedure Take_String_Procedure is
+      Text : constant UTF8_String :=
+        "The procedure take-string constructor must preserve this text.";
+      V : Gvariant;
+      Preserved : Boolean;
+   begin
+      G_New_Take_String (V, Text);
+      Preserved := Get_String (V) = Text;
+      Assert_True
+        (Preserved,
+         "G_New_Take_String must preserve the transferred string");
+      if Preserved then
+         Unref (V);
+      end if;
+   end Take_String_Procedure;
+
+   --  Exercise the function form independently: it has its own generated
+   --  wrapper with the same glib-variant.take-string-ownership defect.
+   procedure Take_String_Function is
+      Text : constant UTF8_String :=
+        "The function take-string constructor must preserve this text.";
+      V : Gvariant;
+      Preserved : Boolean;
+   begin
+      V := Gvariant_New_Take_String (Text);
+      Preserved := Get_String (V) = Text;
+      Assert_True
+        (Preserved,
+         "Gvariant_New_Take_String must preserve the transferred string");
+      if Preserved then
+         Unref (V);
+      end if;
+   end Take_String_Function;
+
 begin
    Glib.Test.Init;
    Add_Func ("/glib-variant/scalars", Scalar_Constructors'Unrestricted_Access);
@@ -570,5 +613,11 @@ begin
    Add_Func
      ("/glib-variant/serialization-and-refs",
       Serialized_And_Refs'Unrestricted_Access);
+   Add_Func
+     ("/glib-variant/take-string-procedure",
+      Take_String_Procedure'Unrestricted_Access);
+   Add_Func
+     ("/glib-variant/take-string-function",
+      Take_String_Function'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

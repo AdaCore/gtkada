@@ -617,26 +617,24 @@ package Glib.Variant is
    --  @param Length the length of Strv, or -1
 
    procedure G_New_Take_String (Self : out Gvariant; String : UTF8_String);
-   --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid UTF-8, and must not be null. To encode
-   --  potentially-null strings, use this with g_variant_new_maybe.
-   --  After this call, String belongs to the Glib.Variant.Gvariant and may no
-   --  longer be modified by the caller. The memory of Data has to be
-   --  dynamically allocated and will eventually be freed with g_free.
-   --  You must not modify or access String in any other way after passing it
-   --  to this function. It is even possible that String is immediately freed.
+   --  Creates a string GVariant with the contents of String, which must be
+   --  valid UTF-8. GtkAda copies String into a C buffer and transfers that
+   --  buffer to the variant. The caller's Ada string remains usable after the
+   --  call.
+   --  The new variant has a floating reference. Release it with Unref when it
+   --  is no longer needed, unless its ownership has been transferred to a
+   --  container.
    --  Since: gtk+ 2.38
    --  @param String a normal UTF-8 nul-terminated string
 
    function Gvariant_New_Take_String (String : UTF8_String) return Gvariant;
-   --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid UTF-8, and must not be null. To encode
-   --  potentially-null strings, use this with g_variant_new_maybe.
-   --  After this call, String belongs to the Glib.Variant.Gvariant and may no
-   --  longer be modified by the caller. The memory of Data has to be
-   --  dynamically allocated and will eventually be freed with g_free.
-   --  You must not modify or access String in any other way after passing it
-   --  to this function. It is even possible that String is immediately freed.
+   --  Creates a string GVariant with the contents of String, which must be
+   --  valid UTF-8. GtkAda copies String into a C buffer and transfers that
+   --  buffer to the variant. The caller's Ada string remains usable after the
+   --  call.
+   --  The new variant has a floating reference. Release it with Unref when it
+   --  is no longer needed, unless its ownership has been transferred to a
+   --  container.
    --  Since: gtk+ 2.38
    --  @param String a normal UTF-8 nul-terminated string
 

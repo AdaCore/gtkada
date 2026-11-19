@@ -7,6 +7,25 @@ ada = "Glib.Variant"
 ctype = "GVariantClass"
 prefix = "G_VARIANT_"
 
+# The GIR marks string as transfer-none, but GLib takes ownership and
+# releases it with g_free. Hand over the binding's allocated C copy.
+[[method]]
+id = "g_variant_new_take_string"
+
+[[method.parameter]]
+name = "string"
+transfer_ownership = "full"
+
+[method.doc]
+text = '''
+Creates a string GVariant with the contents of String, which must be valid
+UTF-8. GtkAda copies String into a C buffer and transfers that buffer to
+the variant. The caller's Ada string remains usable after the call.
+
+The new variant has a floating reference. Release it with Unref when it is
+no longer needed, unless its ownership has been transferred to a container.
+'''
+
 [[method]]
 id = "g_variant_new_parsed_va"
 bind = false
