@@ -146,6 +146,28 @@ The instrumented library takes the place of the regular static one in
 `.libs/gtkada/static/`; the next ordinary testsuite run rebuilds it
 uninstrumented. `make clean` removes all of the above.
 
+## AddressSanitizer
+
+The library can be tested with AddressSanitizer:
+
+```sh
+BUILD=AddressSanitizer python testsuite/testsuite.py
+```
+
+View the report with
+
+```
+e3-testsuite-report testsuite/out/asan/new/
+```
+
+Note: leak detection is off (the driver sets `ASAN_OPTIONS=detect_leaks=0`)
+because GTK and GLib leave memory behind at exit and LeakSanitizer would
+fail every test. To look for leaks anyway, set
+`ASAN_OPTIONS=detect_leaks=1`.
+
+As with coverage, the instrumented library takes the place of the regular one
+in `.libs/gtkada/<kind>/`.
+
 ## Debugging
 
 A useful trick for making warnings fatal: set `G_DEBUG=fatal-warnings`.

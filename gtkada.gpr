@@ -83,7 +83,8 @@ library project GtkAda is
    case GtkAda_Shared.Library_Kind is
       when "relocatable" =>
          for Leading_Library_Options use GtkAda_Shared.Ldflags;
-         for Library_Options use Gtk_Rpath_Link & GtkAda_Shared.Gtk_Libs;
+         for Library_Options use Gtk_Rpath_Link & GtkAda_Shared.Gtk_Libs
+           & GtkAda_Shared.Sanitizer_Switches;
       when others =>
          null;
    end case;
@@ -107,7 +108,10 @@ library project GtkAda is
    package IDE      renames GtkAda_Shared.IDE;
 
    package Linker is
-      for Linker_Options use Gtk_Rpath_Link & GtkAda_Shared.Gtk_Libs;
+      --  The sanitizer switches link the AddressSanitizer runtime into
+      --  every executable that uses an instrumented library.
+      for Linker_Options use Gtk_Rpath_Link & GtkAda_Shared.Gtk_Libs
+        & GtkAda_Shared.Sanitizer_Switches;
    end Linker;
 
    package Install is

@@ -1368,7 +1368,7 @@ Optional Features:
                           and make them preselected in project files (static
                           libraries are preselected by default
   --enable-build=<type>   Default build type for the library (Debug,
-                          Production)
+                          Production, AddressSanitizer)
   --disable-nls           do not use Native Language Support
   --disable-gtktest       do not try to compile and run a test GTK+ program
 

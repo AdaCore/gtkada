@@ -124,6 +124,11 @@ class DefaultScriptDriver(ClassicTestDriver):
         # probe for a GL renderer and crash inside libepoxy when no GL
         # library can be loaded.
         env.setdefault("GSK_RENDERER", "cairo")
+        # In the AddressSanitizer build (BUILD=AddressSanitizer), report
+        # memory errors but not leaks: GTK and GLib leave allocations behind
+        # at exit, so that LeakSanitizer would fail every single test. This
+        # has no effect on executables that are not instrumented.
+        env.setdefault("ASAN_OPTIONS", "detect_leaks=0")
 
         # Use the checkout unless --no-library-build selects an installed library.
         if not self.testsuite_options.no_library_build:

@@ -49,7 +49,7 @@ procedure Main is
       Normal : aliased Graphene_Vec3_T;
       Ignored_Normal : access Graphene_Vec3_T;
       Bytes : constant size_t :=
-        size_t (Graphene_Plane_T'Size / System.Storage_Unit);
+        size_t (Graphene_Plane_T'Max_Size_In_Storage_Elements);
       Heap_Plane : constant Plane_Access :=
         To_Plane_Access (G_Malloc (Bytes));
       Ignored_Plane : access Graphene_Plane_T;
