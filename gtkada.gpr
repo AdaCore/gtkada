@@ -43,9 +43,17 @@ library project GtkAda is
       when "no"  => for Externally_Built use "false";
    end case;
 
+   case GtkAda_Shared.So_Ext is
+      when ".dll" | ".dylib" =>
+         --  Do not use DBus on Windows and Darwin
+         Additional_Sources := ();
+      when others =>
+         Additional_Sources := ("src/generated/gdbus");
+   end case;
+
    --  Put "generated" first, so that files are preferably taken from there
    --  even if they still exist in "."
-   for Source_Dirs use ("src/generated/**", "src");
+   for Source_Dirs use ("src/generated", "src") & Additional_Sources;
 
    for Library_Kind use GtkAda_Shared.Library_Kind;
    for Library_Name use "gtkada";
@@ -91,7 +99,6 @@ library project GtkAda is
 
    case GtkAda_Shared.So_Ext is
       when ".dll" =>
-         for Ignore_Source_Sub_Dirs use ("src/generated/gdbus");
          for Excluded_Source_Files use
             ("gtk-page_setup_unix_dialog.ads",
              "gtk-page_setup_unix_dialog.adb",
